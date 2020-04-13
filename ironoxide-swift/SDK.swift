@@ -14,13 +14,13 @@ enum IronOxideError: Error {
 
 func getDocumentAssociation(_ associationId: UInt32) -> String {
     let docAssoc = AssociationType.init(associationId)
-    if(docAssoc == ofFromGroup){
+    if(docAssoc == FromGroup){
         return "From Group"
     }
-    else if(docAssoc == documentOwner){
+    else if(docAssoc == Owner){
         return "Owner"
     }
-    else if(docAssoc == documentFromUser){
+    else if(docAssoc == FromUser){
         return "From User"
     }
     return "No Association?"

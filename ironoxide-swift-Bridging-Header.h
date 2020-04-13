@@ -10,7 +10,6 @@
 #import "rust_vec_i8.h"
 
 //Base IronOxide Types
-#import "CRustSlicei8.h"
 #import "c_PrivateKey.h"
 #import "c_PublicKey.h"
 #import "c_DeviceSigningKeyPair.h"
@@ -23,6 +22,7 @@
 #import "c_DeviceAddResult.h"
 #import "c_SucceededResult.h"
 #import "c_FailedResult.h"
+#import "c_AssociationType.h"
 
 //Create Opts
 #import "c_GroupCreateOpts.h"
@@ -38,7 +38,6 @@
 #import "c_GroupMetaResult.h"
 #import "c_DocumentListResult.h"
 #import "c_DocumentListMeta.h"
-#import "c_AssociationType.h"
 #import "c_DocumentMetadataResult.h"
 #import "c_DocumentEncryptResult.h"
 #import "c_DocumentDecryptResult.h"

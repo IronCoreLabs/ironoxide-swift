@@ -13,6 +13,12 @@
 		560572CE243B81AF00C608DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 560572CD243B81AF00C608DE /* Assets.xcassets */; };
 		560572D1243B81AF00C608DE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 560572D0243B81AF00C608DE /* Preview Assets.xcassets */; };
 		560572D4243B81AF00C608DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 560572D2243B81AF00C608DE /* LaunchScreen.storyboard */; };
+		56EB947924450C9C0092E598 /* libironoxide_shared.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EB947824450C9C0092E598 /* libironoxide_shared.a */; };
+		56EB947B24450CA50092E598 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EB947A24450CA50092E598 /* libresolv.tbd */; };
+		56EB947D24450D030092E598 /* SDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EB947C24450D030092E598 /* SDK.swift */; };
+		56EB947F24450D0F0092E598 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EB947E24450D0F0092E598 /* Util.swift */; };
+		56EB948624450E110092E598 /* IdType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EB948524450E110092E598 /* IdType.swift */; };
+		56EB9488244510F10092E598 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 56EB9487244510F10092E598 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +30,13 @@
 		560572D0243B81AF00C608DE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		560572D3243B81AF00C608DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		560572D5243B81AF00C608DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56EB947824450C9C0092E598 /* libironoxide_shared.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libironoxide_shared.a; path = "../ironoxide-java/target/x86_64-apple-ios/release/libironoxide_shared.a"; sourceTree = "<group>"; };
+		56EB947A24450CA50092E598 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		56EB947C24450D030092E598 /* SDK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDK.swift; sourceTree = "<group>"; };
+		56EB947E24450D0F0092E598 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		56EB948024450D370092E598 /* ironoxide-swift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ironoxide-swift-Bridging-Header.h"; sourceTree = "<group>"; };
+		56EB948524450E110092E598 /* IdType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdType.swift; sourceTree = "<group>"; };
+		56EB9487244510F10092E598 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +44,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56EB947B24450CA50092E598 /* libresolv.tbd in Frameworks */,
+				56EB947924450C9C0092E598 /* libironoxide_shared.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,8 +55,11 @@
 		560572BB243B81AD00C608DE = {
 			isa = PBXGroup;
 			children = (
+				56EB9487244510F10092E598 /* README.md */,
 				560572C6243B81AD00C608DE /* ironoxide-swift */,
 				560572C5243B81AD00C608DE /* Products */,
+				56EB947724450C9C0092E598 /* Frameworks */,
+				56EB948024450D370092E598 /* ironoxide-swift-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +74,9 @@
 		560572C6243B81AD00C608DE /* ironoxide-swift */ = {
 			isa = PBXGroup;
 			children = (
+				56EB948524450E110092E598 /* IdType.swift */,
+				56EB947E24450D0F0092E598 /* Util.swift */,
+				56EB947C24450D030092E598 /* SDK.swift */,
 				560572C7243B81AD00C608DE /* AppDelegate.swift */,
 				560572C9243B81AD00C608DE /* SceneDelegate.swift */,
 				560572CB243B81AD00C608DE /* ContentView.swift */,
@@ -73,6 +94,15 @@
 				560572D0243B81AF00C608DE /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		56EB947724450C9C0092E598 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				56EB947A24450CA50092E598 /* libresolv.tbd */,
+				56EB947824450C9C0092E598 /* libironoxide_shared.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,6 +137,7 @@
 				TargetAttributes = {
 					560572C3243B81AD00C608DE = {
 						CreatedOnToolsVersion = 11.4;
+						LastSwiftMigration = 1140;
 					};
 				};
 			};
@@ -135,6 +166,7 @@
 			files = (
 				560572D4243B81AF00C608DE /* LaunchScreen.storyboard in Resources */,
 				560572D1243B81AF00C608DE /* Preview Assets.xcassets in Resources */,
+				56EB9488244510F10092E598 /* README.md in Resources */,
 				560572CE243B81AF00C608DE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -148,6 +180,9 @@
 			files = (
 				560572C8243B81AD00C608DE /* AppDelegate.swift in Sources */,
 				560572CA243B81AD00C608DE /* SceneDelegate.swift in Sources */,
+				56EB947F24450D0F0092E598 /* Util.swift in Sources */,
+				56EB947D24450D030092E598 /* SDK.swift in Sources */,
+				56EB948624450E110092E598 /* IdType.swift in Sources */,
 				560572CC243B81AD00C608DE /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +319,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ironoxide-swift/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
@@ -292,10 +328,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "/Users/ernie/Documents/code/ironoxide-java/target/x86_64-apple-ios/release";
 				PRODUCT_BUNDLE_IDENTIFIER = "ironcorelabs.ironoxide-swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ironoxide-swift-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "/Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk";
 			};
 			name = Debug;
 		};
@@ -303,6 +343,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ironoxide-swift/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
@@ -313,6 +354,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ironcorelabs.ironoxide-swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ironoxide-swift-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
