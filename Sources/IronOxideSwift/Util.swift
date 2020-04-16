@@ -1,23 +1,23 @@
-import libironoxide
 import Foundation
+import libironoxide
 
 struct Util {
     /**
      * Convert the provided Swift string into a string we can pass down to native IronOxide
      */
-    static func swiftStringToRust(_ str: String) -> CRustStrView{
+    static func swiftStringToRust(_ str: String) -> CRustStrView {
         let count = str.utf8.count + 1
         let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
-        str.withCString { (baseAddress) in
+        str.withCString { baseAddress in
             result.initialize(from: baseAddress, count: count)
         }
-        return CRustStrView(data: result, len: UInt(str.utf8.count))
+        return CRustStrView(data: result, len: UInt(count))
     }
 
     /**
      * Convert the provided UTF-8 native library string into a Swift string
      */
-    static func rustStringToSwift(str: CRustString, fallbackError: String) -> String{
+    static func rustStringToSwift(str: CRustString, fallbackError: String) -> String {
         let bytes = Array(UnsafeBufferPointer(start: str.data, count: Int(str.len))).map(UInt8.init)
         return String(bytes: bytes, encoding: String.Encoding.utf8) ?? fallbackError
     }

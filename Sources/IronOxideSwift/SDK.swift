@@ -3,133 +3,79 @@ import libironoxide
 public struct SDK {
     var ironoxide: OpaquePointer
 
-    init(_ instance: OpaquePointer){
+    init(_ instance: OpaquePointer) {
         ironoxide = instance
     }
 
     /******************
-    *  USER OPS
-    *******************/
-    public func userListDevices(){
+     *  USER OPS
+     *******************/
+    public func userListDevices() {}
 
-    }
+    public func userGetPublicKey() {}
 
-    public func userGetPublicKey(){
+    public func userDeleteDevice() {}
 
-    }
-
-    public func userDeleteDevice(){
-
-    }
-
-    public func userRotatePrivateKey(){
-
-    }
+    public func userRotatePrivateKey() {}
 
     /******************
-    *  DOCUMENT OPS
-    *******************/
-    public func documentList(){
+     *  DOCUMENT OPS
+     *******************/
+    public func documentList() {}
 
-    }
+    public func documentGetMetadata() {}
 
-    public func documentGetMetadata(){
+    public func documentGetIdFromBytes() {}
 
-    }
+    public func documentEncrypt() {}
 
-    public func documentGetIdFromBytes(){
+    public func documentUpdateBytes() {}
 
-    }
+    public func documentDecrypt() {}
 
-    public func documentEncrypt(){
+    public func documentUpdateName() {}
 
-    }
+    public func documentGrantAccess() {}
 
-    public func documentUpdateBytes(){
+    public func documentRevokeAccess() {}
 
-    }
+    public func advancedDocumentEncryptUnmanaged() {}
 
-    public func documentDecrypt(){
-
-    }
-
-    public func documentUpdateName(){
-
-    }
-
-    public func documentGrantAccess(){
-
-    }
-
-    public func documentRevokeAccess(){
-
-    }
-
-    public func advancedDocumentEncryptUnmanaged(){
-
-    }
-
-    public func advancedDocumentDecryptUnmanaged(){
-
-    }
+    public func advancedDocumentDecryptUnmanaged() {}
 
     /******************
-    *  GROUP OPS
-    *******************/
+     *  GROUP OPS
+     *******************/
 
-    public func groupList(){
+    public func groupList() {}
 
-    }
+    public func groupGetMetadata() {}
 
-    public func groupGetMetadata(){
+    public func groupCreate() {}
 
-    }
+    public func groupUpdateName() {}
 
-    public func groupCreate(){
+    public func groupDelete() {}
 
-    }
+    public func groupAddMembers() {}
 
-    public func groupUpdateName(){
+    public func groupRemoveMembers() {}
 
-    }
+    public func groupAddAdmins() {}
 
-    public func groupDelete(){
+    public func groupRemoveAdmins() {}
 
-    }
-
-    public func groupAddMembers(){
-
-    }
-
-    public func groupRemoveMembers(){
-
-    }
-
-    public func groupAddAdmins(){
-
-    }
-
-    public func groupRemoveAdmins(){
-
-    }
-
-    public func groupRotatePrivateKey(){
-
-    }
+    public func groupRotatePrivateKey() {}
 
     /******************
-    *  SEARCH OPS
-    *******************/
+     *  SEARCH OPS
+     *******************/
 
-    public func createBlindIndex(){
-
-    }
+    public func createBlindIndex() {}
 
     /******************
-    *  MISC OPS
-    *******************/
+     *  MISC OPS
+     *******************/
 
-    public func clearPolicyCache(){
-
-    }
+    public func clearPolicyCache() {}
 }
