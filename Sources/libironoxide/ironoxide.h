@@ -1,10 +1,10 @@
 //Base Rust Types
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec_i8.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/CRustSlicei8.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_option.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_result4232mut3232c_voidCRustString.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_resultCRustOption4232mut3232c_voidCRustString.h>
-#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_option.h>
-#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec.h>
-#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/CRustSlicei8.h>
-#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec_i8.h>
 
 //Base IronOxide Types
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_PrivateKey.h>

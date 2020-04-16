@@ -26,7 +26,7 @@ struct Util {
      * Take the provided Rust result struct and convert it into a
      */
     static func mapResult(result: CRustResult4232mut3232c_voidCRustString, fallbackError: String) -> Result<OpaquePointer, IronOxideError> {
-        return result.is_ok == 0 ?
+        result.is_ok == 0 ?
             Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
             Result.success(OpaquePointer(result.data.ok))
     }
