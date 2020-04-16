@@ -5,7 +5,7 @@ import libironoxide
  * ID of a user. Unique with in a segment.
  */
 public struct UserId {
-    var inner: OpaquePointer
+    let inner: OpaquePointer
     init(_ id: OpaquePointer) {
         inner = id
     }
@@ -25,7 +25,7 @@ public struct UserId {
  * IDs and public key for existing user on verify result
  */
 public struct UserResult {
-    var inner: OpaquePointer
+    let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
@@ -45,4 +45,19 @@ public struct UserResult {
     public func getUserPublicKey() -> PublicKey {
         PublicKey(UserResult_getUserPublicKey(inner))
     }
+}
+
+public struct UserOperations {
+    let ironoxide: OpaquePointer
+    init(_ instance: OpaquePointer) {
+        ironoxide = instance
+    }
+
+    public func listDevices() {}
+
+    public func getPublicKey() {}
+
+    public func deleteDevice() {}
+
+    public func rotatePrivateKey() {}
 }

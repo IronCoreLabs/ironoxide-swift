@@ -4,7 +4,7 @@ import libironoxide
  * Represents an asymmetric public key that wraps the underlying bytes of the key.
  */
 public struct PublicKey {
-    var inner: OpaquePointer
+    let inner: OpaquePointer
     init(_ pk: OpaquePointer) {
         inner = pk
     }
