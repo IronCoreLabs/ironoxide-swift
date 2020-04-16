@@ -11,7 +11,7 @@ struct Util {
         str.withCString { baseAddress in
             result.initialize(from: baseAddress, count: count)
         }
-        return CRustStrView(data: result, len: UInt(count))
+        return CRustStrView(data: result, len: UInt(str.utf8.count))
     }
 
     /**
