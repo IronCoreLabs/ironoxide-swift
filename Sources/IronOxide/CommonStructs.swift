@@ -13,10 +13,11 @@ public struct PrivateKey {
      * Create a new PrivateKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PrivateKey
      */
     public init?(_ bytes: [UInt8]) {
-        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        let rpk = PrivateKey_validate(rustSlice)
-        if rpk.is_ok == 0 { return nil }
-        inner = OpaquePointer(rpk.data.ok)
+        if let privKey = Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
+            inner = privKey
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -41,10 +42,11 @@ public struct PublicKey {
      * Create a new PublicKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PublicKey
      */
     public init?(_ bytes: [UInt8]) {
-        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        let rpk = PublicKey_validate(rustSlice)
-        if rpk.is_ok == 0 { return nil }
-        inner = OpaquePointer(rpk.data.ok)
+        if let pubKey = Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
+            inner = pubKey
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -69,10 +71,11 @@ public struct DeviceSigningKeyPair {
      * Create a new DeviceSigningKeyPair from the provided array of bytes. Will fail if the provided bytes are not a valid device signing key pair
      */
     public init?(_ bytes: [UInt8]) {
-        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        let rpk = DeviceSigningKeyPair_validate(rustSlice)
-        if rpk.is_ok == 0 { return nil }
-        inner = OpaquePointer(rpk.data.ok)
+        if let dskp = Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
+            inner = dskp
+        } else {
+            return nil
+        }
     }
 
     /**

@@ -65,4 +65,14 @@ struct Util {
     static func bytesToSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
         CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.count))
     }
+
+    /**
+     * Generic method to validate that the provided bytes can be used to create the type validated by validator.
+     */
+    static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> OpaquePointer? {
+        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
+        let rpk = validator(rustSlice)
+        if rpk.is_ok == 0 { return nil }
+        return OpaquePointer(rpk.data.ok)
+    }
 }
