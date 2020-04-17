@@ -30,4 +30,39 @@ struct Util {
             Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
             Result.success(OpaquePointer(result.data.ok))
     }
+
+    /**
+     * Generate the struct that represents a None in Rust
+     */
+    static func rustNone() -> CRustOption4232const3232c_void {
+        CRustOption4232const3232c_void(
+            val: CRustOptionUnion4232const3232c_void(uninit: 0),
+            is_some: 0
+        )
+    }
+
+    /**
+     * Generate the struct that represents a Some() in Rust of the provided pointer data
+     */
+    static func rustSome(_ ptr: OpaquePointer) -> CRustOption4232const3232c_void {
+        CRustOption4232const3232c_void(
+            val: CRustOptionUnion4232const3232c_void(data: UnsafeMutableRawPointer(ptr)),
+            is_some: 1
+        )
+    }
+
+    /**
+     * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
+     */
+    static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {
+        // TODO: Figure out what this means and if we should figure out how to remove the ! at the end
+        bytes.map(Int8.init).withUnsafeBufferPointer { pointerVal in pointerVal.baseAddress! }
+    }
+
+    /**
+     * Conver the provided byte array into a Rust int8 slice
+     */
+    static func bytesToSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
+        CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.count))
+    }
 }
