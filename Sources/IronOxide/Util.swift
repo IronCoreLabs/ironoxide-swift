@@ -56,7 +56,9 @@ struct Util {
      * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
      */
     static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {
-        // TODO: Figure out what this means and if we should figure out how to remove the ! at the end
+        // We can use the ! on baseAddress because the closure we pass to withUnsafeBufferPointer says:
+        //   - A closure with an UnsafeBufferPointer parameter that points to the contiguous storage for the array. If no such storage exists, it is created.
+        // So it should always exist
         bytes.map(Int8.init).withUnsafeBufferPointer { pointerVal in pointerVal.baseAddress! }
     }
 

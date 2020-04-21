@@ -30,6 +30,24 @@ public struct PrivateKey {
 }
 
 /**
+ * Represents an encrypted asymmetric private key that wraps the underlying bytes of the encrypted key.
+ */
+public struct EncryptedPrivateKey {
+    let inner: OpaquePointer
+    init(_ epk: OpaquePointer) {
+        inner = epk
+    }
+
+    /**
+     * Get the EncryptedPrivateKey data out as an array of bytes
+     */
+    public func asBytes() -> [UInt8] {
+        let pk = EncryptedPrivateKey_asBytes(inner)
+        return Array(UnsafeBufferPointer(start: pk.data, count: Int(pk.len))).map(UInt8.init)
+    }
+}
+
+/**
  * Represents an asymmetric public key that wraps the underlying bytes of the key.
  */
 public struct PublicKey {
