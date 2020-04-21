@@ -247,9 +247,10 @@ public struct UserOperations {
         let length = UInt(userVec.count)
         let step = UInt(MemoryLayout<CRustString>.stride)
         let capacity = UInt(userVec.capacity) * step
-        let bar = userVec.withUnsafeBufferPointer({ld in ld.baseAddress!})
+        let listOfUsers = userVec.withUnsafeBufferPointer({ld in
+            CRustForeignVec(data: UnsafeMutableRawPointer(mutating: ld.baseAddress!), len: length, capacity: capacity, step: step)
+        })
 
-        let listOfUsers = CRustForeignVec(data: UnsafeMutableRawPointer(mutating: bar), len: length, capacity: capacity, step: step)
         let publicKeyList = IronOxide_userGetPublicKey(ironoxide, listOfUsers)
         if publicKeyList.is_ok == 1 {
             var rustVec = publicKeyList.data.ok
