@@ -259,9 +259,11 @@ public struct UserOperations {
                 finalList.append(UserWithKey(OpaquePointer(rustVec.data)))
                rustVec.data += UnsafeMutableRawPointer.Stride(rustVec.step)
             }
+            print(listOfUsers)
             return Result.success(finalList)
         }
         else {
+            print(listOfUsers)
             return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: publicKeyList.data.err, fallbackError: "Failed to get list of public keys.")))
         }
 
