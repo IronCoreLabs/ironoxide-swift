@@ -245,8 +245,8 @@ public struct UserOperations {
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
         let userVec = users.map({user in UserId_getId(user.inner)})
         let length = UInt(userVec.count)
-        let capacity = UInt(userVec.capacity)
         let step = UInt(MemoryLayout<CRustString>.stride)
+        let capacity = UInt(userVec.capacity) * step
         let bar = userVec.withUnsafeBufferPointer({ld in ld.baseAddress!})
 
         let listOfUsers = CRustForeignVec(data: UnsafeMutableRawPointer(mutating: bar), len: length, capacity: capacity, step: step)
