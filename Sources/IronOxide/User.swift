@@ -21,7 +21,7 @@ public struct UserCreateOpts {
 /**
  * Keypair for a newly created user.
  */
-public class UserCreateResult {
+public struct UserCreateResult {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
@@ -33,10 +33,6 @@ public class UserCreateResult {
 
     public func getUserPublicKey() -> PublicKey {
         PublicKey(UserCreateResult_getUserPublicKey(inner))
-    }
-
-    deinit {
-        UserCreateResult_delete(inner)
     }
 }
 
