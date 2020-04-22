@@ -140,24 +140,20 @@ public class UserDevice {
         DeviceId(UserDevice_getId(inner))
     }
 
-    public func getId() -> DeviceId {
-        DeviceId(UserDevice_getId(inner))
-    }
-
-    public func getName() -> DeviceName? {
+    var name: DeviceName? {
         let name = UserDevice_getName(inner)
         return name.is_some == 1 ? DeviceName(OpaquePointer(name.val.data)) : Optional.none
     }
 
-    public func isCurrentDevice() -> Bool {
+    var isCurrentDevice: Bool {
         UserDevice_isCurrentDevice(inner) == 1
     }
 
-    public func getCreated() -> Int64 {
+    var created: Int64 {
         UserDevice_getCreated(inner)
     }
 
-    public func getLastUpdated() -> Int64 {
+    var lastUpdated: Int64 {
         UserDevice_getLastUpdated(inner)
     }
 }
