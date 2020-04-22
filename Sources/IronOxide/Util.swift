@@ -23,13 +23,35 @@ struct Util {
     }
 
     /**
-     * Take the provided Rust result struct and convert it into a
+     * Take the provided Rust result that on success contains an IronOxide struct and wrap that in the provided Swift `to` struct.
+     * If the result is a failure, attempt to parse out the failure and wrap the error string in an IronOxideError.
      */
-    static func mapResult(result: CRustResult4232mut3232c_voidCRustString, fallbackError: String) -> Result<OpaquePointer, IronOxideError> {
+    static func mapResultTo<T>(
+        result: CRustResult4232mut3232c_voidCRustString,
+        to: (OpaquePointer) -> T,
+        fallbackError: String) -> Result<T, IronOxideError> {
         result.is_ok == 0 ?
             Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
-            Result.success(OpaquePointer(result.data.ok))
+            Result.success(to(OpaquePointer(result.data.ok)))
     }
+
+    /**
+     * Take the provided Rust result that on success contains an array of an IronOxide struct
+     */
+    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T, fallbackError: String) -> Result<[T], IronOxideError> {
+        if result.is_ok == 1 {
+            var rustList = result.data.ok
+            var finalList: [T] = []
+            for _ in 0 ..< rustList.len {
+                finalList.append(to(OpaquePointer(rustList.data)))
+                rustList.data += UnsafeMutableRawPointer.Stride(rustList.step)
+            }
+            return Result.success(finalList)
+        } else {
+            return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError)))
+        }
+    }
+
 
     /**
      * Generate the struct that represents a None in Rust

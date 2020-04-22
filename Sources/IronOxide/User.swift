@@ -136,24 +136,24 @@ public class UserDevice {
         inner = res
     }
 
-    var id: DeviceId {
+    public func getId() -> DeviceId {
         DeviceId(UserDevice_getId(inner))
     }
 
-    var name: DeviceName? {
+    public func getName() -> DeviceName? {
         let name = UserDevice_getName(inner)
         return name.is_some == 1 ? DeviceName(OpaquePointer(name.val.data)) : Optional.none
     }
 
-    var isCurrentDevice: Bool {
+    public func isCurrentDevice() -> Bool {
         UserDevice_isCurrentDevice(inner) == 1
     }
 
-    var created: Int64 {
+    public func getCreated() -> Int64 {
         UserDevice_getCreated(inner)
     }
 
-    var lastUpdated: Int64 {
+    public func getLastUpdated() -> Int64 {
         UserDevice_getLastUpdated(inner)
     }
 }
@@ -229,9 +229,10 @@ public struct UserOperations {
      * Get all the devices for the current user
      */
     public func listDevices() -> Result<UserDeviceListResult, IronOxideError> {
-        Util.mapResult(result: IronOxide_userListDevices(ironoxide), fallbackError: "Failed to request list of users devices.").map { res in
-            UserDeviceListResult(res)
-        }
+        Util.mapResultTo(
+            result: IronOxide_userListDevices(ironoxide),
+            to: UserDeviceListResult.init,
+            fallbackError: "Failed to request list of users devices.")
     }
 
     /**
@@ -239,33 +240,17 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let userVec = users.map({user in UserId_getId(user.inner)})
-        let length = UInt(userVec.count)
+        let userIdStringList = users.map({user in UserId_getId(user.inner)})
         let step = UInt(MemoryLayout<CRustString>.stride)
-        //let capacity = UInt(userVec.capacity) * step
-        let listOfUsers = userVec.withUnsafeBufferPointer({ld in
-            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: ld.baseAddress!), len: length, step: step)
+        let listOfUsers = userIdStringList.withUnsafeBufferPointer({pt in
+            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(userIdStringList.count), step: step)
         })
 
-        let publicKeyList = IronOxide_userGetPublicKey(ironoxide, listOfUsers)
-        if publicKeyList.is_ok == 1 {
-            var rustVec = publicKeyList.data.ok
-            var finalList: [UserWithKey] = []
-            for _ in 0 ..< rustVec.len {
-                finalList.append(UserWithKey(OpaquePointer(rustVec.data)))
-               rustVec.data += UnsafeMutableRawPointer.Stride(rustVec.step)
-            }
-            print(listOfUsers)
-            return Result.success(finalList)
-        }
-        else {
-            print(listOfUsers)
-            return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: publicKeyList.data.err, fallbackError: "Failed to get list of public keys.")))
-        }
-
-        // return Util.mapResult(result: IronOxide_userGetPublicKey(ironoxide, bar), fallbackError: "Failed to get public keys").map { res in
-
-        // }
+        return Util.mapListResultTo(
+            result: IronOxide_userGetPublicKey(ironoxide, listOfUsers),
+            to: UserWithKey.init,
+            fallbackError: "Failed to get list of public keys."
+        )
     }
 
     /**
@@ -274,9 +259,10 @@ public struct UserOperations {
      */
     public func deleteDevice(deviceId: DeviceId?) -> Result<DeviceId, IronOxideError> {
         let rustId = deviceId == nil ? Util.rustNone() : Util.rustSome(deviceId!.inner)
-        return Util.mapResult(result: IronOxide_userDeleteDevice(ironoxide, rustId), fallbackError: "Failed to delete device.").map { res in
-            DeviceId(res)
-        }
+        return Util.mapResultTo(
+            result: IronOxide_userDeleteDevice(ironoxide, rustId),
+            to: DeviceId.init,
+            fallbackError: "Failed to delete device.")
     }
 
     /**
@@ -285,8 +271,9 @@ public struct UserOperations {
      */
     public func rotatePrivateKey(password: String) -> Result<UserUpdatePrivateKeyResult, IronOxideError> {
         let rPassword = Util.swiftStringToRust(password)
-        return Util.mapResult(result: IronOxide_userRotatePrivateKey(ironoxide, rPassword), fallbackError: "Failed to rotate users private key.").map { res in
-            UserUpdatePrivateKeyResult(res)
-        }
+        return Util.mapResultTo(
+            result: IronOxide_userRotatePrivateKey(ironoxide, rPassword),
+            to: UserUpdatePrivateKeyResult.init,
+            fallbackError: "Failed to rotate users private key.")
     }
 }

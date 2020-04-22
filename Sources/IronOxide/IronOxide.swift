@@ -20,10 +20,10 @@ public func userVerify(jwt: String) -> Result<UserResult?, IronOxideError> {
 public func userCreate(jwt: String, password: String, options: UserCreateOpts = UserCreateOpts()) -> Result<UserCreateResult, IronOxideError> {
     let rJwt = Util.swiftStringToRust(jwt)
     let rPassword = Util.swiftStringToRust(password)
-    return Util.mapResult(result: IronOxide_userCreate(rJwt, rPassword, options.inner, Util.rustNone()), fallbackError: "Failed to create user.")
-        .map { res in
-            UserCreateResult(res)
-        }
+    return Util.mapResultTo(
+        result: IronOxide_userCreate(rJwt, rPassword, options.inner, Util.rustNone()),
+        to: UserCreateResult.init,
+        fallbackError: "Failed to create user.")
 }
 
 /**
@@ -33,18 +33,18 @@ public func userCreate(jwt: String, password: String, options: UserCreateOpts = 
 public func generateNewDevice(jwt: String, password: String, options: DeviceCreateOpts = DeviceCreateOpts()) -> Result<DeviceAddResult, IronOxideError> {
     let rJwt = Util.swiftStringToRust(jwt)
     let rPassword = Util.swiftStringToRust(password)
-    return Util.mapResult(result: IronOxide_generateNewDevice(rJwt, rPassword, options.inner, Util.rustNone()), fallbackError: "Failed to create device.")
-        .map { res in
-            DeviceAddResult(res)
-        }
+    return Util.mapResultTo(
+        result: IronOxide_generateNewDevice(rJwt, rPassword, options.inner, Util.rustNone()),
+        to: DeviceAddResult.init,
+        fallbackError: "Failed to create device.")
 }
 
 /**
  * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device keys are valid and exist for the provided account.
  */
 public func initialize(device: DeviceContext) -> Result<SDK, IronOxideError> {
-    return Util.mapResult(result: IronOxide_initialize(device.inner, IronOxideConfig_default()), fallbackError: "Failed to initialize IronOxide.")
-        .map { res in
-            SDK(res)
-        }
+    Util.mapResultTo(
+        result: IronOxide_initialize(device.inner, IronOxideConfig_default()),
+        to: SDK.init,
+        fallbackError: "Failed to initialize IronOxide.")
 }
