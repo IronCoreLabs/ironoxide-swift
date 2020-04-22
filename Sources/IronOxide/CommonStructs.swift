@@ -185,8 +185,8 @@ public struct DeviceContext {
         UserId(DeviceContext_getAccountId(inner))
     }
 
-    public func getSegmentId() -> Int64 {
-        Int64(DeviceContext_getSegmentId(inner))
+    public func getSegmentId() -> UInt {
+        DeviceContext_getSegmentId(inner)
     }
 
     public func getDevicePrivateKey() -> PrivateKey {

@@ -23,7 +23,7 @@ public struct UserCreateOpts {
  */
 public struct UserCreateResult {
     let inner: OpaquePointer
-    public init(_ res: OpaquePointer) {
+    init(_ res: OpaquePointer) {
         inner = res
     }
 

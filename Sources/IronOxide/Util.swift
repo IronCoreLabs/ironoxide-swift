@@ -36,6 +36,7 @@ struct Util {
      */
     static func rustNone() -> CRustOption4232const3232c_void {
         CRustOption4232const3232c_void(
+            //This uses 0 for uninit because that's what the rust-swig code does to represent None
             val: CRustOptionUnion4232const3232c_void(uninit: 0),
             is_some: 0
         )
