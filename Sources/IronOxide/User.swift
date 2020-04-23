@@ -4,7 +4,7 @@ import libironoxide
 /**
  * Options that can be specified creating a user.
  */
-public struct UserCreateOpts {
+public class UserCreateOpts {
     let inner: OpaquePointer
     public init() {
         inner = UserCreateOpts_default()
@@ -13,33 +13,37 @@ public struct UserCreateOpts {
     /**
      * Create a UserCreateOpts instance with a flag denoting if the provided user needs rotation
      */
-    public init(needsRotation: Bool?) {
-        inner = UserCreateOpts_create(needsRotation == nil ? 1 : 0)
+    public init(needsRotation: Bool) {
+        inner = UserCreateOpts_create(Util.intFromBool(needsRotation))
     }
+
+    deinit { UserCreateOpts_delete(inner) }
 }
 
 /**
  * Keypair for a newly created user.
  */
-public struct UserCreateResult {
+public class UserCreateResult {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
 
-    public func getNeedsRotation() -> Bool {
-        UserCreateResult_getNeedsRotation(inner) == 1
-    }
+    public lazy var needsRotation: Bool = {
+        Util.isTrue(UserCreateResult_getNeedsRotation(inner))
+    }()
 
-    public func getUserPublicKey() -> PublicKey {
+    public lazy var userPublicKey: PublicKey = {
         PublicKey(UserCreateResult_getUserPublicKey(inner))
-    }
+    }()
+
+    deinit { UserCreateResult_delete(inner) }
 }
 
 /**
  * Options to specify when creating a new device
  */
-public struct DeviceCreateOpts {
+public class DeviceCreateOpts {
     let inner: OpaquePointer
     public init() {
         inner = DeviceCreateOpts_default()
@@ -51,76 +55,80 @@ public struct DeviceCreateOpts {
     public init(deviceName: DeviceName) {
         inner = DeviceCreateOpts_create(Util.rustSome(deviceName.inner))
     }
+
+    deinit { DeviceCreateOpts_delete(inner) }
 }
 
 /**
  * IDs and public key for existing user on verify result
  */
-public struct UserResult {
+public class UserResult {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
 
-    public func getAccountId() -> UserId {
+    public lazy var accountId: UserId = {
         UserId(UserResult_getAccountId(inner))
-    }
+    }()
 
-    public func getNeedsRotation() -> Bool {
-        UserResult_getNeedsRotation(inner) == 1
-    }
+    public lazy var needsRotation: Bool = {
+        Util.isTrue(UserResult_getNeedsRotation(inner))
+    }()
 
-    public func getSegmentId() -> UInt {
+    public lazy var segmentId: UInt = {
         UserResult_getSegmentId(inner)
-    }
+    }()
 
-    public func getUserPublicKey() -> PublicKey {
+    public lazy var userPublicKey: PublicKey = {
         PublicKey(UserResult_getUserPublicKey(inner))
-    }
+    }()
+
+    deinit { UserResult_delete(inner) }
 }
 
 /**
  * Result from adding a new device
  */
-public struct DeviceAddResult {
+public class DeviceAddResult {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
 
-    public func getAccountId() -> UserId {
+    public lazy var accountId: UserId = {
         UserId(DeviceAddResult_getAccountId(inner))
-    }
+    }()
 
-    public func getDeviceId() -> DeviceId {
+    public lazy var deviceId: DeviceId = {
         DeviceId(DeviceAddResult_getDeviceId(inner))
-    }
+    }()
 
-    public func getName() -> DeviceName? {
-        let name = DeviceAddResult_getName(inner)
-        if name.is_some == 0 { return nil }
-        return DeviceName(OpaquePointer(name.val.data))
-    }
+    public lazy var name: DeviceName? = {
+        Util.toOption(DeviceAddResult_getName(inner)).map(DeviceName.init)
+    }()
 
-    public func getDevicePrivateKey() -> PrivateKey {
+    public lazy var devicePrivateKey: PrivateKey = {
         PrivateKey(DeviceAddResult_getDevicePrivateKey(inner))
-    }
+    }()
 
-    public func getSegmentId() -> Int64 {
-        Int64(DeviceAddResult_getSegmentId(inner))
-    }
+    public lazy var segmentId: UInt = {
+        DeviceAddResult_getSegmentId(inner)
+    }()
 
-    public func getSigningPrivateKey() -> DeviceSigningKeyPair {
+    public lazy var signingPrivateKey: DeviceSigningKeyPair = {
         DeviceSigningKeyPair(DeviceAddResult_getDevicePrivateKey(inner))
-    }
+    }()
 
-    public func getCreated() -> Date {
+    public lazy var created: Date = {
         Util.timestampToDate(DeviceAddResult_getCreated(inner))
-    }
+    }()
 
-    public func getLastUpdated() -> Date {
+    public lazy var lastUpdated: Date = {
         Util.timestampToDate(DeviceAddResult_getLastUpdated(inner))
-    }
+    }()
+
+    deinit { DeviceAddResult_delete(inner) }
 }
 
 /**
@@ -132,84 +140,85 @@ public class UserDevice {
         inner = res
     }
 
-    public func getId() -> DeviceId {
+    public lazy var id: DeviceId = {
         DeviceId(UserDevice_getId(inner))
-    }
+    }()
 
-    public func getName() -> DeviceName? {
-        let name = UserDevice_getName(inner)
-        return name.is_some == 1 ? DeviceName(OpaquePointer(name.val.data)) : Optional.none
-    }
+    public lazy var name: DeviceName? = {
+        Util.toOption(UserDevice_getName(inner)).map(DeviceName.init)
+    }()
 
-    public func isCurrentDevice() -> Bool {
-        UserDevice_isCurrentDevice(inner) == 1
-    }
+    public lazy var isCurrentDevice: Bool = {
+        Util.isTrue(UserDevice_isCurrentDevice(inner))
+    }()
 
-    public func getCreated() -> Date {
+    public lazy var created: Date = {
         Util.timestampToDate(UserDevice_getCreated(inner))
-    }
+    }()
 
-    public func getLastUpdated() -> Date {
+    public lazy var lastUpdated: Date = {
         Util.timestampToDate(UserDevice_getLastUpdated(inner))
-    }
+    }()
+
+    deinit { UserDevice_delete(inner) }
 }
 
 /**
  * Devices for a user, sorted by the device id.
  */
-public struct UserDeviceListResult {
+public class UserDeviceListResult {
     let inner: OpaquePointer
-    var deviceList: [UserDevice] = []
+
     init(_ res: OpaquePointer) {
         inner = res
-        // Iterate over and compute the list of devices here so we don't do it every time they call `getResult`
-        var devices = UserDeviceListResult_getResult(inner)
-        for _ in 0 ..< devices.len {
-            deviceList.append(UserDevice(OpaquePointer(devices.data)))
-            devices.data += UnsafeMutableRawPointer.Stride(devices.step)
-        }
     }
 
-    public func getResult() -> [UserDevice] {
-        deviceList
-    }
+    public lazy var result: [UserDevice] = {
+        Util.collectTo(list: UserDeviceListResult_getResult(inner), to: UserDevice.init)
+    }()
+
+    deinit { UserDeviceListResult_delete(inner) }
 }
 
 /**
  * Represents a user in the IronCore service that includes their PublicKey
  */
-public struct UserWithKey {
+public class UserWithKey {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
 
-    public func getId() -> UserId {
+    public lazy var id: UserId = {
         UserId(UserWithKey_getUser(inner))
-    }
+    }()
 
-    public func getPublicKey() -> PublicKey {
+    public lazy var publicKey: PublicKey = {
         PublicKey(UserWithKey_getPublicKey(inner))
-    }
+    }()
+
+    deinit { UserWithKey_delete(inner) }
 }
 
 /**
  * Structure returned when rotating a users private key. Returns whether additional rotation is needed as well as the users
  * new encrypted private key.
  */
-public struct UserUpdatePrivateKeyResult {
+public class UserUpdatePrivateKeyResult {
     let inner: OpaquePointer
     init(_ res: OpaquePointer) {
         inner = res
     }
 
-    public func getNeedsRotation() -> Bool {
-        UserUpdatePrivateKeyResult_getNeedsRotation(inner) == 1
-    }
+    public lazy var needsRotation: Bool = {
+        Util.isTrue(UserUpdatePrivateKeyResult_getNeedsRotation(inner))
+    }()
 
-    public func getUserMasterPrivateKey() -> EncryptedPrivateKey {
+    public lazy var userMasterPrivateKey: EncryptedPrivateKey = {
         EncryptedPrivateKey(UserUpdatePrivateKeyResult_getUserMasterPrivateKey(inner))
-    }
+    }()
+
+    deinit { UserUpdatePrivateKeyResult_delete(inner) }
 }
 
 /**
@@ -225,10 +234,7 @@ public struct UserOperations {
      * Get all the devices for the current user
      */
     public func listDevices() -> Result<UserDeviceListResult, IronOxideError> {
-        Util.mapResultTo(
-            result: IronOxide_userListDevices(ironoxide),
-            to: UserDeviceListResult.init
-        )
+        Util.toResult(IronOxide_userListDevices(ironoxide)).map(UserDeviceListResult.init)
     }
 
     /**
@@ -253,11 +259,8 @@ public struct UserOperations {
      * with `IronOxide.initialize()` before further use.
      */
     public func deleteDevice(deviceId: DeviceId?) -> Result<DeviceId, IronOxideError> {
-        let rustId = deviceId == nil ? Util.rustNone() : Util.rustSome(deviceId!.inner)
-        return Util.mapResultTo(
-            result: IronOxide_userDeleteDevice(ironoxide, rustId),
-            to: DeviceId.init
-        )
+        Util.toResult(IronOxide_userDeleteDevice(ironoxide, deviceId == nil ? Util.rustNone() : Util.rustSome(deviceId!.inner)))
+            .map(DeviceId.init)
     }
 
     /**
@@ -265,10 +268,6 @@ public struct UserOperations {
      * multi-party computation with the IronCore webservice.
      */
     public func rotatePrivateKey(password: String) -> Result<UserUpdatePrivateKeyResult, IronOxideError> {
-        let rPassword = Util.swiftStringToRust(password)
-        return Util.mapResultTo(
-            result: IronOxide_userRotatePrivateKey(ironoxide, rPassword),
-            to: UserUpdatePrivateKeyResult.init
-        )
+        Util.toResult(IronOxide_userRotatePrivateKey(ironoxide, Util.swiftStringToRust(password))).map(UserUpdatePrivateKeyResult.init)
     }
 }
