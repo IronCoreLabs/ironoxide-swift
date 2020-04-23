@@ -114,12 +114,12 @@ public struct DeviceAddResult {
         DeviceSigningKeyPair(DeviceAddResult_getDevicePrivateKey(inner))
     }
 
-    public func getCreated() -> Int64 {
-        DeviceAddResult_getCreated(inner)
+    public func getCreated() -> Date {
+        Util.timestampToDate(DeviceAddResult_getCreated(inner))
     }
 
-    public func getLastUpdated() -> Int64 {
-        DeviceAddResult_getLastUpdated(inner)
+    public func getLastUpdated() -> Date {
+        Util.timestampToDate(DeviceAddResult_getLastUpdated(inner))
     }
 }
 
@@ -145,12 +145,12 @@ public class UserDevice {
         UserDevice_isCurrentDevice(inner) == 1
     }
 
-    public func getCreated() -> Int64 {
-        UserDevice_getCreated(inner)
+    public func getCreated() -> Date {
+        Util.timestampToDate(UserDevice_getCreated(inner))
     }
 
-    public func getLastUpdated() -> Int64 {
-        UserDevice_getLastUpdated(inner)
+    public func getLastUpdated() -> Date {
+        Util.timestampToDate(UserDevice_getLastUpdated(inner))
     }
 }
 

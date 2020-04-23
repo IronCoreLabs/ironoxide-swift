@@ -3,6 +3,13 @@ import libironoxide
 
 struct Util {
     /**
+     * Convert the provided Int64 timestamp into a Swift date.
+     */
+    static func timestampToDate(_ ts: Int64) -> Date {
+        Date(timeIntervalSince1970: Double(ts))
+    }
+
+    /**
      * Convert the provided Swift string into a string we can pass down to native IronOxide
      */
     static func swiftStringToRust(_ str: String) -> CRustStrView {
