@@ -14,7 +14,7 @@ public struct UserCreateOpts {
      * Create a UserCreateOpts instance with a flag denoting if the provided user needs rotation
      */
     public init(needsRotation: Bool?) {
-        inner = UserCreateOpts_create(needsRotation == true ? 1 : 0)
+        inner = UserCreateOpts_create(needsRotation == nil ? 1 : 0)
     }
 }
 
@@ -227,8 +227,8 @@ public struct UserOperations {
     public func listDevices() -> Result<UserDeviceListResult, IronOxideError> {
         Util.mapResultTo(
             result: IronOxide_userListDevices(ironoxide),
-            to: UserDeviceListResult.init,
-            fallbackError: "Failed to request list of users devices.")
+            to: UserDeviceListResult.init
+        )
     }
 
     /**
@@ -236,16 +236,15 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let userIdStringList = users.map({user in UserId_getId(user.inner)})
+        let userIdStringList = users.map {user in UserId_getId(user.inner)}
         let step = UInt(MemoryLayout<CRustString>.stride)
-        let listOfUsers = userIdStringList.withUnsafeBufferPointer({pt in
+        let listOfUsers = userIdStringList.withUnsafeBufferPointer {pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(userIdStringList.count), step: step)
-        })
+        }
 
         return Util.mapListResultTo(
             result: IronOxide_userGetPublicKey(ironoxide, listOfUsers),
-            to: UserWithKey.init,
-            fallbackError: "Failed to get list of public keys."
+            to: UserWithKey.init
         )
     }
 
@@ -257,8 +256,8 @@ public struct UserOperations {
         let rustId = deviceId == nil ? Util.rustNone() : Util.rustSome(deviceId!.inner)
         return Util.mapResultTo(
             result: IronOxide_userDeleteDevice(ironoxide, rustId),
-            to: DeviceId.init,
-            fallbackError: "Failed to delete device.")
+            to: DeviceId.init
+        )
     }
 
     /**
@@ -269,7 +268,7 @@ public struct UserOperations {
         let rPassword = Util.swiftStringToRust(password)
         return Util.mapResultTo(
             result: IronOxide_userRotatePrivateKey(ironoxide, rPassword),
-            to: UserUpdatePrivateKeyResult.init,
-            fallbackError: "Failed to rotate users private key.")
+            to: UserUpdatePrivateKeyResult.init
+        )
     }
 }

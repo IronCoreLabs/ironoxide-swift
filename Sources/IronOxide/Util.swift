@@ -24,28 +24,26 @@ struct Util {
     /**
      * Convert the provided UTF-8 native library string into a Swift string
      */
-    static func rustStringToSwift(str: CRustString, fallbackError: String) -> String {
+    static func rustStringToSwift(_ str: CRustString) -> String {
         let bytes = Array(UnsafeBufferPointer(start: str.data, count: Int(str.len))).map(UInt8.init)
-        return String(bytes: bytes, encoding: String.Encoding.utf8) ?? fallbackError
+        //Rust strings are always UTF8, so we can ignore the error case here
+        return String(bytes: bytes, encoding: String.Encoding.utf8)!
     }
 
     /**
      * Take the provided Rust result that on success contains an IronOxide struct and wrap that in the provided Swift `to` struct.
      * If the result is a failure, attempt to parse out the failure and wrap the error string in an IronOxideError.
      */
-    static func mapResultTo<T>(
-        result: CRustResult4232mut3232c_voidCRustString,
-        to: (OpaquePointer) -> T,
-        fallbackError: String) -> Result<T, IronOxideError> {
+    static func mapResultTo<T>(result: CRustResult4232mut3232c_voidCRustString, to: (OpaquePointer) -> T) -> Result<T, IronOxideError> {
         result.is_ok == 0 ?
-            Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
+            Result.failure(IronOxideError.error(Util.rustStringToSwift(result.data.err))) :
             Result.success(to(OpaquePointer(result.data.ok)))
     }
 
     /**
      * Take the provided Rust result that on success contains an array of an IronOxide struct
      */
-    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T, fallbackError: String) -> Result<[T], IronOxideError> {
+    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T) -> Result<[T], IronOxideError> {
         if result.is_ok == 1 {
             var rustList = result.data.ok
             var finalList: [T] = []
@@ -55,7 +53,7 @@ struct Util {
             }
             return Result.success(finalList)
         } else {
-            return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError)))
+            return Result.failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
         }
     }
 

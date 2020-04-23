@@ -7,11 +7,12 @@ import libironoxide
 public func userVerify(jwt: String) -> Result<UserResult?, IronOxideError> {
     let op = IronOxide_userVerify(Util.swiftStringToRust(jwt), Util.rustNone())
     if op.is_ok == 0 {
-        return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: op.data.err, fallbackError: "Failed to verify user.")))
+        return Result.failure(IronOxideError.error(Util.rustStringToSwift(op.data.err)))
     }
     return op.data.ok.is_some == 0 ?
-        Result.success(Optional.none) :
-        Result.success(UserResult(OpaquePointer(op.data.ok.val.data)))
+        Result.success(nil) :
+        Result.success(UserResult(OpaquePointer(op.data.ok.val.data))
+    )
 }
 
 /**
@@ -22,8 +23,8 @@ public func userCreate(jwt: String, password: String, options: UserCreateOpts = 
     let rPassword = Util.swiftStringToRust(password)
     return Util.mapResultTo(
         result: IronOxide_userCreate(rJwt, rPassword, options.inner, Util.rustNone()),
-        to: UserCreateResult.init,
-        fallbackError: "Failed to create user.")
+        to: UserCreateResult.init
+    )
 }
 
 /**
@@ -35,8 +36,8 @@ public func generateNewDevice(jwt: String, password: String, options: DeviceCrea
     let rPassword = Util.swiftStringToRust(password)
     return Util.mapResultTo(
         result: IronOxide_generateNewDevice(rJwt, rPassword, options.inner, Util.rustNone()),
-        to: DeviceAddResult.init,
-        fallbackError: "Failed to create device.")
+        to: DeviceAddResult.init
+    )
 }
 
 /**
@@ -45,6 +46,6 @@ public func generateNewDevice(jwt: String, password: String, options: DeviceCrea
 public func initialize(device: DeviceContext) -> Result<SDK, IronOxideError> {
     Util.mapResultTo(
         result: IronOxide_initialize(device.inner, IronOxideConfig_default()),
-        to: SDK.init,
-        fallbackError: "Failed to initialize IronOxide.")
+        to: SDK.init
+    )
 }
