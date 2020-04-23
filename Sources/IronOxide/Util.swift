@@ -3,6 +3,13 @@ import libironoxide
 
 struct Util {
     /**
+     * Convert the provided Int64 timestamp into a Swift date.
+     */
+    static func timestampToDate(_ ts: Int64) -> Date {
+        Date(timeIntervalSince1970: Double(ts))
+    }
+
+    /**
      * Convert the provided Swift string into a string we can pass down to native IronOxide
      */
     static func swiftStringToRust(_ str: String) -> CRustStrView {
@@ -23,13 +30,35 @@ struct Util {
     }
 
     /**
-     * Take the provided Rust result struct and convert it into a
+     * Take the provided Rust result that on success contains an IronOxide struct and wrap that in the provided Swift `to` struct.
+     * If the result is a failure, attempt to parse out the failure and wrap the error string in an IronOxideError.
      */
-    static func mapResult(result: CRustResult4232mut3232c_voidCRustString, fallbackError: String) -> Result<OpaquePointer, IronOxideError> {
+    static func mapResultTo<T>(
+        result: CRustResult4232mut3232c_voidCRustString,
+        to: (OpaquePointer) -> T,
+        fallbackError: String) -> Result<T, IronOxideError> {
         result.is_ok == 0 ?
             Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
-            Result.success(OpaquePointer(result.data.ok))
+            Result.success(to(OpaquePointer(result.data.ok)))
     }
+
+    /**
+     * Take the provided Rust result that on success contains an array of an IronOxide struct
+     */
+    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T, fallbackError: String) -> Result<[T], IronOxideError> {
+        if result.is_ok == 1 {
+            var rustList = result.data.ok
+            var finalList: [T] = []
+            for _ in 0 ..< rustList.len {
+                finalList.append(to(OpaquePointer(rustList.data)))
+                rustList.data += UnsafeMutableRawPointer.Stride(rustList.step)
+            }
+            return Result.success(finalList)
+        } else {
+            return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError)))
+        }
+    }
+
 
     /**
      * Generate the struct that represents a None in Rust
@@ -56,7 +85,9 @@ struct Util {
      * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
      */
     static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {
-        // TODO: Figure out what this means and if we should figure out how to remove the ! at the end
+        // We can use the ! on baseAddress because the closure we pass to withUnsafeBufferPointer says:
+        //   - A closure with an UnsafeBufferPointer parameter that points to the contiguous storage for the array. If no such storage exists, it is created.
+        // So it should always exist
         bytes.map(Int8.init).withUnsafeBufferPointer { pointerVal in pointerVal.baseAddress! }
     }
 

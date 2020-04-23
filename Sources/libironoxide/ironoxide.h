@@ -2,12 +2,15 @@
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_vec_i8.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/CRustSlicei8.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_slice.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_option.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_result4232mut3232c_voidCRustString.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_resultCRustOption4232mut3232c_voidCRustString.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/rust_resultCRustForeignVecCRustString.h>
 
 //Base IronOxide Types
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_PrivateKey.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_EncryptedPrivateKey.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_PublicKey.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_DeviceSigningKeyPair.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserId.h>
@@ -33,6 +36,10 @@
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_PolicyGrant.h>
 
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserCreateResult.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserDeviceListResult.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserDevice.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserWithKey.h>
+#include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_UserUpdatePrivateKeyResult.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_GroupListResult.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_GroupGetResult.h>
 #include </Users/ernie/Documents/code/ironoxide-java/cpp/generated/sdk/c_GroupMetaResult.h>
