@@ -120,27 +120,6 @@ struct Util {
     }
 
     /**
-     * Generate the struct that represents a None in Rust
-     */
-    static func rustNone() -> CRustOption4232const3232c_void {
-        CRustOption4232const3232c_void(
-            //This uses 0 for uninit because that's what the rust-swig code does to represent None
-            val: CRustOptionUnion4232const3232c_void(uninit: 0),
-            is_some: 0
-        )
-    }
-
-    /**
-     * Generate the struct that represents a Some() in Rust of the provided pointer data
-     */
-    static func rustSome(_ ptr: OpaquePointer) -> CRustOption4232const3232c_void {
-        CRustOption4232const3232c_void(
-            val: CRustOptionUnion4232const3232c_void(data: UnsafeMutableRawPointer(ptr)),
-            is_some: 1
-        )
-    }
-
-    /**
      * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
      */
     static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {

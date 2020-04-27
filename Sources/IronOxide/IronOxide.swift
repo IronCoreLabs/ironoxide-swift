@@ -5,7 +5,7 @@ import libironoxide
  * IronCore. If the user doesn't exist, returns a None
  */
 public func userVerify(jwt: String) -> Result<UserResult?, IronOxideError> {
-    Util.toResult(IronOxide_userVerify(Util.swiftStringToRust(jwt), Util.rustNone())).map { maybeUser in
+    Util.toResult(IronOxide_userVerify(Util.swiftStringToRust(jwt), CRustClassOptDuration())).map { maybeUser in
         Util.toOption(maybeUser).map(UserResult.init)
     }
 }
@@ -18,7 +18,7 @@ public func userCreate(jwt: String, password: String, options: UserCreateOpts = 
         Util.swiftStringToRust(jwt),
         Util.swiftStringToRust(password),
         options.inner,
-        Util.rustNone()))
+        CRustClassOptDuration()))
     .map(UserCreateResult.init)
 }
 
@@ -31,8 +31,8 @@ public func generateNewDevice(jwt: String, password: String, options: DeviceCrea
         Util.swiftStringToRust(jwt),
         Util.swiftStringToRust(password),
         options.inner,
-        Util.rustNone())
-    ).map(DeviceAddResult.init)
+        CRustClassOptDuration()))
+    .map(DeviceAddResult.init)
 }
 
 /**

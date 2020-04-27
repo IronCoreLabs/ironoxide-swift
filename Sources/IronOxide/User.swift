@@ -53,7 +53,7 @@ public class DeviceCreateOpts {
      * Create a new DeviceCreateOpts with te provided DeviceName
      */
     public init(deviceName: DeviceName) {
-        inner = DeviceCreateOpts_create(Util.rustSome(deviceName.inner))
+        inner = DeviceCreateOpts_create(CRustClassOptDeviceName(p: UnsafeMutableRawPointer(deviceName.inner)))
     }
 
     deinit { DeviceCreateOpts_delete(inner) }
@@ -259,7 +259,8 @@ public struct UserOperations {
      * with `IronOxide.initialize()` before further use.
      */
     public func deleteDevice(deviceId: DeviceId?) -> Result<DeviceId, IronOxideError> {
-        Util.toResult(IronOxide_userDeleteDevice(ironoxide, deviceId == nil ? Util.rustNone() : Util.rustSome(deviceId!.inner)))
+        let deviceIdPtr = deviceId == nil ? CRustClassOptDeviceId() : CRustClassOptDeviceId(p: UnsafeMutableRawPointer(deviceId!.inner))
+        return Util.toResult(IronOxide_userDeleteDevice(ironoxide, deviceIdPtr))
             .map(DeviceId.init)
     }
 
