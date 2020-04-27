@@ -240,5 +240,5 @@ public class DeviceContext {
         DeviceSigningKeyPair(DeviceContext_getDevicePrivateKey(inner))
     }()
 
-    deinit {DeviceSigningKeyPair_delete(inner)}
+    deinit { DeviceSigningKeyPair_delete(inner) }
 }

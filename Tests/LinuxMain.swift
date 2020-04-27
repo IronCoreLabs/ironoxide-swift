@@ -1,7 +1,6 @@
 import XCTest
-
-import ironoxide_swiftTests
+import IronOxideTests
 
 var tests = [XCTestCaseEntry]()
-tests += ironoxide_swiftTests.allTests()
+tests += IronOxideTests.allTests()
 XCTMain(tests)
