@@ -1,8 +1,8 @@
-@testable import IronOxideSwift
+@testable import IronOxide
 import libironoxide
 import XCTest
 
-final class IronOxideSwiftTests: XCTestCase {
+final class IronOxideTests: XCTestCase {
     func testUtf8RoundTrip() {
         let utf8Str = "ℕ ⊆ ℕ₀ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ, ⊥ < a ≠ b ≡ c ≤ d ≪ ⊤ ⇒ (A ⇔ "
         let into = Util.swiftStringToRust(utf8Str)
