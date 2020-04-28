@@ -1,0 +1,10 @@
+{
+  "C_Cpp.default.includePath": [
+    "../ironoxide-java/cpp/generated/sdk"
+  ],
+  "sourcekit-lsp.serverArguments": [
+    "-Xlinker",
+    "-L../ironoxide-java/target/release",
+    "-I../ironoxide-java/cpp/generated/sdk"
+  ]
+}
