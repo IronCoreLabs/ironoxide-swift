@@ -5,8 +5,8 @@ struct Util {
     /**
      * Convert the provided Int64 timestamp into a Swift date.
      */
-    static func timestampToDate(_ ts: Int64) -> Date {
-        Date(timeIntervalSince1970: Double(ts))
+    static func timestampToDate(_ msTimestamp: Int64) -> Date {
+        Date(timeIntervalSince1970: Double(msTimestamp) / 1000.0)
     }
 
     /**
