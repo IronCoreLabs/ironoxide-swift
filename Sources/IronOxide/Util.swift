@@ -107,13 +107,14 @@ struct Util {
      * Iterate over the provided list of a Rust vec and use the provided mapper to convert them to a collection of T
      */
     static func collectTo<T>(list: CRustForeignVec, to: (OpaquePointer) -> T) -> [T] {
-        //var listCopy = list //Shallow copy since the argument for map is immutable
         var finalList: [T] = []
         //This is done becuase list is immutable and we're modifying it in our loop. Since we only access the data if
         //the list has any length, we're safe to ignore the pointer being nil
         var data = list.data!
         for _ in 0 ..< list.len {
-            finalList.append(to(OpaquePointer(data)))
+            let item = UnsafeMutableRawPointer.allocate(byteCount: Int(list.step), alignment: 8)
+            item.copyMemory(from: data, byteCount: Int(list.step))
+            finalList.append(to(OpaquePointer(item)))
             data += UnsafeMutableRawPointer.Stride(list.step)
         }
         return finalList

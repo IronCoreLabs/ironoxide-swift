@@ -1,6 +1,8 @@
 import XCTest
+
 import IronOxideTests
 
 var tests = [XCTestCaseEntry]()
-tests += IronOxideTests.allTests()
+tests += IronOxideTests.__allTests()
+
 XCTMain(tests)
