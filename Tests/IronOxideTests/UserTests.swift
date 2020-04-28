@@ -23,8 +23,4 @@ final class UserTests: XCTestCase {
             print(error)
         }
     }
-
-    static var allTests = [
-        ("testListDevices", testListDevices),
-    ]
 }

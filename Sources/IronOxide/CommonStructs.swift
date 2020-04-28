@@ -204,8 +204,8 @@ public class DeviceContext {
     /**
      * Create a DeviceContext from the provided required device information.
      */
-    public init(userId: UserId, segmentId: Int64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
-        inner = DeviceContext_new(userId.inner, segmentId, devicePrivateKey.inner, signingPrivateKey.inner)
+    public init(userId: UserId, segmentId: UInt64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
+        inner = DeviceContext_new(userId.inner, Int64(segmentId), devicePrivateKey.inner, signingPrivateKey.inner)
     }
 
     /**

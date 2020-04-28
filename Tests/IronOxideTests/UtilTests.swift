@@ -3,10 +3,6 @@ import libironoxide
 import XCTest
 
 final class UtilTests: XCTestCase {
-    let deviceJson = """
-{"accountId": "swifttester33","segmentId": 1,"signingPrivateKey": "pI1SrCz4OffvmviszBATjaELD8tGUc18CixZ+evqeX3m3UKWkM5fsgg7Lt7YdtWPX/GoPUwrL0C7YLar2MEKTw==","devicePrivateKey": "RVBKa0AUEbUxkNJXbp2ErGN4bwIAs1WMZbMxacTGQe0="}
-"""
-
     func testTimestampToDate() {
         let time: Int64 = 1587745315000
         let date = Util.timestampToDate(time)
@@ -40,11 +36,4 @@ final class UtilTests: XCTestCase {
         let roundtrip = Util.rustStringToSwift(converted)
         XCTAssertEqual(original, roundtrip)
     }
-
-    static var allTests = [
-        ("testTimestampToDate", testTimestampToDate),
-        ("testIntFromBool", testIntFromBool),
-        ("testIsTrue", testIsTrue),
-        ("testUtf8RoundTrip", testUtf8RoundTrip),
-    ]
 }
