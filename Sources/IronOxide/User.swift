@@ -14,7 +14,7 @@ public class UserCreateOpts {
      * Create a UserCreateOpts instance with a flag denoting if the provided user needs rotation
      */
     public init(needsRotation: Bool) {
-        inner = UserCreateOpts_create(Util.intFromBool(needsRotation))
+        inner = UserCreateOpts_create(Util.boolToInt(needsRotation))
     }
 
     deinit { UserCreateOpts_delete(inner) }
@@ -30,7 +30,7 @@ public class UserCreateResult {
     }
 
     public lazy var needsRotation: Bool = {
-        Util.isTrue(UserCreateResult_getNeedsRotation(inner))
+        Util.intToBool(UserCreateResult_getNeedsRotation(inner))
     }()
 
     public lazy var userPublicKey: PublicKey = {
@@ -73,7 +73,7 @@ public class UserResult {
     }()
 
     public lazy var needsRotation: Bool = {
-        Util.isTrue(UserResult_getNeedsRotation(inner))
+        Util.intToBool(UserResult_getNeedsRotation(inner))
     }()
 
     public lazy var segmentId: UInt = {
@@ -149,7 +149,7 @@ public class UserDevice {
     }()
 
     public lazy var isCurrentDevice: Bool = {
-        Util.isTrue(UserDevice_isCurrentDevice(inner))
+        Util.intToBool(UserDevice_isCurrentDevice(inner))
     }()
 
     public lazy var created: Date = {
@@ -211,7 +211,7 @@ public class UserUpdatePrivateKeyResult {
     }
 
     public lazy var needsRotation: Bool = {
-        Util.isTrue(UserUpdatePrivateKeyResult_getNeedsRotation(inner))
+        Util.intToBool(UserUpdatePrivateKeyResult_getNeedsRotation(inner))
     }()
 
     public lazy var userMasterPrivateKey: EncryptedPrivateKey = {

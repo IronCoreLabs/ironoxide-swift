@@ -9,24 +9,24 @@ final class UtilTests: XCTestCase {
         XCTAssertEqual(date.description, "2020-04-24 16:21:55 +0000")
     }
 
-    func testIntFromBool() {
-        XCTAssertEqual(Util.intFromBool(true), 1)
-        XCTAssertEqual(Util.intFromBool(false), 0)
+    func testBoolToInt() {
+        XCTAssertEqual(Util.boolToInt(true), 1)
+        XCTAssertEqual(Util.boolToInt(false), 0)
     }
 
-    func testIsTrue() {
-        XCTAssertTrue(Util.isTrue(Int8(1)))
-        XCTAssertTrue(Util.isTrue(Int8(-1)))
-        XCTAssertTrue(Util.isTrue(Int8(32)))
-        XCTAssertTrue(Util.isTrue(Int8(-32)))
-        XCTAssertTrue(Util.isTrue(Int8(127)))
-        XCTAssertTrue(Util.isTrue(Int8(-127)))
-        XCTAssertFalse(Util.isTrue(Int8(0)))
+    func testIntToBool() {
+        XCTAssertTrue(Util.intToBool(Int8(1)))
+        XCTAssertTrue(Util.intToBool(Int8(-1)))
+        XCTAssertTrue(Util.intToBool(Int8(32)))
+        XCTAssertTrue(Util.intToBool(Int8(-32)))
+        XCTAssertTrue(Util.intToBool(Int8(127)))
+        XCTAssertTrue(Util.intToBool(Int8(-127)))
+        XCTAssertFalse(Util.intToBool(Int8(0)))
 
-        XCTAssertTrue(Util.isTrue(UInt8(1)))
-        XCTAssertTrue(Util.isTrue(UInt8(32)))
-        XCTAssertTrue(Util.isTrue(UInt8(255)))
-        XCTAssertFalse(Util.isTrue(UInt8(0)))
+        XCTAssertTrue(Util.intToBool(UInt8(1)))
+        XCTAssertTrue(Util.intToBool(UInt8(32)))
+        XCTAssertTrue(Util.intToBool(UInt8(255)))
+        XCTAssertFalse(Util.intToBool(UInt8(0)))
     }
 
     func testUtf8RoundTrip() {

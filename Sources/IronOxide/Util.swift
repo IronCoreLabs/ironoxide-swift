@@ -12,21 +12,21 @@ struct Util {
     /**
      * Convert the provided boolean into a Int8 expected by IronOxide for boolean arguments
      */
-    static func intFromBool(_ b: Bool) -> Int8 {
+    static func boolToInt(_ b: Bool) -> Int8 {
         b ? 1 : 0
     }
 
     /**
      * Return true if the provided UInt8 represents a true value
      */
-    static func isTrue(_ int: UInt8) -> Bool {
+    static func intToBool(_ int: UInt8) -> Bool {
         int != 0
     }
 
     /**
      * Return true if the provided Int8 represents a true value
      */
-    static func isTrue(_ int: Int8) -> Bool {
+    static func intToBool(_ int: Int8) -> Bool {
         int != 0
     }
 
@@ -34,7 +34,7 @@ struct Util {
      * Convert the provided IronOxide Result of opaque data into a Swift Result
      */
     static func toResult(_ result: CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
-        Util.isTrue(result.is_ok) ?
+        Util.intToBool(result.is_ok) ?
             .success(OpaquePointer(result.data.ok)) :
             .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
     }
@@ -43,7 +43,7 @@ struct Util {
      * Convert the provided IronOxide Result of an Option into a Swift Result
      */
     static func toResult(_ result: CRustResultCRustOption4232mut3232c_voidCRustString) -> Result<CRustOption4232mut3232c_void, IronOxideError> {
-        Util.isTrue(result.is_ok) ?
+        Util.intToBool(result.is_ok) ?
             .success(result.data.ok) :
             .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
     }
@@ -52,7 +52,7 @@ struct Util {
      * Convert the provided IronOxide Result of a Vec into a Swift Result
      */
     static func toResult(_ result: CRustResultCRustForeignVecCRustString) -> Result<CRustForeignVec, IronOxideError> {
-        Util.isTrue(result.is_ok) ?
+        Util.intToBool(result.is_ok) ?
             .success(result.data.ok) :
             .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
     }
@@ -70,16 +70,9 @@ struct Util {
      * Convert the provided IronOxide Result of opaque data into a Swift Option
      */
     static func toOption(_ result: CRustOption4232mut3232c_void) -> OpaquePointer? {
-        Util.isTrue(result.is_some) ?
+        Util.intToBool(result.is_some) ?
             OpaquePointer(result.val.data) :
             nil
-    }
-
-    /**
-     * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes
-     */
-    static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
-        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
     }
 
     /**
@@ -95,12 +88,15 @@ struct Util {
     }
 
     /**
-     * Convert the provided UTF-8 native library string into a Swift string
+     * Convert the provided UTF-8 native library string into a Swift string where the bytes are copied into Swift managed memory and
+     * the provided Rust string freed.
      */
     static func rustStringToSwift(_ str: CRustString) -> String {
         let bytes = Array(UnsafeBufferPointer(start: str.data, count: Int(str.len))).map(UInt8.init)
         //Rust strings are always UTF8, so we can ignore the error case here
-        return String(bytes: bytes, encoding: String.Encoding.utf8)!
+        let swiftString = String(bytes: bytes, encoding: String.Encoding.utf8)!
+        crust_string_free(str)
+        return swiftString
     }
 
     /**
@@ -118,6 +114,16 @@ struct Util {
             data += UnsafeMutableRawPointer.Stride(list.step)
         }
         return finalList
+    }
+
+     /**
+     * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
+     * original bytes in Rust freed
+     */
+    static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
+        let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
+        CRustVeci8_free(bytes)
+        return swiftBytes
     }
 
     /**

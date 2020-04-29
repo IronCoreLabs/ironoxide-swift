@@ -6,6 +6,7 @@ extension UserTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__UserTests = [
+        ("testGetPublicKey", testGetPublicKey),
         ("testListDevices", testListDevices),
     ]
 }
@@ -15,8 +16,8 @@ extension UtilTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__UtilTests = [
-        ("testIntFromBool", testIntFromBool),
-        ("testIsTrue", testIsTrue),
+        ("testBoolToInt", testBoolToInt),
+        ("testIntToBool", testIntToBool),
         ("testTimestampToDate", testTimestampToDate),
         ("testUtf8RoundTrip", testUtf8RoundTrip),
     ]
