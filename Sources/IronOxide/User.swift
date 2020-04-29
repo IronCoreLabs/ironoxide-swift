@@ -242,9 +242,9 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let userIdStringList = users.map {user in UserId_getId(user.inner)}
+        let userIdStringList = users.map { user in UserId_getId(user.inner) }
         let step = UInt(MemoryLayout<CRustString>.stride)
-        let listOfUsers = userIdStringList.withUnsafeBufferPointer {pt in
+        let listOfUsers = userIdStringList.withUnsafeBufferPointer { pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(userIdStringList.count), step: step)
         }
 

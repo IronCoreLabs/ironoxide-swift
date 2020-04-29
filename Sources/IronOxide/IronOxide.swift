@@ -18,8 +18,9 @@ public func userCreate(jwt: String, password: String, options: UserCreateOpts = 
         Util.swiftStringToRust(jwt),
         Util.swiftStringToRust(password),
         options.inner,
-        CRustClassOptDuration()))
-    .map(UserCreateResult.init)
+        CRustClassOptDuration()
+    ))
+        .map(UserCreateResult.init)
 }
 
 /**
@@ -31,8 +32,9 @@ public func generateNewDevice(jwt: String, password: String, options: DeviceCrea
         Util.swiftStringToRust(jwt),
         Util.swiftStringToRust(password),
         options.inner,
-        CRustClassOptDuration()))
-    .map(DeviceAddResult.init)
+        CRustClassOptDuration()
+    ))
+        .map(DeviceAddResult.init)
 }
 
 /**
