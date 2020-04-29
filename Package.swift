@@ -23,11 +23,6 @@ let package = Package(
         .target(
             name: "IronOxide",
             dependencies: ["libironoxide"],
-            swiftSettings: [
-                .unsafeFlags([
-                    "-I../ironoxide-java/cpp/generated/sdk",
-                ]),
-            ],
             linkerSettings: [
                 .unsafeFlags(["-L../ironoxide-java/target/release"]),
             ]
