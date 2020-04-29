@@ -50,7 +50,7 @@ public class DeviceCreateOpts {
     }
 
     /**
-     * Create a new DeviceCreateOpts with te provided DeviceName
+     * Create a new DeviceCreateOpts with the provided DeviceName
      */
     public init(deviceName: DeviceName) {
         inner = DeviceCreateOpts_create(CRustClassOptDeviceName(p: UnsafeMutableRawPointer(deviceName.inner)))
@@ -242,12 +242,7 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let userIdStringList = users.map { user in UserId_getId(user.inner) }
-        let step = UInt(MemoryLayout<CRustString>.stride)
-        let listOfUsers = userIdStringList.withUnsafeBufferPointer { pt in
-            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(userIdStringList.count), step: step)
-        }
-
+        let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
         return Util.mapListResultTo(
             result: IronOxide_userGetPublicKey(ironoxide, listOfUsers),
             to: UserWithKey.init

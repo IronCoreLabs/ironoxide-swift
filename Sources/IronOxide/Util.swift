@@ -137,7 +137,7 @@ struct Util {
     }
 
     /**
-     * Conver the provided byte array into a Rust int8 slice
+     * Convert the provided byte array into a Rust int8 slice
      */
     static func bytesToSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
         CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.count))
@@ -149,5 +149,24 @@ struct Util {
     static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
         let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
         return Util.toResult(validator(rustSlice))
+    }
+
+    /**
+     * Convert a Java NullableBoolean to a Swift Bool
+     */
+    static func nullableBooleanToBool(_ nullableBoolean: OpaquePointer) -> Bool {
+        Util.intToBool(NullableBoolean_getBoolean(nullableBoolean))
+    }
+
+    /**
+     * Converts an array of objects to a CRustSlice.
+     * Takes the array of objects and a function to the Rust internal representation of the object
+     */
+    static func arrayToRustSlice<T: SdkObject, U>(array: [T], fn: (OpaquePointer) -> U) -> CRustObjectSlice {
+        let rustInternalList = array.map { obj in fn(obj.inner) }
+        let step = UInt(MemoryLayout<U>.stride)
+        return rustInternalList.withUnsafeBufferPointer { pt in
+            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(rustInternalList.count), step: step)
+        }
     }
 }

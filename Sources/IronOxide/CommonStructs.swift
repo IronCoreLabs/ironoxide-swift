@@ -1,5 +1,12 @@
 import libironoxide
 
+public class SdkObject {
+    let inner: OpaquePointer
+    init(_ t: OpaquePointer) {
+        inner = t
+    }
+}
+
 /**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
@@ -115,19 +122,14 @@ public class DeviceSigningKeyPair {
 /**
  * ID of a user. Unique with in a segment.
  */
-public class UserId {
-    let inner: OpaquePointer
-    init(_ id: OpaquePointer) {
-        inner = id
-    }
-
+public class UserId: SdkObject {
     /**
      * Create an new UserId from the provided String. Will fail if the ID contains invalid characters.
      */
-    public init?(_ id: String) {
+    public convenience init?(_ id: String) {
         switch Util.toResult(UserId_validate(Util.swiftStringToRust(id))) {
         case let .success(id):
-            inner = id
+            self.init(id)
         case .failure:
             return nil
         }

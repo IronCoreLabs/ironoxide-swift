@@ -26,6 +26,7 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_AssociationType.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DeviceAddResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DeviceContext.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_NullableBoolean.h"
 
 //Create Opts
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupCreateOpts.h"
@@ -40,6 +41,8 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserDevice.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserWithKey.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserUpdatePrivateKeyResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUserList.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_GroupCreateResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupListResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupGetResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupMetaResult.h"
@@ -49,6 +52,9 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentEncryptResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentDecryptResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentEncryptUnmanagedResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditErr.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUpdatePrivateKeyResult.h"
 
 //IronOxide
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxideConfig.h"
