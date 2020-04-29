@@ -1,10 +1,10 @@
-import libironoxide
 @testable import IronOxide
+import libironoxide
 import XCTest
 
 final class UtilTests: XCTestCase {
     func testTimestampToDate() {
-        let time: Int64 = 1587745315000
+        let time: Int64 = 1_587_745_315_000
         let date = Util.timestampToDate(time)
         XCTAssertEqual(date.description, "2020-04-24 16:21:55 +0000")
     }

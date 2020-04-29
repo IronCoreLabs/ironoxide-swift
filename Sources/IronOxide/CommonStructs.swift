@@ -14,7 +14,7 @@ public class PrivateKey {
      */
     public init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
-        case .success(let privKey):
+        case let .success(privKey):
             inner = privKey
         case .failure:
             return nil
@@ -28,7 +28,7 @@ public class PrivateKey {
         Util.toBytes(PrivateKey_asBytes(inner))
     }()
 
-    deinit {PrivateKey_delete(inner)}
+    deinit { PrivateKey_delete(inner) }
 }
 
 /**
@@ -47,7 +47,7 @@ public class EncryptedPrivateKey {
         Util.toBytes(EncryptedPrivateKey_asBytes(inner))
     }()
 
-    deinit {EncryptedPrivateKey_delete(inner)}
+    deinit { EncryptedPrivateKey_delete(inner) }
 }
 
 /**
@@ -64,7 +64,7 @@ public class PublicKey {
      */
     public init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
-        case .success(let pubKey):
+        case let .success(pubKey):
             inner = pubKey
         case .failure:
             return nil
@@ -78,7 +78,7 @@ public class PublicKey {
         Util.toBytes(PublicKey_asBytes(inner))
     }()
 
-    deinit {PublicKey_delete(inner)}
+    deinit { PublicKey_delete(inner) }
 }
 
 /**
@@ -95,7 +95,7 @@ public class DeviceSigningKeyPair {
      */
     public init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
-        case .success(let dskp):
+        case let .success(dskp):
             inner = dskp
         case .failure:
             return nil
@@ -109,7 +109,7 @@ public class DeviceSigningKeyPair {
         Util.toBytes(DeviceSigningKeyPair_asBytes(inner))
     }()
 
-    deinit {DeviceSigningKeyPair_delete(inner)}
+    deinit { DeviceSigningKeyPair_delete(inner) }
 }
 
 /**
@@ -126,7 +126,7 @@ public class UserId {
      */
     public init?(_ id: String) {
         switch Util.toResult(UserId_validate(Util.swiftStringToRust(id))) {
-        case .success(let id):
+        case let .success(id):
             inner = id
         case .failure:
             return nil
@@ -137,7 +137,7 @@ public class UserId {
         Util.rustStringToSwift(UserId_getId(inner))
     }()
 
-    deinit {UserId_delete(inner)}
+    deinit { UserId_delete(inner) }
 }
 
 /**
@@ -154,7 +154,7 @@ public class DeviceId {
      */
     public init?(_ id: Int64) {
         switch Util.toResult(DeviceId_validate(id)) {
-        case .success(let deviceId):
+        case let .success(deviceId):
             inner = deviceId
         case .failure:
             return nil
@@ -165,7 +165,7 @@ public class DeviceId {
         DeviceId_getId(inner)
     }()
 
-    deinit {DeviceId_delete(inner)}
+    deinit { DeviceId_delete(inner) }
 }
 
 /**
@@ -182,7 +182,7 @@ public class DeviceName {
      */
     public init?(_ name: String) {
         switch Util.toResult(DeviceName_validate(Util.swiftStringToRust(name))) {
-        case .success(let deviceName):
+        case let .success(deviceName):
             inner = deviceName
         case .failure:
             return nil
@@ -193,7 +193,7 @@ public class DeviceName {
         Util.rustStringToSwift(DeviceName_getName(inner))
     }()
 
-    deinit {DeviceName_delete(inner)}
+    deinit { DeviceName_delete(inner) }
 }
 
 /**
@@ -217,7 +217,7 @@ public class DeviceContext {
      */
     public init?(deviceContextJson: String) {
         switch Util.toResult(DeviceContext_fromJsonString(Util.swiftStringToRust(deviceContextJson))) {
-        case .success(let dc):
+        case let .success(dc):
             inner = dc
         case .failure:
             return nil

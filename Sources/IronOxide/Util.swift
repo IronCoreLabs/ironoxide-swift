@@ -1,5 +1,5 @@
-import libironoxide
 import struct Foundation.Date
+import libironoxide
 
 struct Util {
     /**
@@ -61,7 +61,7 @@ struct Util {
      * Take the provided Rust result that on success contains an array of an IronOxide struct
      */
     static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T) -> Result<[T], IronOxideError> {
-        Util.toResult(result).map {rustList in
+        Util.toResult(result).map { rustList in
             Util.collectTo(list: rustList, to: to)
         }
     }
@@ -93,7 +93,7 @@ struct Util {
      */
     static func rustStringToSwift(_ str: CRustString) -> String {
         let bytes = Array(UnsafeBufferPointer(start: str.data, count: Int(str.len))).map(UInt8.init)
-        //Rust strings are always UTF8, so we can ignore the error case here
+        // Rust strings are always UTF8, so we can ignore the error case here
         let swiftString = String(bytes: bytes, encoding: String.Encoding.utf8)!
         crust_string_free(str)
         return swiftString
@@ -104,8 +104,8 @@ struct Util {
      */
     static func collectTo<T>(list: CRustForeignVec, to: (OpaquePointer) -> T) -> [T] {
         var finalList: [T] = []
-        //This is done becuase list is immutable and we're modifying it in our loop. Since we only access the data if
-        //the list has any length, we're safe to ignore the pointer being nil
+        // This is done becuase list is immutable and we're modifying it in our loop. Since we only access the data if
+        // the list has any length, we're safe to ignore the pointer being nil
         var data = list.data!
         for _ in 0 ..< list.len {
             let item = UnsafeMutableRawPointer.allocate(byteCount: Int(list.step), alignment: 8)
@@ -116,7 +116,7 @@ struct Util {
         return finalList
     }
 
-     /**
+    /**
      * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
