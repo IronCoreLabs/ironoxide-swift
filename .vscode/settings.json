@@ -1,0 +1,6 @@
+{
+  "sourcekit-lsp.serverArguments": [
+    "-Xlinker",
+    "-L../ironoxide-java/target/release"
+  ]
+}

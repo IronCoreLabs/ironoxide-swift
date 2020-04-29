@@ -1,12 +1,78 @@
-import Foundation
 import libironoxide
+import struct Foundation.Date
 
 struct Util {
     /**
      * Convert the provided Int64 timestamp into a Swift date.
      */
-    static func timestampToDate(_ ts: Int64) -> Date {
-        Date(timeIntervalSince1970: Double(ts))
+    static func timestampToDate(_ msTimestamp: Int64) -> Date {
+        Date(timeIntervalSince1970: Double(msTimestamp) / 1000.0)
+    }
+
+    /**
+     * Convert the provided boolean into a Int8 expected by IronOxide for boolean arguments
+     */
+    static func boolToInt(_ b: Bool) -> Int8 {
+        b ? 1 : 0
+    }
+
+    /**
+     * Return true if the provided UInt8 represents a true value
+     */
+    static func intToBool(_ int: UInt8) -> Bool {
+        int != 0
+    }
+
+    /**
+     * Return true if the provided Int8 represents a true value
+     */
+    static func intToBool(_ int: Int8) -> Bool {
+        int != 0
+    }
+
+    /**
+     * Convert the provided IronOxide Result of opaque data into a Swift Result
+     */
+    static func toResult(_ result: CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
+        Util.intToBool(result.is_ok) ?
+            .success(OpaquePointer(result.data.ok)) :
+            .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
+    }
+
+    /**
+     * Convert the provided IronOxide Result of an Option into a Swift Result
+     */
+    static func toResult(_ result: CRustResultCRustOption4232mut3232c_voidCRustString) -> Result<CRustOption4232mut3232c_void, IronOxideError> {
+        Util.intToBool(result.is_ok) ?
+            .success(result.data.ok) :
+            .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
+    }
+
+    /**
+     * Convert the provided IronOxide Result of a Vec into a Swift Result
+     */
+    static func toResult(_ result: CRustResultCRustForeignVecCRustString) -> Result<CRustForeignVec, IronOxideError> {
+        Util.intToBool(result.is_ok) ?
+            .success(result.data.ok) :
+            .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
+    }
+
+    /**
+     * Take the provided Rust result that on success contains an array of an IronOxide struct
+     */
+    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T) -> Result<[T], IronOxideError> {
+        Util.toResult(result).map {rustList in
+            Util.collectTo(list: rustList, to: to)
+        }
+    }
+
+    /**
+     * Convert the provided IronOxide Result of opaque data into a Swift Option
+     */
+    static func toOption(_ result: CRustOption4232mut3232c_void) -> OpaquePointer? {
+        Util.intToBool(result.is_some) ?
+            OpaquePointer(result.val.data) :
+            nil
     }
 
     /**
@@ -22,63 +88,42 @@ struct Util {
     }
 
     /**
-     * Convert the provided UTF-8 native library string into a Swift string
+     * Convert the provided UTF-8 native library string into a Swift string where the bytes are copied into Swift managed memory and
+     * the provided Rust string freed.
      */
-    static func rustStringToSwift(str: CRustString, fallbackError: String) -> String {
+    static func rustStringToSwift(_ str: CRustString) -> String {
         let bytes = Array(UnsafeBufferPointer(start: str.data, count: Int(str.len))).map(UInt8.init)
-        return String(bytes: bytes, encoding: String.Encoding.utf8) ?? fallbackError
+        //Rust strings are always UTF8, so we can ignore the error case here
+        let swiftString = String(bytes: bytes, encoding: String.Encoding.utf8)!
+        crust_string_free(str)
+        return swiftString
     }
 
     /**
-     * Take the provided Rust result that on success contains an IronOxide struct and wrap that in the provided Swift `to` struct.
-     * If the result is a failure, attempt to parse out the failure and wrap the error string in an IronOxideError.
+     * Iterate over the provided list of a Rust vec and use the provided mapper to convert them to a collection of T
      */
-    static func mapResultTo<T>(
-        result: CRustResult4232mut3232c_voidCRustString,
-        to: (OpaquePointer) -> T,
-        fallbackError: String) -> Result<T, IronOxideError> {
-        result.is_ok == 0 ?
-            Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError))) :
-            Result.success(to(OpaquePointer(result.data.ok)))
-    }
-
-    /**
-     * Take the provided Rust result that on success contains an array of an IronOxide struct
-     */
-    static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T, fallbackError: String) -> Result<[T], IronOxideError> {
-        if result.is_ok == 1 {
-            var rustList = result.data.ok
-            var finalList: [T] = []
-            for _ in 0 ..< rustList.len {
-                finalList.append(to(OpaquePointer(rustList.data)))
-                rustList.data += UnsafeMutableRawPointer.Stride(rustList.step)
-            }
-            return Result.success(finalList)
-        } else {
-            return Result.failure(IronOxideError.error(Util.rustStringToSwift(str: result.data.err, fallbackError: fallbackError)))
+    static func collectTo<T>(list: CRustForeignVec, to: (OpaquePointer) -> T) -> [T] {
+        var finalList: [T] = []
+        //This is done becuase list is immutable and we're modifying it in our loop. Since we only access the data if
+        //the list has any length, we're safe to ignore the pointer being nil
+        var data = list.data!
+        for _ in 0 ..< list.len {
+            let item = UnsafeMutableRawPointer.allocate(byteCount: Int(list.step), alignment: 8)
+            item.copyMemory(from: data, byteCount: Int(list.step))
+            finalList.append(to(OpaquePointer(item)))
+            data += UnsafeMutableRawPointer.Stride(list.step)
         }
+        return finalList
     }
 
-
-    /**
-     * Generate the struct that represents a None in Rust
+     /**
+     * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
+     * original bytes in Rust freed
      */
-    static func rustNone() -> CRustOption4232const3232c_void {
-        CRustOption4232const3232c_void(
-            //This uses 0 for uninit because that's what the rust-swig code does to represent None
-            val: CRustOptionUnion4232const3232c_void(uninit: 0),
-            is_some: 0
-        )
-    }
-
-    /**
-     * Generate the struct that represents a Some() in Rust of the provided pointer data
-     */
-    static func rustSome(_ ptr: OpaquePointer) -> CRustOption4232const3232c_void {
-        CRustOption4232const3232c_void(
-            val: CRustOptionUnion4232const3232c_void(data: UnsafeMutableRawPointer(ptr)),
-            is_some: 1
-        )
+    static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
+        let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
+        CRustVeci8_free(bytes)
+        return swiftBytes
     }
 
     /**
@@ -101,10 +146,8 @@ struct Util {
     /**
      * Generic method to validate that the provided bytes can be used to create the type validated by validator.
      */
-    static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> OpaquePointer? {
+    static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
         let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        let rpk = validator(rustSlice)
-        if rpk.is_ok == 0 { return nil }
-        return OpaquePointer(rpk.data.ok)
+        return Util.toResult(validator(rustSlice))
     }
 }

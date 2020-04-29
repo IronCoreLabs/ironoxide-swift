@@ -3,7 +3,7 @@ import libironoxide
 /**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
-public struct PrivateKey {
+public class PrivateKey {
     let inner: OpaquePointer
     init(_ pk: OpaquePointer) {
         inner = pk
@@ -13,9 +13,10 @@ public struct PrivateKey {
      * Create a new PrivateKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PrivateKey
      */
     public init?(_ bytes: [UInt8]) {
-        if let privKey = Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
+        switch Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
+        case .success(let privKey):
             inner = privKey
-        } else {
+        case .failure:
             return nil
         }
     }
@@ -23,16 +24,17 @@ public struct PrivateKey {
     /**
      * Get the PrivateKey data out as an array of bytes
      */
-    public func asBytes() -> [UInt8] {
-        let pk = PrivateKey_asBytes(inner)
-        return Array(UnsafeBufferPointer(start: pk.data, count: Int(pk.len))).map(UInt8.init)
-    }
+    public lazy var bytes: [UInt8] = {
+        Util.toBytes(PrivateKey_asBytes(inner))
+    }()
+
+    deinit {PrivateKey_delete(inner)}
 }
 
 /**
  * Represents an encrypted asymmetric private key that wraps the underlying bytes of the encrypted key.
  */
-public struct EncryptedPrivateKey {
+public class EncryptedPrivateKey {
     let inner: OpaquePointer
     init(_ epk: OpaquePointer) {
         inner = epk
@@ -41,16 +43,17 @@ public struct EncryptedPrivateKey {
     /**
      * Get the EncryptedPrivateKey data out as an array of bytes
      */
-    public func asBytes() -> [UInt8] {
-        let pk = EncryptedPrivateKey_asBytes(inner)
-        return Array(UnsafeBufferPointer(start: pk.data, count: Int(pk.len))).map(UInt8.init)
-    }
+    public lazy var bytes: [UInt8] = {
+        Util.toBytes(EncryptedPrivateKey_asBytes(inner))
+    }()
+
+    deinit {EncryptedPrivateKey_delete(inner)}
 }
 
 /**
  * Represents an asymmetric public key that wraps the underlying bytes of the key.
  */
-public struct PublicKey {
+public class PublicKey {
     let inner: OpaquePointer
     init(_ pk: OpaquePointer) {
         inner = pk
@@ -60,9 +63,10 @@ public struct PublicKey {
      * Create a new PublicKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PublicKey
      */
     public init?(_ bytes: [UInt8]) {
-        if let pubKey = Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
+        switch Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
+        case .success(let pubKey):
             inner = pubKey
-        } else {
+        case .failure:
             return nil
         }
     }
@@ -70,16 +74,17 @@ public struct PublicKey {
     /**
      * Get the PublicKey data out as an array of bytes
      */
-    public func asBytes() -> [UInt8] {
-        let pk = PublicKey_asBytes(inner)
-        return Array(UnsafeBufferPointer(start: pk.data, count: Int(pk.len))).map(UInt8.init)
-    }
+    public lazy var bytes: [UInt8] = {
+        Util.toBytes(PublicKey_asBytes(inner))
+    }()
+
+    deinit {PublicKey_delete(inner)}
 }
 
 /**
  * Signing keypair specific to a device. Used to sign all requests to the IronCore API endpoints. Needed to create a `DeviceContext`.
  */
-public struct DeviceSigningKeyPair {
+public class DeviceSigningKeyPair {
     let inner: OpaquePointer
     init(_ pk: OpaquePointer) {
         inner = pk
@@ -89,9 +94,10 @@ public struct DeviceSigningKeyPair {
      * Create a new DeviceSigningKeyPair from the provided array of bytes. Will fail if the provided bytes are not a valid device signing key pair
      */
     public init?(_ bytes: [UInt8]) {
-        if let dskp = Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
+        switch Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
+        case .success(let dskp):
             inner = dskp
-        } else {
+        case .failure:
             return nil
         }
     }
@@ -99,16 +105,17 @@ public struct DeviceSigningKeyPair {
     /**
      * Get the DeviceSigningKeyPair data out as an array of bytes
      */
-    public func asBytes() -> [UInt8] {
-        let pk = PublicKey_asBytes(inner)
-        return Array(UnsafeBufferPointer(start: pk.data, count: Int(pk.len))).map(UInt8.init)
-    }
+    public lazy var bytes: [UInt8] = {
+        Util.toBytes(DeviceSigningKeyPair_asBytes(inner))
+    }()
+
+    deinit {DeviceSigningKeyPair_delete(inner)}
 }
 
 /**
  * ID of a user. Unique with in a segment.
  */
-public struct UserId {
+public class UserId {
     let inner: OpaquePointer
     init(_ id: OpaquePointer) {
         inner = id
@@ -118,20 +125,25 @@ public struct UserId {
      * Create an new UserId from the provided String. Will fail if the ID contains invalid characters.
      */
     public init?(_ id: String) {
-        let id = UserId_validate(Util.swiftStringToRust(id))
-        if id.is_ok == 0 { return nil }
-        inner = OpaquePointer(id.data.ok)
+        switch Util.toResult(UserId_validate(Util.swiftStringToRust(id))) {
+        case .success(let id):
+            inner = id
+        case .failure:
+            return nil
+        }
     }
 
-    public func id() -> String {
-        Util.rustStringToSwift(str: UserId_getId(inner), fallbackError: "Failed to extract user ID")
-    }
+    public lazy var id: String = {
+        Util.rustStringToSwift(UserId_getId(inner))
+    }()
+
+    deinit {UserId_delete(inner)}
 }
 
 /**
  * ID of a device. Device IDs are numeric and will always be greater than 0.
  */
-public struct DeviceId {
+public class DeviceId {
     let inner: OpaquePointer
     init(_ id: OpaquePointer) {
         inner = id
@@ -141,20 +153,25 @@ public struct DeviceId {
      * Create a new DeviceId from the provided Int64. Will fail if the device ID is not valid.
      */
     public init?(_ id: Int64) {
-        let id = DeviceId_validate(id)
-        if id.is_ok == 0 { return nil }
-        inner = OpaquePointer(id.data.ok)
+        switch Util.toResult(DeviceId_validate(id)) {
+        case .success(let deviceId):
+            inner = deviceId
+        case .failure:
+            return nil
+        }
     }
 
-    public func id() -> Int64 {
+    public lazy var id: Int64 = {
         DeviceId_getId(inner)
-    }
+    }()
+
+    deinit {DeviceId_delete(inner)}
 }
 
 /**
  * Readable device name.
  */
-public struct DeviceName {
+public class DeviceName {
     let inner: OpaquePointer
     init(_ name: OpaquePointer) {
         inner = name
@@ -164,26 +181,31 @@ public struct DeviceName {
      * Create a DeviceName from the provided string. Will fail if the string contains invalid characters
      */
     public init?(_ name: String) {
-        let name = DeviceName_validate(Util.swiftStringToRust(name))
-        if name.is_ok == 0 { return nil }
-        inner = OpaquePointer(name.data.ok)
+        switch Util.toResult(DeviceName_validate(Util.swiftStringToRust(name))) {
+        case .success(let deviceName):
+            inner = deviceName
+        case .failure:
+            return nil
+        }
     }
 
-    public func name() -> String {
-        Util.rustStringToSwift(str: DeviceName_getName(inner), fallbackError: "Failed to extract device name")
-    }
+    public lazy var name: String = {
+        Util.rustStringToSwift(DeviceName_getName(inner))
+    }()
+
+    deinit {DeviceName_delete(inner)}
 }
 
 /**
  * Account's device context. Needed to initialize IronOxide with a set of device keys.
  */
-public struct DeviceContext {
+public class DeviceContext {
     let inner: OpaquePointer
     /**
      * Create a DeviceContext from the provided required device information.
      */
-    public init(userId: UserId, segmentId: Int64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
-        inner = DeviceContext_new(userId.inner, segmentId, devicePrivateKey.inner, signingPrivateKey.inner)
+    public init(userId: UserId, segmentId: UInt64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
+        inner = DeviceContext_new(userId.inner, Int64(segmentId), devicePrivateKey.inner, signingPrivateKey.inner)
     }
 
     /**
@@ -194,24 +216,29 @@ public struct DeviceContext {
      *  - signingPrivateKey: Base64 encoded string
      */
     public init?(deviceContextJson: String) {
-        let dc = DeviceContext_fromJsonString(Util.swiftStringToRust(deviceContextJson))
-        if dc.is_ok == 0 { return nil }
-        inner = OpaquePointer(dc.data.ok)
+        switch Util.toResult(DeviceContext_fromJsonString(Util.swiftStringToRust(deviceContextJson))) {
+        case .success(let dc):
+            inner = dc
+        case .failure:
+            return nil
+        }
     }
 
-    public func getAccountId() -> UserId {
+    public lazy var accountId: UserId = {
         UserId(DeviceContext_getAccountId(inner))
-    }
+    }()
 
-    public func getSegmentId() -> UInt {
+    public lazy var segmentId: UInt = {
         DeviceContext_getSegmentId(inner)
-    }
+    }()
 
-    public func getDevicePrivateKey() -> PrivateKey {
+    public lazy var devicePrivateKey: PrivateKey = {
         PrivateKey(DeviceContext_getDevicePrivateKey(inner))
-    }
+    }()
 
-    public func getSigningPrivateKey() -> DeviceSigningKeyPair {
+    public lazy var signingPrivateKey: DeviceSigningKeyPair = {
         DeviceSigningKeyPair(DeviceContext_getDevicePrivateKey(inner))
-    }
+    }()
+
+    deinit { DeviceSigningKeyPair_delete(inner) }
 }

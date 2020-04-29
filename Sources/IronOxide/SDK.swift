@@ -1,8 +1,10 @@
+import libironoxide
+
 /**
  * Struct that represents an initialized IronOxide SDK. Contains properties and methods for all SDK functionality
  */
-public struct SDK {
-    var ironoxide: OpaquePointer
+public class SDK {
+    let ironoxide: OpaquePointer
     public let document: DocumentOperations
     public let group: GroupOperations
     public let user: UserOperations
@@ -17,4 +19,6 @@ public struct SDK {
     }
 
     public func clearPolicyCache() {}
+
+    deinit { IronOxide_delete(ironoxide) }
 }
