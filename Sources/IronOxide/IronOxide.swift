@@ -1,4 +1,3 @@
-import Foundation
 import libironoxide
 
 public class IronOxideConfig: SdkObject {
