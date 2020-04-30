@@ -3,49 +3,38 @@ import libironoxide
 import XCTest
 
 final class UserTests: XCTestCase {
-    let deviceJson = """
-    {"accountId": "swifttester33","segmentId": 1,"signingPrivateKey": "pI1SrCz4OffvmviszBATjaELD8tGUc18CixZ+evqeX3m3UKWkM5fsgg7Lt7YdtWPX/GoPUwrL0C7YLar2MEKTw==","devicePrivateKey": "RVBKa0AUEbUxkNJXbp2ErGN4bwIAs1WMZbMxacTGQe0="}
-    """
-
-    func testGetPublicKey() {
+    func testGetPublicKey() throws {
         let users = [
             UserId("foo")!,
             UserId("swifttester")!,
             UserId("swifttester33")!,
         ]
 
-        let dc = IronOxide.DeviceContext(deviceContextJson: deviceJson)!
-        let maybePublicKeys = IronOxide.initialize(device: dc)
-            .flatMap { sdk in
-                sdk.user.getPublicKey(users: users)
-            }
+        let sdk = try initializeSdk()
 
-        switch maybePublicKeys {
-        case let .success(userKeyList):
-            XCTAssertEqual(userKeyList.count, 2)
-            let firstUserId = userKeyList[0].id.id
-            let secondUserId = userKeyList[1].id.id
-            print("Found user \(firstUserId)")
-            print("Found user \(secondUserId)")
-        case let .failure(error):
-            XCTFail(error.localizedDescription)
-        }
+        var userKeyList = try unwrapResult(sdk.user.getPublicKey(users: users))
+
+        // Sort users so we can assert on the expected values
+        userKeyList = userKeyList.sorted(by: { $0.id.id < $1.id.id })
+
+        XCTAssertEqual(userKeyList.count, 2)
+        let firstUser = userKeyList[0]
+        let secondUser = userKeyList[1]
+        assertByteLength(firstUser.publicKey.bytes, 64)
+        assertByteLength(secondUser.publicKey.bytes, 64)
+        XCTAssertEqual(firstUser.id.id, "swifttester")
+        XCTAssertEqual(secondUser.id.id, "swifttester33")
     }
 
-    func testListDevices() {
-        let dc = IronOxide.DeviceContext(deviceContextJson: deviceJson)!
-        let maybeDeviceList = IronOxide.initialize(device: dc)
-            .flatMap { sdk in
-                sdk.user.listDevices()
-            }
+    func testListDevices() throws {
+        let sdk = try initializeSdk()
+        let deviceList = try unwrapResult(sdk.user.listDevices()).result
 
-        switch maybeDeviceList {
-        case let .success(deviceListResult):
-            print("Found \(deviceListResult.result.count) devices")
-            print("Found \(deviceListResult.result[0].created)")
-            print("Found \(deviceListResult.result[1].created)")
-        case let .failure(error):
-            XCTFail(error.localizedDescription)
-        }
+        XCTAssertGreaterThan(deviceList.count, 0)
+        XCTAssertTrue(deviceList[0].isCurrentDevice)
+        XCTAssertNil(deviceList[0].name)
+        XCTAssertGreaterThan(deviceList[0].id.id, 0)
+        XCTAssertTrue(deviceList[0].created < Date(timeIntervalSinceNow: 0))
+        XCTAssertTrue(deviceList[0].lastUpdated < Date(timeIntervalSinceNow: 0))
     }
 }
