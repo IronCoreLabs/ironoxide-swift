@@ -1,21 +1,28 @@
 import libironoxide
 
 /**
+ * Superclass to all SDK classes. The data of the class is stored in `inner`, and there is an internal `init` for setting the data.
+ *
+ * Requires subclass inits to be `convenience init` which call `self.init` to set `inner`
+ */
+public class SdkObject {
+    let inner: OpaquePointer
+    init(_ t: OpaquePointer) {
+        inner = t
+    }
+}
+
+/**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
-public class PrivateKey {
-    let inner: OpaquePointer
-    init(_ pk: OpaquePointer) {
-        inner = pk
-    }
-
+public class PrivateKey: SdkObject {
     /**
      * Create a new PrivateKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PrivateKey
      */
-    public init?(_ bytes: [UInt8]) {
+    public convenience init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
         case let .success(privKey):
-            inner = privKey
+            self.init(privKey)
         case .failure:
             return nil
         }
@@ -34,12 +41,7 @@ public class PrivateKey {
 /**
  * Represents an encrypted asymmetric private key that wraps the underlying bytes of the encrypted key.
  */
-public class EncryptedPrivateKey {
-    let inner: OpaquePointer
-    init(_ epk: OpaquePointer) {
-        inner = epk
-    }
-
+public class EncryptedPrivateKey: SdkObject {
     /**
      * Get the EncryptedPrivateKey data out as an array of bytes
      */
@@ -53,19 +55,14 @@ public class EncryptedPrivateKey {
 /**
  * Represents an asymmetric public key that wraps the underlying bytes of the key.
  */
-public class PublicKey {
-    let inner: OpaquePointer
-    init(_ pk: OpaquePointer) {
-        inner = pk
-    }
-
+public class PublicKey: SdkObject {
     /**
      * Create a new PublicKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PublicKey
      */
-    public init?(_ bytes: [UInt8]) {
+    public convenience init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
         case let .success(pubKey):
-            inner = pubKey
+            self.init(pubKey)
         case .failure:
             return nil
         }
@@ -84,19 +81,14 @@ public class PublicKey {
 /**
  * Signing keypair specific to a device. Used to sign all requests to the IronCore API endpoints. Needed to create a `DeviceContext`.
  */
-public class DeviceSigningKeyPair {
-    let inner: OpaquePointer
-    init(_ pk: OpaquePointer) {
-        inner = pk
-    }
-
+public class DeviceSigningKeyPair: SdkObject {
     /**
      * Create a new DeviceSigningKeyPair from the provided array of bytes. Will fail if the provided bytes are not a valid device signing key pair
      */
-    public init?(_ bytes: [UInt8]) {
+    public convenience init?(_ bytes: [UInt8]) {
         switch Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
         case let .success(dskp):
-            inner = dskp
+            self.init(dskp)
         case .failure:
             return nil
         }
@@ -115,19 +107,14 @@ public class DeviceSigningKeyPair {
 /**
  * ID of a user. Unique with in a segment.
  */
-public class UserId {
-    let inner: OpaquePointer
-    init(_ id: OpaquePointer) {
-        inner = id
-    }
-
+public class UserId: SdkObject {
     /**
      * Create an new UserId from the provided String. Will fail if the ID contains invalid characters.
      */
-    public init?(_ id: String) {
+    public convenience init?(_ id: String) {
         switch Util.toResult(UserId_validate(Util.swiftStringToRust(id))) {
         case let .success(id):
-            inner = id
+            self.init(id)
         case .failure:
             return nil
         }
@@ -141,21 +128,39 @@ public class UserId {
 }
 
 /**
- * ID of a device. Device IDs are numeric and will always be greater than 0.
+ * ID of a group. Unique with in a segment.
  */
-public class DeviceId {
-    let inner: OpaquePointer
-    init(_ id: OpaquePointer) {
-        inner = id
+public class GroupId: SdkObject {
+    /**
+     * Create an new GroupId from the provided String. Will fail if the ID contains invalid characters.
+     */
+    public convenience init?(_ id: String) {
+        switch Util.toResult(GroupId_validate(Util.swiftStringToRust(id))) {
+        case let .success(id):
+            self.init(id)
+        case .failure:
+            return nil
+        }
     }
 
+    public lazy var id: String = {
+        Util.rustStringToSwift(GroupId_getId(inner))
+    }()
+
+    deinit { GroupId_delete(inner) }
+}
+
+/**
+ * ID of a device. Device IDs are numeric and will always be greater than 0.
+ */
+public class DeviceId: SdkObject {
     /**
      * Create a new DeviceId from the provided Int64. Will fail if the device ID is not valid.
      */
-    public init?(_ id: Int64) {
+    public convenience init?(_ id: Int64) {
         switch Util.toResult(DeviceId_validate(id)) {
         case let .success(deviceId):
-            inner = deviceId
+            self.init(deviceId)
         case .failure:
             return nil
         }
@@ -171,19 +176,14 @@ public class DeviceId {
 /**
  * Readable device name.
  */
-public class DeviceName {
-    let inner: OpaquePointer
-    init(_ name: OpaquePointer) {
-        inner = name
-    }
-
+public class DeviceName: SdkObject {
     /**
      * Create a DeviceName from the provided string. Will fail if the string contains invalid characters
      */
-    public init?(_ name: String) {
+    public convenience init?(_ name: String) {
         switch Util.toResult(DeviceName_validate(Util.swiftStringToRust(name))) {
         case let .success(deviceName):
-            inner = deviceName
+            self.init(deviceName)
         case .failure:
             return nil
         }
@@ -199,13 +199,12 @@ public class DeviceName {
 /**
  * Account's device context. Needed to initialize IronOxide with a set of device keys.
  */
-public class DeviceContext {
-    let inner: OpaquePointer
+public class DeviceContext: SdkObject {
     /**
      * Create a DeviceContext from the provided required device information.
      */
-    public init(userId: UserId, segmentId: UInt64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
-        inner = DeviceContext_new(userId.inner, Int64(segmentId), devicePrivateKey.inner, signingPrivateKey.inner)
+    public convenience init(userId: UserId, segmentId: UInt64, devicePrivateKey: PrivateKey, signingPrivateKey: DeviceSigningKeyPair) {
+        self.init(DeviceContext_new(userId.inner, Int64(segmentId), devicePrivateKey.inner, signingPrivateKey.inner))
     }
 
     /**
@@ -215,10 +214,10 @@ public class DeviceContext {
      *  - devicePrivateKey: Base64 encoded string
      *  - signingPrivateKey: Base64 encoded string
      */
-    public init?(deviceContextJson: String) {
+    public convenience init?(deviceContextJson: String) {
         switch Util.toResult(DeviceContext_fromJsonString(Util.swiftStringToRust(deviceContextJson))) {
         case let .success(dc):
-            inner = dc
+            self.init(dc)
         case .failure:
             return nil
         }

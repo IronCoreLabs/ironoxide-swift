@@ -4,17 +4,16 @@ import libironoxide
 /**
  * Options that can be specified creating a user.
  */
-public class UserCreateOpts {
-    let inner: OpaquePointer
-    public init() {
-        inner = UserCreateOpts_default()
+public class UserCreateOpts: SdkObject {
+    public convenience init() {
+        self.init(UserCreateOpts_default())
     }
 
     /**
      * Create a UserCreateOpts instance with a flag denoting if the provided user needs rotation
      */
-    public init(needsRotation: Bool) {
-        inner = UserCreateOpts_create(Util.boolToInt(needsRotation))
+    public convenience init(needsRotation: Bool) {
+        self.init(UserCreateOpts_create(Util.boolToInt(needsRotation)))
     }
 
     deinit { UserCreateOpts_delete(inner) }
@@ -23,12 +22,7 @@ public class UserCreateOpts {
 /**
  * Keypair for a newly created user.
  */
-public class UserCreateResult {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserCreateResult: SdkObject {
     public lazy var needsRotation: Bool = {
         Util.intToBool(UserCreateResult_getNeedsRotation(inner))
     }()
@@ -43,17 +37,16 @@ public class UserCreateResult {
 /**
  * Options to specify when creating a new device
  */
-public class DeviceCreateOpts {
-    let inner: OpaquePointer
-    public init() {
-        inner = DeviceCreateOpts_default()
+public class DeviceCreateOpts: SdkObject {
+    public convenience init() {
+        self.init(DeviceCreateOpts_default())
     }
 
     /**
-     * Create a new DeviceCreateOpts with te provided DeviceName
+     * Create a new DeviceCreateOpts with the provided DeviceName
      */
-    public init(deviceName: DeviceName) {
-        inner = DeviceCreateOpts_create(CRustClassOptDeviceName(p: UnsafeMutableRawPointer(deviceName.inner)))
+    public convenience init(deviceName: DeviceName) {
+        self.init(DeviceCreateOpts_create(CRustClassOptDeviceName(p: UnsafeMutableRawPointer(deviceName.inner))))
     }
 
     deinit { DeviceCreateOpts_delete(inner) }
@@ -62,12 +55,7 @@ public class DeviceCreateOpts {
 /**
  * IDs and public key for existing user on verify result
  */
-public class UserResult {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserResult: SdkObject {
     public lazy var accountId: UserId = {
         UserId(UserResult_getAccountId(inner))
     }()
@@ -90,12 +78,7 @@ public class UserResult {
 /**
  * Result from adding a new device
  */
-public class DeviceAddResult {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class DeviceAddResult: SdkObject {
     public lazy var accountId: UserId = {
         UserId(DeviceAddResult_getAccountId(inner))
     }()
@@ -134,12 +117,7 @@ public class DeviceAddResult {
 /**
  * Metadata about a user device.
  */
-public class UserDevice {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserDevice: SdkObject {
     public lazy var id: DeviceId = {
         DeviceId(UserDevice_getId(inner))
     }()
@@ -166,13 +144,7 @@ public class UserDevice {
 /**
  * Devices for a user, sorted by the device id.
  */
-public class UserDeviceListResult {
-    let inner: OpaquePointer
-
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserDeviceListResult: SdkObject {
     public lazy var result: [UserDevice] = {
         Util.collectTo(list: UserDeviceListResult_getResult(inner), to: UserDevice.init)
     }()
@@ -183,12 +155,7 @@ public class UserDeviceListResult {
 /**
  * Represents a user in the IronCore service that includes their PublicKey
  */
-public class UserWithKey {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserWithKey: SdkObject {
     public lazy var id: UserId = {
         UserId(UserWithKey_getUser(inner))
     }()
@@ -204,12 +171,7 @@ public class UserWithKey {
  * Structure returned when rotating a users private key. Returns whether additional rotation is needed as well as the users
  * new encrypted private key.
  */
-public class UserUpdatePrivateKeyResult {
-    let inner: OpaquePointer
-    init(_ res: OpaquePointer) {
-        inner = res
-    }
-
+public class UserUpdatePrivateKeyResult: SdkObject {
     public lazy var needsRotation: Bool = {
         Util.intToBool(UserUpdatePrivateKeyResult_getNeedsRotation(inner))
     }()
@@ -242,12 +204,7 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let userIdStringList = users.map { user in UserId_getId(user.inner) }
-        let step = UInt(MemoryLayout<CRustString>.stride)
-        let listOfUsers = userIdStringList.withUnsafeBufferPointer { pt in
-            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(userIdStringList.count), step: step)
-        }
-
+        let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
         return Util.mapListResultTo(
             result: IronOxide_userGetPublicKey(ironoxide, listOfUsers),
             to: UserWithKey.init
@@ -259,7 +216,7 @@ public struct UserOperations {
      * with `IronOxide.initialize()` before further use.
      */
     public func deleteDevice(deviceId: DeviceId?) -> Result<DeviceId, IronOxideError> {
-        let deviceIdPtr = deviceId == nil ? CRustClassOptDeviceId() : CRustClassOptDeviceId(p: UnsafeMutableRawPointer(deviceId!.inner))
+        let deviceIdPtr = Util.buildOptionOf(deviceId, CRustClassOptDeviceId.init)
         return Util.toResult(IronOxide_userDeleteDevice(ironoxide, deviceIdPtr))
             .map(DeviceId.init)
     }
