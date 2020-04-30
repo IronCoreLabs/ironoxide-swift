@@ -58,11 +58,29 @@ struct Util {
     }
 
     /**
+     * Convert the provided IronOxide Result of a Vec of i32 into a Swift Result
+     */
+    static func toResult(_ result: CRustResultCRustVeci32CRustString) -> Result<CRustVeci32, IronOxideError> {
+        Util.intToBool(result.is_ok) ?
+            .success(result.data.ok) :
+            .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
+    }
+
+    /**
      * Take the provided Rust result that on success contains an array of an IronOxide struct
      */
     static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T) -> Result<[T], IronOxideError> {
         Util.toResult(result).map { rustList in
             Util.collectTo(list: rustList, to: to)
+        }
+    }
+
+    /**
+     * Take the provided Rust result of Vec of i32 that on success contains an array of Int32
+     */
+    static func mapListResultTo(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
+        Util.toResult(result).map { rustList in
+            Util.collectTo(rustList)
         }
     }
 
@@ -112,6 +130,21 @@ struct Util {
             item.copyMemory(from: data, byteCount: Int(list.step))
             finalList.append(to(OpaquePointer(item)))
             data += UnsafeMutableRawPointer.Stride(list.step)
+        }
+        return finalList
+    }
+
+    /**
+     * Iterate over the provided list of a Rust Vec of i32 and convert them to an array of Int32
+     */
+    static func collectTo(_ list: CRustVeci32) -> [Int32] {
+        var finalList: [Int32] = []
+        // This is done because list is immutable and we're modifying it in our loop. Since we only access the data if
+        // the list has any length, we're safe to ignore the pointer being nil
+        var data = list.data!
+        for _ in 0 ..< list.len {
+            finalList.append(data.pointee)
+            data = data.successor()
         }
         return finalList
     }
