@@ -241,3 +241,23 @@ public class DeviceContext: SdkObject {
 
     deinit { DeviceSigningKeyPair_delete(inner) }
 }
+
+public class Duration: SdkObject {
+    public convenience init(millis: UInt64) {
+        self.init(Duration_fromMillis(millis))
+    }
+
+    public convenience init(seconds: UInt64) {
+        self.init(Duration_fromSecs(seconds))
+    }
+
+    public lazy var millis: UInt64 = {
+        Duration_getMillis(inner)
+    }()
+
+    public lazy var seconds: UInt64 = {
+        Duration_getSecs(inner)
+    }()
+
+    deinit { Duration_delete(inner) }
+}

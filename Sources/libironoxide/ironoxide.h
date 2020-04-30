@@ -33,8 +33,6 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserCreateOpts.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DeviceCreateOpts.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentEncryptOpts.h"
-#include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyCachingConfig.h"
-#include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyGrant.h"
 
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserCreateResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_UserDeviceListResult.h"
@@ -55,6 +53,9 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditErr.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUpdatePrivateKeyResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyCachingConfig.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyGrant.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_Duration.h"
 
 //IronOxide
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxideConfig.h"
