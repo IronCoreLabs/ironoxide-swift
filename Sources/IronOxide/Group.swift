@@ -235,7 +235,7 @@ public struct GroupOperations {
      * Update a group name to a new value or clear its value.
      */
     public func updateName(groupId: GroupId, groupName: GroupName?) -> Result<GroupMetaResult, IronOxideError> {
-        let namePtr = groupName == nil ? CRustClassOptGroupName() : CRustClassOptGroupName(p: UnsafeMutableRawPointer(groupName!.inner))
+        let namePtr = Util.buildOptionOf(groupName, CRustClassOptGroupName.init)
         return Util.toResult(IronOxide_groupUpdateName(ironoxide, groupId.inner, namePtr)).map(GroupMetaResult.init)
     }
 

@@ -216,7 +216,7 @@ public struct UserOperations {
      * with `IronOxide.initialize()` before further use.
      */
     public func deleteDevice(deviceId: DeviceId?) -> Result<DeviceId, IronOxideError> {
-        let deviceIdPtr = deviceId == nil ? CRustClassOptDeviceId() : CRustClassOptDeviceId(p: UnsafeMutableRawPointer(deviceId!.inner))
+        let deviceIdPtr = Util.buildOptionOf(deviceId, CRustClassOptDeviceId.init)
         return Util.toResult(IronOxide_userDeleteDevice(ironoxide, deviceIdPtr))
             .map(DeviceId.init)
     }
