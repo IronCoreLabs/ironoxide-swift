@@ -121,34 +121,26 @@ struct Util {
      * original bytes in Rust freed
      */
     static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
-        let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
-        CRustVeci8_free(bytes)
-        return swiftBytes
+        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
     }
 
     /**
      * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
      */
-    static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {
+    static func bytesToSlice(_ bytes: [Int8]) -> CRustSlicei8 {
         // We can use the ! on baseAddress because the closure we pass to withUnsafeBufferPointer says:
         //   - A closure with an UnsafeBufferPointer parameter that points to the contiguous storage for the array. If no such storage exists, it is created.
         // So it should always exist
-        bytes.map(Int8.init).withUnsafeBufferPointer { pointerVal in pointerVal.baseAddress! }
-    }
-
-    /**
-     * Convert the provided byte array into a Rust int8 slice
-     */
-    static func bytesToSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
-        CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.count))
+        bytes.withUnsafeBufferPointer { pointerVal in
+            CRustSlicei8(data: pointerVal.baseAddress!, len: UInt(bytes.count))
+        }
     }
 
     /**
      * Generic method to validate that the provided bytes can be used to create the type validated by validator.
      */
     static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
-        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        return Util.toResult(validator(rustSlice))
+        Util.toResult(validator(bytesToSlice(bytes.map(Int8.init))))
     }
 
     /**
