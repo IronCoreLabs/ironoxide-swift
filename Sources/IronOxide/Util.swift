@@ -162,11 +162,18 @@ struct Util {
      * Converts an array of objects to a CRustSlice.
      * Takes the array of objects and a function to the Rust internal representation of the object
      */
-    static func arrayToRustSlice<T: SdkObject, U>(array: [T], fn: (OpaquePointer) -> U) -> CRustObjectSlice {
+    static func arrayToRustSlice<T>(array: [SdkObject], fn: (OpaquePointer) -> T) -> CRustObjectSlice {
         let rustInternalList = array.map { obj in fn(obj.inner) }
-        let step = UInt(MemoryLayout<U>.stride)
+        let step = UInt(MemoryLayout<T>.stride)
         return rustInternalList.withUnsafeBufferPointer { pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(rustInternalList.count), step: step)
         }
+    }
+
+    /**
+     * Converts an optional Swift type into a `CRustClassOpt*`
+     */
+    static func buildOptionOf<T>(_ obj: SdkObject?, _ fn: (UnsafeMutableRawPointer?) -> T) -> T {
+        obj == nil ? fn(nil) : fn(UnsafeMutableRawPointer(obj!.inner))
     }
 }

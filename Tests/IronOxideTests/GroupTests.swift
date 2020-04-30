@@ -8,7 +8,8 @@ final class GroupTests: XCTestCase {
         let dc = IronOxide.DeviceContext(deviceContextJson: deviceJson)!
         let sdk = try IronOxide.initialize(device: dc).get()
 
-        let opts = GroupCreateOpts(id: nil, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [], needsRotation: true)
+        let opts = GroupCreateOpts(id: nil, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [],
+                                   needsRotation: true)
         let createResult = try sdk.group.create(groupCreateOpts: opts).get()
         let groupId = createResult.groupId
         XCTAssertEqual(createResult.adminList.list.count, 1)

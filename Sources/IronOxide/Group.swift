@@ -2,29 +2,6 @@ import Foundation
 import libironoxide
 
 /**
- * ID of a group. Unique with in a segment.
- */
-public class GroupId: SdkObject {
-    /**
-     * Create an new GroupId from the provided String. Will fail if the ID contains invalid characters.
-     */
-    public convenience init?(_ id: String) {
-        switch Util.toResult(GroupId_validate(Util.swiftStringToRust(id))) {
-        case let .success(id):
-            self.init(id)
-        case .failure:
-            return nil
-        }
-    }
-
-    public lazy var id: String = {
-        Util.rustStringToSwift(GroupId_getId(inner))
-    }()
-
-    deinit { GroupId_delete(inner) }
-}
-
-/**
  * Readable group name.
  */
 public class GroupName: SdkObject {
@@ -55,9 +32,6 @@ public class GroupCreateOpts: SdkObject {
         self.init(GroupCreateOpts_default())
     }
 
-    /**
-     * Create a UserCreateOpts instance with a flag denoting if the provided user needs rotation
-     */
     public convenience init(
         id: GroupId?,
         name: GroupName?,
@@ -68,11 +42,11 @@ public class GroupCreateOpts: SdkObject {
         members: [UserId],
         needsRotation: Bool
     ) {
-        let idPtr = id == nil ? CRustClassOptGroupId() : CRustClassOptGroupId(p: UnsafeMutableRawPointer(id!.inner))
-        let namePtr = name == nil ? CRustClassOptGroupName() : CRustClassOptGroupName(p: UnsafeMutableRawPointer(name!.inner))
+        let idPtr = Util.buildOptionOf(id, CRustClassOptGroupId.init)
+        let namePtr = Util.buildOptionOf(name, CRustClassOptGroupName.init)
         let addAsAdminPtr = Util.boolToInt(addAsAdmin)
         let addAsMemberPtr = Util.boolToInt(addAsMember)
-        let ownerPtr = owner == nil ? CRustClassOptUserId() : CRustClassOptUserId(p: UnsafeMutableRawPointer(owner!.inner))
+        let ownerPtr = Util.buildOptionOf(owner, CRustClassOptUserId.init)
         let adminsPtr = Util.arrayToRustSlice(array: admins, fn: UserId_getId)
         let membersPtr = Util.arrayToRustSlice(array: members, fn: UserId_getId)
         let needsRotationPtr = Util.boolToInt(needsRotation)
@@ -276,28 +250,28 @@ public struct GroupOperations {
      * Add the users as members of a group.
      */
     public func addMembers(groupId: GroupId, users: [UserId]) -> Result<GroupAccessEditResult, IronOxideError> {
-        groupChangeMembership(ironoxide, groupId, users, IronOxide_groupAddMembers)
+        groupChangeMembership(groupId, users, IronOxide_groupAddMembers)
     }
 
     /**
      * Remove a list of users as members from the group.
      */
     public func removeMembers(groupId: GroupId, users: [UserId]) -> Result<GroupAccessEditResult, IronOxideError> {
-        groupChangeMembership(ironoxide, groupId, users, IronOxide_groupRemoveMembers)
+        groupChangeMembership(groupId, users, IronOxide_groupRemoveMembers)
     }
 
     /**
      * Add the users as admins of a group.
      */
     public func addAdmins(groupId: GroupId, users: [UserId]) -> Result<GroupAccessEditResult, IronOxideError> {
-        groupChangeMembership(ironoxide, groupId, users, IronOxide_groupAddAdmins)
+        groupChangeMembership(groupId, users, IronOxide_groupAddAdmins)
     }
 
     /**
      * Remove a list of users as admins from the group
      */
     public func removeAdmins(groupId: GroupId, users: [UserId]) -> Result<GroupAccessEditResult, IronOxideError> {
-        groupChangeMembership(ironoxide, groupId, users, IronOxide_groupRemoveAdmins)
+        groupChangeMembership(groupId, users, IronOxide_groupRemoveAdmins)
     }
 
     /**
@@ -309,15 +283,14 @@ public struct GroupOperations {
     public func rotatePrivateKey(groupId: GroupId) -> Result<GroupUpdatePrivateKeyResult, IronOxideError> {
         Util.toResult(IronOxide_groupRotatePrivateKey(ironoxide, groupId.inner)).map(GroupUpdatePrivateKeyResult.init)
     }
-}
 
-/// Helper function to reduce copy/paste of group membership functions. Takes the sdk, group, users, and C function to call on the group.
-func groupChangeMembership(
-    _ ironoxide: OpaquePointer,
-    _ groupId: GroupId,
-    _ users: [UserId],
-    _ fn: (OpaquePointer, OpaquePointer, CRustObjectSlice) -> CRustResult4232mut3232c_voidCRustString
-) -> Result<GroupAccessEditResult, IronOxideError> {
-    let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
-    return Util.toResult(fn(ironoxide, groupId.inner, listOfUsers)).map(GroupAccessEditResult.init)
+    /// Helper function to reduce copy/paste of group membership functions. Takes the group, users, and C function to call on the group.
+    func groupChangeMembership(
+        _ groupId: GroupId,
+        _ users: [UserId],
+        _ fn: (OpaquePointer, OpaquePointer, CRustObjectSlice) -> CRustResult4232mut3232c_voidCRustString
+    ) -> Result<GroupAccessEditResult, IronOxideError> {
+        let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
+        return Util.toResult(fn(ironoxide, groupId.inner, listOfUsers)).map(GroupAccessEditResult.init)
+    }
 }
