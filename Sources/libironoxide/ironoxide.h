@@ -55,7 +55,10 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditErr.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUpdatePrivateKeyResult.h"
-
+#include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentAccessResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_Category.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_Sensitivity.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_DataSubject.h"
 //IronOxide
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxideConfig.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxide.h"
