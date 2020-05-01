@@ -18,7 +18,9 @@ public class SDK {
         search = SearchOperations(ironoxide)
     }
 
-    public func clearPolicyCache() {}
+    public func clearPolicyCache() -> UInt {
+        IronOxide_clearPolicyCache(ironoxide)
+    }
 
     deinit { IronOxide_delete(ironoxide) }
 }
