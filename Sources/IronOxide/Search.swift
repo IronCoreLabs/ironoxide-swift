@@ -2,15 +2,15 @@ import libironoxide
 
 public class EncryptedBlindIndexSalt: SdkObject {
     public convenience init(encryptedDeks: [UInt8], encryptedSaltBytes: [UInt8]) {
-        self.init(EncryptedBlindIndexSalt_create(Util.bytesToSlice(encryptedDeks), Util.bytesToSlice(encryptedSaltBytes)))
+        self.init(EncryptedBlindIndexSalt_create(Util.bytesToRustSlice(encryptedDeks), Util.bytesToRustSlice(encryptedSaltBytes)))
     }
 
     public lazy var encryptedDeks: [UInt8] = {
-        Util.toBytes(EncryptedBlindIndexSalt_getEncryptedDeks(inner))
+        Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedDeks(inner))
     }()
 
     public lazy var encryptedSaltBytes: [UInt8] = {
-        Util.toBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
+        Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
     }()
 
     public func initializeSearch(sdk: SDK) -> Result<BlindIndexSearch, IronOxideError> {

@@ -32,7 +32,7 @@ public class PrivateKey: SdkObject {
      * Get the PrivateKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(PrivateKey_asBytes(inner))
+        Util.rustVecToBytes(PrivateKey_asBytes(inner))
     }()
 
     deinit { PrivateKey_delete(inner) }
@@ -46,7 +46,7 @@ public class EncryptedPrivateKey: SdkObject {
      * Get the EncryptedPrivateKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(EncryptedPrivateKey_asBytes(inner))
+        Util.rustVecToBytes(EncryptedPrivateKey_asBytes(inner))
     }()
 
     deinit { EncryptedPrivateKey_delete(inner) }
@@ -72,7 +72,7 @@ public class PublicKey: SdkObject {
      * Get the PublicKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(PublicKey_asBytes(inner))
+        Util.rustVecToBytes(PublicKey_asBytes(inner))
     }()
 
     deinit { PublicKey_delete(inner) }
@@ -98,7 +98,7 @@ public class DeviceSigningKeyPair: SdkObject {
      * Get the DeviceSigningKeyPair data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(DeviceSigningKeyPair_asBytes(inner))
+        Util.rustVecToBytes(DeviceSigningKeyPair_asBytes(inner))
     }()
 
     deinit { DeviceSigningKeyPair_delete(inner) }

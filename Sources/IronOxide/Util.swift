@@ -1,6 +1,13 @@
 import struct Foundation.Date
 import libironoxide
 
+class Box<A> {
+    var unbox: A
+    init(_ value: A) {
+        self.unbox = value
+    }
+}
+
 struct Util {
     /**
      * Convert the provided Int64 timestamp into a Swift date.
@@ -80,7 +87,7 @@ struct Util {
      */
     static func mapListResultToInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
         Util.toResult(result).map { rustList in
-            Util.toBytes(rustList)
+            Util.rustVecToBytes(rustList)
         }
     }
 
@@ -138,7 +145,7 @@ struct Util {
      * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
-    static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
+    static func rustVecToBytes(_ bytes: CRustVeci8) -> [UInt8] {
         Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
     }
 
@@ -146,29 +153,33 @@ struct Util {
      * Convert the provided Array of IronOxide bytes into Swift Int32 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
-    static func toBytes(_ rustVec: CRustVeci32) -> [Int32] {
-        let swiftArray = Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { value in Int32(value) }
-        CRustVeci32_free(rustVec)
-        return swiftArray
+    static func rustVecToBytes(_ rustVec: CRustVeci32) -> [Int32] {
+        Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { value in Int32(value) }
     }
 
     /**
      * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
      */
-    static func bytesToSlice(_ bytes: [Int8]) -> CRustSlicei8 {
-        // We can use the ! on baseAddress because the closure we pass to withUnsafeBufferPointer says:
-        //   - A closure with an UnsafeBufferPointer parameter that points to the contiguous storage for the array. If no such storage exists, it is created.
-        // So it should always exist
-        bytes.withUnsafeBufferPointer { pointerVal in
-            CRustSlicei8(data: pointerVal.baseAddress!, len: UInt(bytes.count))
+    static func bytesToRustSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
+        let int8Bytes = bytes.map(Int8.init)
+        let retainedBytes = Unmanaged.passRetained(Box(int8Bytes))
+        // A change to the underlying array could render this pointer invalid.
+        // We've expressly retained the value so this ptr is safe until we release if not mutated.
+        let ptr = UnsafePointer(int8Bytes)
+        // We'll decrement the retained value when this block goes out of scope.
+        // Ideally this happens after rust is done with thee CRustSlicei8.
+        defer {
+            retainedBytes.release()
         }
+        // Make the slice
+        return CRustSlicei8(data: Optional(ptr), len: UInt(int8Bytes.count))
     }
 
     /**
      * Generic method to validate that the provided bytes can be used to create the type validated by validator.
      */
     static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
-        Util.toResult(validator(bytesToSlice(bytes.map(Int8.init))))
+        Util.toResult(validator(bytesToRustSlice(bytes)))
     }
 
     /**

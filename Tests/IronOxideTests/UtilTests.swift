@@ -117,34 +117,54 @@ final class UtilTests: XCTestCase {
         XCTAssertEqual(optionSome.val.data, pointerWrapper)
     }
 
-    func testToBytes() {
+    func rustVecToBytes() {
         let originalBytes: [UInt8] = [39, 77, 111, 111, 102, 33, 39, 0]
         let bytesCopy = originalBytes.map(Int8.init)
 
         let rustBytes = bytesCopy.withUnsafeBufferPointer { pt in
             CRustVeci8(data: pt.baseAddress, len: UInt(bytesCopy.count), capacity: UInt(bytesCopy.count))
         }
-        let swiftBytes = Util.toBytes(rustBytes)
+        let swiftBytes = Util.rustVecToBytes(rustBytes)
         XCTAssertEqual(swiftBytes, originalBytes)
     }
 
-    func testBytesToSlice() {
-        let originalBytes: [Int8] = [39, 77, 111, 111, 102, 33, 39, 0]
-        let rustSlice = Util.bytesToSlice(originalBytes)
+    func testBytesToRustSlice() {
+        let originalBytes: [UInt8] = [39, 77, 111, 111, 102, 33, 39, 0]
+        let rustSlice = Util.bytesToRustSlice(originalBytes)
 
         XCTAssertEqual(rustSlice.len, UInt(originalBytes.count))
-        let buffer = UnsafeBufferPointer(start: rustSlice.data, count: Int(rustSlice.len))
-        XCTAssertEqual(Array(buffer), originalBytes)
+        // let newBytes = Array(UnsafeBufferPointer(start: rustSlice.data, count: Int(rustSlice.len)))
+        // XCTAssertEqual(newBytes, originalBytes.map(Int8.init))
+    }
+
+    func testRustSlice() {
+        let originalBytes: [Int8] = [39, 77, 111, 111, 102, 33, 39, 0]
+        // We don't want the bytes to be freed until we're ready, so increment the retention count
+        // Unmanaged only works on classes, so we have to wrap in a class for this to work -- Box in this case.
+        let retainedBytes = Unmanaged.passRetained(Box(originalBytes))
+        // A change to the underlying array could render this pointer invalid.
+        // We've expressly retained the value so this ptr is safe until we release if not mutated.
+        let ptr = UnsafePointer(originalBytes)
+        // We'll decrement the retained value when this block goes out of scope.
+        // Ideally this happens after rust is done with thee CRustSlicei8.
+        defer {
+            retainedBytes.release()
+        }
+        // Make the slice
+        let rustSlice = CRustSlicei8(data: Optional(ptr), len: UInt(originalBytes.count))
+        // Let's go back from the rust slice pointer to an array of bytes
+        let newBytes: [Int8] = Array(UnsafeBufferPointer(start: rustSlice.data, count: Int(rustSlice.len)))
+        XCTAssertEqual(newBytes, originalBytes)
     }
 
     func testValidateBytesAsFailure() throws {
         let originalBytes: [UInt8] = [39, 77, 111, 111, 102, 33, 39, 0]
-        let alwaysFailValidator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString = { _ in
+        let alwaysFailValidator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString = { rustSlice in
             // TODO: Figure out why this fails
-            // XCTAssertEqual(rustSlice.len, UInt(originalBytes.count))
-            // let buffer = UnsafeBufferPointer(start: rustSlice.data, count: Int(rustSlice.len))
+            XCTAssertEqual(rustSlice.len, UInt(originalBytes.count))
+            let buffer = UnsafeBufferPointer(start: rustSlice.data, count: Int(rustSlice.len))
             // XCTAssertEqual(Array(buffer), originalBytes.map(Int8.init))
-            createRustReject()
+            return createRustReject()
         }
 
         assertResultFailure(Util.validateBytesAs(bytes: originalBytes, validator: alwaysFailValidator), hasError: "")
