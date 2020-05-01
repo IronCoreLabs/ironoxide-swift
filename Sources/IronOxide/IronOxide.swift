@@ -106,3 +106,23 @@ public func generateNewDevice(
 public func initialize(device: DeviceContext, config: IronOxideConfig = IronOxideConfig()) -> Result<SDK, IronOxideError> {
     Util.toResult(IronOxide_initialize(device.inner, config.inner)).map(SDK.init)
 }
+
+/**
+ * Initialize IronOxide with a device, then rotate private keys where necessary for the user and their groups.
+ *
+ * Verifies that the provided user/segment exists and the provided device keys are valid and exist for the provided account.
+ * After initialization, checks whether the calling user's private key needs rotation and rotates it if necessary,
+ * then does the same for each group the user is an admin of.
+ *
+ * This takes an optional `timeout` that is used for the rotation call. This is separate from the `config` timeout because it is expected
+ * that rotation could take significantly longer than other operations.
+ */
+public func initializeAndRotate(
+    device: DeviceContext,
+    password: String,
+    config: IronOxideConfig = IronOxideConfig(),
+    timeout: Duration?
+) -> Result<SDK, IronOxideError> {
+    let timeoutPtr = Util.buildOptionOf(timeout, CRustClassOptDuration.init)
+    return Util.toResult(IronOxide_initializeAndRotate(device.inner, Util.swiftStringToRust(password), config.inner, timeoutPtr)).map(SDK.init)
+}
