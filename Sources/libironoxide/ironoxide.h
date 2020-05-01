@@ -7,6 +7,8 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/rust_result4232mut3232c_voidCRustString.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/rust_resultCRustOption4232mut3232c_voidCRustString.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/rust_resultCRustForeignVecCRustString.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/rust_resultCRustVeci32CRustString.h"
+
 
 //Base IronOxide Types
 #include "../../../ironoxide-java/cpp/generated/sdk/c_PrivateKey.h"
@@ -60,3 +62,6 @@
 //IronOxide
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxideConfig.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxide.h"
+
+#include "../../../ironoxide-java/cpp/generated/sdk/c_BlindIndexSearch.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_EncryptedBlindIndexSalt.h"
