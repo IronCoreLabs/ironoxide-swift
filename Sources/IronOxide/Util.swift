@@ -145,7 +145,7 @@ struct Util {
     }
 
     /**
-     * Convert the provided Array of IronOxide bytes into Swift UInt32 bytes. The bytes will be copied into Swift managed memory and the
+     * Convert the provided Array of IronOxide bytes into Swift Int32 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
     static func toBytes(_ rustVec: CRustVeci32) -> [Int32] {
