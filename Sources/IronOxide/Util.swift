@@ -58,11 +58,29 @@ struct Util {
     }
 
     /**
+     * Convert the provided IronOxide Result of a Vec of i32 into a Swift Result
+     */
+    static func toResult(_ result: CRustResultCRustVeci32CRustString) -> Result<CRustVeci32, IronOxideError> {
+        Util.intToBool(result.is_ok) ?
+            .success(result.data.ok) :
+            .failure(IronOxideError.error(Util.rustStringToSwift(result.data.err)))
+    }
+
+    /**
      * Take the provided Rust result that on success contains an array of an IronOxide struct
      */
     static func mapListResultTo<T>(result: CRustResultCRustForeignVecCRustString, to: (OpaquePointer) -> T) -> Result<[T], IronOxideError> {
         Util.toResult(result).map { rustList in
             Util.collectTo(list: rustList, to: to)
+        }
+    }
+
+    /**
+     * Take the provided Rust result of Vec of i32 that on success contains an array of Int32
+     */
+    static func mapListResultToInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
+        Util.toResult(result).map { rustList in
+            Util.toBytes(rustList)
         }
     }
 
@@ -124,6 +142,16 @@ struct Util {
         let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
         CRustVeci8_free(bytes)
         return swiftBytes
+    }
+
+    /**
+     * Convert the provided Array of IronOxide bytes into Swift Int32 bytes. The bytes will be copied into Swift managed memory and the
+     * original bytes in Rust freed
+     */
+    static func toBytes(_ rustVec: CRustVeci32) -> [Int32] {
+        let swiftArray = Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { value in Int32(value) }
+        CRustVeci32_free(rustVec)
+        return swiftArray
     }
 
     /**
