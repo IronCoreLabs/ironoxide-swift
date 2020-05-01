@@ -49,7 +49,7 @@ public class BlindIndexSearch: SdkObject {
         } else {
             partitionIdPtr = CRustOptionCRustStrView()
         }
-        return Util.mapListResultTo(fn(inner, Util.swiftStringToRust(query), partitionIdPtr))
+        return Util.mapListResultToInt32Array(fn(inner, Util.swiftStringToRust(query), partitionIdPtr))
     }
 
     deinit { BlindIndexSearch_delete(inner) }

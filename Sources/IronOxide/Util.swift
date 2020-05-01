@@ -78,9 +78,9 @@ struct Util {
     /**
      * Take the provided Rust result of Vec of i32 that on success contains an array of Int32
      */
-    static func mapListResultTo(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
+    static func mapListResultToInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
         Util.toResult(result).map { rustList in
-            Util.collectTo(rustList)
+            Util.toBytes(rustList)
         }
     }
 
@@ -135,21 +135,6 @@ struct Util {
     }
 
     /**
-     * Iterate over the provided list of a Rust Vec of i32 and convert them to an array of Int32
-     */
-    static func collectTo(_ list: CRustVeci32) -> [Int32] {
-        var finalList: [Int32] = []
-        // This is done because list is immutable and we're modifying it in our loop. Since we only access the data if
-        // the list has any length, we're safe to ignore the pointer being nil
-        var data = list.data!
-        for _ in 0 ..< list.len {
-            finalList.append(data.pointee)
-            data = data.successor()
-        }
-        return finalList
-    }
-
-    /**
      * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
@@ -157,6 +142,16 @@ struct Util {
         let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
         CRustVeci8_free(bytes)
         return swiftBytes
+    }
+
+    /**
+     * Convert the provided Array of IronOxide bytes into Swift UInt32 bytes. The bytes will be copied into Swift managed memory and the
+     * original bytes in Rust freed
+     */
+    static func toBytes(_ rustVec: CRustVeci32) -> [Int32] {
+        let swiftArray = Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { value in Int32(value) }
+        CRustVeci32_free(rustVec)
+        return swiftArray
     }
 
     /**
