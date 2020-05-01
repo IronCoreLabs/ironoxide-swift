@@ -165,6 +165,10 @@ public class DocumentEncryptResult: SdkObject {
         FailedResult(DocumentEncryptResult_getErrors(inner))
     }()
 
+    public lazy var encryptedData: [UInt8] = {
+        Util.toBytes(DocumentEncryptResult_getEncryptedData(inner))
+    }()
+
     deinit { DocumentEncryptResult_delete(inner) }
 }
 
@@ -236,9 +240,9 @@ public class PolicyGrant: SdkObject {
 }
 
 public class DocumentEncryptOpts: SdkObject {
-    public convenience init?(
-        id: DocumentId,
-        documentName: DocumentName,
+    public convenience init(
+        id: DocumentId?,
+        documentName: DocumentName?,
         grantToAuthor: Bool,
         userGrants: [UserId],
         groupGrants: [GroupId],
