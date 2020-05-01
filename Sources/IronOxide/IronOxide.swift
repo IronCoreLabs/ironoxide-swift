@@ -1,10 +1,15 @@
 import libironoxide
 
+/// Top-level configuration object for IronOxide
 public class IronOxideConfig: SdkObject {
     public convenience init() {
         self.init(IronOxideConfig_default())
     }
 
+    /**
+     * - Parameter policyCaching: policy caching configuration for IronOxide
+     * - Parameter sdkOperationTimeout: timeout for all SDK methods
+     */
     public convenience init(policyCaching: PolicyCachingConfig, sdkOperationTimeout: Duration?) {
         let timeoutPtr = Util.buildOptionOf(sdkOperationTimeout, CRustClassOptDuration.init)
         self.init(IronOxideConfig_create(policyCaching.inner, timeoutPtr))
@@ -21,11 +26,21 @@ public class IronOxideConfig: SdkObject {
     deinit { IronOxideConfig_delete(inner) }
 }
 
+/**
+ * Policy evaluation caching config
+ *
+ * Since policies are evaluated by the webservice, caching the result can greatly speed
+ * up encrypting a document with a PolicyGrant.
+ */
 public class PolicyCachingConfig: SdkObject {
     public convenience init() {
         self.init(PolicyCachingConfig_default())
     }
 
+    /**
+     * - Parameter maxEntries: maximum number of policy evaluations that will be cached by the SDK.
+     *                         If the maximum number is exceeded, the cache will be cleared prior to storing the next entry.
+     */
     public convenience init(maxEntries: UInt) {
         self.init(PolicyCachingConfig_create(maxEntries))
     }
