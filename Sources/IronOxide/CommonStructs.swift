@@ -20,7 +20,8 @@ public class PrivateKey: SdkObject {
      * Create a new PrivateKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PrivateKey
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(PrivateKey_validate) {
         case let .success(privKey):
             self.init(privKey)
         case .failure:
@@ -60,7 +61,8 @@ public class PublicKey: SdkObject {
      * Create a new PublicKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PublicKey
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(PublicKey_validate) {
         case let .success(pubKey):
             self.init(pubKey)
         case .failure:
@@ -86,7 +88,8 @@ public class DeviceSigningKeyPair: SdkObject {
      * Create a new DeviceSigningKeyPair from the provided array of bytes. Will fail if the provided bytes are not a valid device signing key pair
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(DeviceSigningKeyPair_validate) {
         case let .success(dskp):
             self.init(dskp)
         case .failure:
@@ -260,4 +263,97 @@ public class Duration: SdkObject {
     }()
 
     deinit { Duration_delete(inner) }
+}
+
+public class RustBytes {
+    public let swift: ContiguousArray<Int8>
+    
+    /**
+     * Initialize with a swift array of signed bytes
+     */
+    public init(_ a: [Int8]) {
+        self.swift = ContiguousArray.init(a)
+    }
+    
+    /**
+     * Initialize with a swift array of unsigned bytes. Internally stores as an array of swift bytes without changing any bits in the raw storage.
+     */
+    public init(_ a: [UInt8]) {
+        self.swift = ContiguousArray.init(a.map({b in Int8.init(bitPattern: b)}))
+    }
+
+    /**
+     * Initialize with a Rust slice. We copy the input since we can't know its lifetime. We take on faith the memory is accessible
+     * when init is called.
+     */
+    public init(_ s: CRustSlicei8) {
+        // Create a temporary array using existing buffer. Don't mess with retain count.
+        // Copy that array and then store it locally.
+        self.swift = ContiguousArray.init(Array(UnsafeBufferPointer(start: s.data, count: Int(s.len))).map { $0 })
+    }
+    
+    /**
+     * Convert the initialized byte array into a slice that we can pass to libironoxide.
+     * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
+     */
+    public var slice: CRustSlicei8 {
+        self.swift.withContiguousStorageIfAvailable({ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count))})!
+    }
+    
+    public var count: Int { self.swift.count }
+    
+    /**
+     * Takes a function that needs a rust slice as input, runs that function and returns the result.
+     * This is the safest way to pass a swift array to rust as a slice.
+     */
+    public func withSlice<R>(_ body: (CRustSlicei8) throws -> R) rethrows -> R {
+        try body(self.slice)
+    }
+    
+    /**
+     * Generic method to validate that the provided bytes can be used to create the type validated by the validator function.
+     */
+    public func validateBytesAs(_ validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
+        Util.toResult(validator(self.slice))
+    }
+}
+
+extension RustBytes: Equatable {
+    static public func == (lhs: RustBytes, rhs: RustBytes) -> Bool {
+        return lhs.swift == rhs.swift
+    }
+}
+
+public class RustObjects<T> {
+    public let swift: ContiguousArray<T>
+ 
+    /**
+     * Converts an array of SdkObjects to an array of the things the objects point to.
+     */
+    public init(array: [SdkObject], fn: (OpaquePointer) -> T)  {
+        self.swift = ContiguousArray.init(array.map { obj in fn(obj.inner) })
+    }
+    
+    /**
+     * Convert the array of objects into a slice that we can pass to libironoxide.
+     * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
+     */
+    public var slice: CRustObjectSlice {
+        let step = UInt(MemoryLayout<T>.stride)
+        return self.swift.withContiguousStorageIfAvailable { pt in
+            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(pt.count), step: step)
+        }!
+    }
+    
+    
+    public var count: Int { self.swift.count }
+    
+    /**
+     * Takes a function that needs a rust object slice as input, runs that function and returns the result.
+     * This is the safest way to pass a swift array to rust as a slice.
+     */
+    public func withSlice<R>(_ body: (CRustObjectSlice) throws -> R) rethrows -> R {
+        try body(self.slice)
+    }
+    
 }

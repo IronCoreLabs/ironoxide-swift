@@ -146,7 +146,7 @@ struct Util {
      * original bytes in Rust freed
      */
     static func rustVecToBytes(_ bytes: CRustVeci8) -> [UInt8] {
-        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
+        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map { UInt8.init(bitPattern: $0)}
     }
 
     /**
@@ -158,47 +158,10 @@ struct Util {
     }
 
     /**
-     * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
-     */
-    static func bytesToRustSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
-        let int8Bytes = bytes.map(Int8.init)
-        let retainedBytes = Unmanaged.passRetained(Box(int8Bytes))
-        // A change to the underlying array could render this pointer invalid.
-        // We've expressly retained the value so this ptr is safe until we release if not mutated.
-        let ptr = UnsafePointer(int8Bytes)
-        // We'll decrement the retained value when this block goes out of scope.
-        // Ideally this happens after rust is done with thee CRustSlicei8.
-        defer {
-            retainedBytes.release()
-        }
-        // Make the slice
-        return CRustSlicei8(data: Optional(ptr), len: UInt(int8Bytes.count))
-    }
-
-    /**
-     * Generic method to validate that the provided bytes can be used to create the type validated by validator.
-     */
-    static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
-        Util.toResult(validator(bytesToRustSlice(bytes)))
-    }
-
-    /**
      * Convert a Java NullableBoolean to a Swift Bool
      */
     static func nullableBooleanToBool(_ nullableBoolean: OpaquePointer) -> Bool {
         Util.intToBool(NullableBoolean_getBoolean(nullableBoolean))
-    }
-
-    /**
-     * Converts an array of objects to a CRustSlice.
-     * Takes the array of objects and a function to the Rust internal representation of the object
-     */
-    static func arrayToRustSlice<T>(array: [SdkObject], fn: (OpaquePointer) -> T) -> CRustObjectSlice {
-        let rustInternalList = array.map { obj in fn(obj.inner) }
-        let step = UInt(MemoryLayout<T>.stride)
-        return rustInternalList.withUnsafeBufferPointer { pt in
-            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(rustInternalList.count), step: step)
-        }
     }
 
     /**
