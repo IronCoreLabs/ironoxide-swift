@@ -19,10 +19,10 @@ public class DocumentName: SdkObject {
 }
 
 public enum DocumentAssociationType {
-    init(i: UInt32) {
+    init(_ i: UInt32) {
         let associationType = AssociationType(i)
         if associationType == Owner {
-            self = .fromOwner
+            self = .owner
         } else if associationType == FromUser {
             self = .fromUser
         } else if associationType == FromGroup {
@@ -32,19 +32,11 @@ public enum DocumentAssociationType {
         }
     }
 
-    case fromOwner
+    case owner
     case fromUser
     case fromGroup
     case unknown
 }
-
-// public class DocumentAssociationType {
-//     let inner: UInt32
-
-//     init(_ res: UInt32) {
-//         inner = res
-//     }
-// }
 
 /**
  * Metadata about a document.
@@ -59,7 +51,7 @@ public class DocumentListMeta: SdkObject {
     }()
 
     public lazy var associationType: DocumentAssociationType = {
-        DocumentAssociationType(i: DocumentListMeta_getAssociationType(inner))
+        DocumentAssociationType(DocumentListMeta_getAssociationType(inner))
     }()
 
     public lazy var created: Date = {
@@ -94,7 +86,7 @@ public class DocumentMetadataResult: SdkObject {
     }()
 
     public lazy var associationType: DocumentAssociationType = {
-        DocumentAssociationType(i: DocumentMetadataResult_getAssociationType(inner))
+        DocumentAssociationType(DocumentMetadataResult_getAssociationType(inner))
     }()
 
     public lazy var created: Date = {
