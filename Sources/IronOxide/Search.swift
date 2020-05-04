@@ -26,7 +26,7 @@ public class BlindIndexSearch: SdkObject {
     /**
      * Generate the list of tokens to use to find entries that match the search query, given the specified partitionId.
      */
-    public func tokenizeQuery(query: String, partitionId: String?) -> Result<[Int32], IronOxideError> {
+    public func tokenizeQuery(query: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(query, partitionId, BlindIndexSearch_tokenizeQuery)
     }
 
@@ -35,7 +35,7 @@ public class BlindIndexSearch: SdkObject {
      * it harder for someone to know what the input was. Because of this, calling this function will not be the same as `tokenizeQuery`, but
      * `tokenizeQuery` will always return a subset of the values returned by `tokenizeData`.
      */
-    public func tokenizeData(data: String, partitionId: String?) -> Result<[Int32], IronOxideError> {
+    public func tokenizeData(data: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(data, partitionId, BlindIndexSearch_tokenizeData)
     }
 
@@ -43,7 +43,7 @@ public class BlindIndexSearch: SdkObject {
         _ query: String,
         _ partitionId: String?,
         _ fn: (OpaquePointer, CRustStrView, CRustOptionCRustStrView) -> CRustResultCRustVeci32CRustString
-    ) -> Result<[Int32], IronOxideError> {
+    ) -> Result<[UInt32], IronOxideError> {
         var partitionIdPtr: CRustOptionCRustStrView
         if let id = partitionId {
             let unionStrView = CRustOptionUnionCRustStrView(data: Util.swiftStringToRust(id))
