@@ -18,13 +18,33 @@ public class DocumentName: SdkObject {
     deinit { DocumentName_delete(inner) }
 }
 
-public class DocumentAssociationType {
-    let inner: UInt32
-
-    init(_ res: UInt32) {
-        inner = res
+public enum DocumentAssociationType {
+    init(i: UInt32) {
+        let associationType = AssociationType(i)
+        if associationType == Owner {
+            self = .fromOwner
+        } else if associationType == FromUser {
+            self = .fromUser
+        } else if associationType == FromGroup {
+            self = .fromGroup
+        } else {
+            self = .unknown
+        }
     }
+
+    case fromOwner
+    case fromUser
+    case fromGroup
+    case unknown
 }
+
+// public class DocumentAssociationType {
+//     let inner: UInt32
+
+//     init(_ res: UInt32) {
+//         inner = res
+//     }
+// }
 
 /**
  * Metadata about a document.
@@ -39,7 +59,7 @@ public class DocumentListMeta: SdkObject {
     }()
 
     public lazy var associationType: DocumentAssociationType = {
-        DocumentAssociationType(DocumentListMeta_getAssociationType(inner))
+        DocumentAssociationType(i: DocumentListMeta_getAssociationType(inner))
     }()
 
     public lazy var created: Date = {
@@ -74,7 +94,7 @@ public class DocumentMetadataResult: SdkObject {
     }()
 
     public lazy var associationType: DocumentAssociationType = {
-        DocumentAssociationType(DocumentMetadataResult_getAssociationType(inner))
+        DocumentAssociationType(i: DocumentMetadataResult_getAssociationType(inner))
     }()
 
     public lazy var created: Date = {
