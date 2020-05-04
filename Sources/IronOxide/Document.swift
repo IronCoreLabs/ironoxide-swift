@@ -1,6 +1,6 @@
 import Foundation
 import libironoxide
-
+// Name of a document (Note that this is unencrypted).
 public class DocumentName: SdkObject {
     public convenience init?(_ name: String) {
         switch Util.toResult(DocumentName_validate(Util.swiftStringToRust(name))) {
@@ -16,26 +16,6 @@ public class DocumentName: SdkObject {
     }()
 
     deinit { DocumentName_delete(inner) }
-}
-
-public class DocumentId: SdkObject {
-    /**
-     * Create a new DocumentId from the provided String. Will fail if the document ID is not valid.
-     */
-    public convenience init?(_ id: String) {
-        switch Util.toResult(DocumentId_validate(Util.swiftStringToRust(id))) {
-        case let .success(deviceId):
-            self.init(deviceId)
-        case .failure:
-            return nil
-        }
-    }
-
-    public lazy var id: String = {
-        Util.rustStringToSwift(DocumentId_getId(inner))
-    }()
-
-    deinit { DocumentId_delete(inner) }
 }
 
 public class DocumentAssociationType {
@@ -86,23 +66,23 @@ public class DocumentListResult: SdkObject {
 
 public class DocumentMetadataResult: SdkObject {
     public lazy var id: DocumentId = {
-        DocumentId(DocumentListMeta_getId(inner))
+        DocumentId(DocumentMetadataResult_getId(inner))
     }()
 
     public lazy var name: DocumentName? = {
-        Util.toOption(DocumentListMeta_getName(inner)).map(DocumentName.init)
+        Util.toOption(DocumentMetadataResult_getName(inner)).map(DocumentName.init)
     }()
 
     public lazy var associationType: DocumentAssociationType = {
-        DocumentAssociationType(DocumentListMeta_getAssociationType(inner))
+        DocumentAssociationType(DocumentMetadataResult_getAssociationType(inner))
     }()
 
     public lazy var created: Date = {
-        Util.timestampToDate(DocumentListMeta_getCreated(inner))
+        Util.timestampToDate(DocumentMetadataResult_getCreated(inner))
     }()
 
     public lazy var lastUpdated: Date = {
-        Util.timestampToDate(DocumentListMeta_getLastUpdated(inner))
+        Util.timestampToDate(DocumentMetadataResult_getLastUpdated(inner))
     }()
 
     public lazy var visibleToUsers: [UserId] = {
@@ -240,6 +220,10 @@ public class PolicyGrant: SdkObject {
 }
 
 public class DocumentEncryptOpts: SdkObject {
+    public convenience init() {
+        self.init(DocumentEncryptOpts_default())
+    }
+
     public convenience init(
         id: DocumentId?,
         documentName: DocumentName?,
@@ -284,6 +268,14 @@ public class DocumentDecryptResult: SdkObject {
 }
 
 public class DocumentAccessResult: SdkObject {
+    public lazy var changed: SucceededResult = {
+        SucceededResult(DocumentAccessResult_getChanged(inner))
+    }()
+
+    public lazy var errors: FailedResult = {
+        FailedResult(DocumentAccessResult_getErrors(inner))
+    }()
+
     deinit { DocumentAccessResult_delete(inner) }
 }
 
@@ -319,7 +311,7 @@ public struct DocumentOperations {
         Util.toResult(IronOxide_documentGetIdFromBytes(ironoxide, Util.bytesToSlice(bytes))).map(DocumentId.init)
     }
 
-    public func encrypt(bytes: [UInt8], options: DocumentEncryptOpts) -> Result<DocumentEncryptResult, IronOxideError> {
+    public func encrypt(bytes: [UInt8], options: DocumentEncryptOpts = DocumentEncryptOpts()) -> Result<DocumentEncryptResult, IronOxideError> {
         Util.toResult(IronOxide_documentEncrypt(ironoxide, Util.bytesToSlice(bytes), options.inner)).map(DocumentEncryptResult.init)
     }
 
