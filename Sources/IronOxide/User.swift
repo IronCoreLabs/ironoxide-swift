@@ -204,11 +204,13 @@ public struct UserOperations {
      * they can be added to groups or have documents shared with them.
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
-        let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
-        return Util.mapListResultTo(
-            result: IronOxide_userGetPublicKey(ironoxide, listOfUsers),
-            to: UserWithKey.init
-        )
+        let listOfUsers = RustObjects(array: users, fn: UserId_getId)
+        return listOfUsers.withSlice { users in
+            Util.mapListResultTo(
+                result: IronOxide_userGetPublicKey(ironoxide, users),
+                to: UserWithKey.init
+            )
+        }
     }
 
     /**
