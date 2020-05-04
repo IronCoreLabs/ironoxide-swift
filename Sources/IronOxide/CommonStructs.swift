@@ -12,6 +12,26 @@ public class SdkObject {
     }
 }
 
+public class DocumentId: SdkObject {
+    /**
+     * Create a new DocumentId from the provided String. Will fail if the document ID is not valid.
+     */
+    public convenience init?(_ id: String) {
+        switch Util.toResult(DocumentId_validate(Util.swiftStringToRust(id))) {
+        case let .success(documentId):
+            self.init(documentId)
+        case .failure:
+            return nil
+        }
+    }
+
+    public lazy var id: String = {
+        Util.rustStringToSwift(DocumentId_getId(inner))
+    }()
+
+    deinit { DocumentId_delete(inner) }
+}
+
 /**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
