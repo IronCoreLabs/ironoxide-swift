@@ -272,20 +272,20 @@ public class Duration: SdkObject {
  * Representation of bytes within Rust
  */
 class RustBytes {
-    let swift: ContiguousArray<Int8>
+    let innerMemory: ContiguousArray<Int8>
 
     /**
      * Initialize with a swift array of signed bytes
      */
     init(_ a: [Int8]) {
-        swift = ContiguousArray(a)
+        innerMemory = ContiguousArray(a)
     }
 
     /**
      * Initialize with a swift array of unsigned bytes. Internally stores as an array of swift bytes without changing any bits in the raw storage.
      */
     init(_ a: [UInt8]) {
-        swift = ContiguousArray(a.map { Int8(bitPattern: $0) })
+        innerMemory = ContiguousArray(a.map { Int8(bitPattern: $0) })
     }
 
     /**
@@ -295,7 +295,7 @@ class RustBytes {
     init(_ s: CRustSlicei8) {
         // Create a temporary array using existing buffer. Don't mess with retain count.
         // Copy that array and then store it locally.
-        swift = ContiguousArray(Array(UnsafeBufferPointer(start: s.data, count: Int(s.len))).map { $0 })
+        innerMemory = ContiguousArray(Array(UnsafeBufferPointer(start: s.data, count: Int(s.len))))
     }
 
     /**
@@ -303,10 +303,10 @@ class RustBytes {
      * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
      */
     lazy var slice: CRustSlicei8 = {
-        swift.withContiguousStorageIfAvailable { ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count)) }!
+        innerMemory.withContiguousStorageIfAvailable { ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count)) }!
     }()
 
-    lazy var count: Int = { swift.count }()
+    lazy var count: Int = { innerMemory.count }()
 
     /**
      * Takes a function that needs a rust slice as input, runs that function and returns the result.
@@ -329,7 +329,7 @@ class RustBytes {
  */
 extension RustBytes: Equatable {
     static func == (lhs: RustBytes, rhs: RustBytes) -> Bool {
-        lhs.swift == rhs.swift
+        lhs.innerMemory == rhs.innerMemory
     }
 }
 
@@ -337,13 +337,13 @@ extension RustBytes: Equatable {
  * Representaiton of an array of Rust objects in Swift
  */
 class RustObjects<T> {
-    let swift: ContiguousArray<T>
+    let innerMemory: ContiguousArray<T>
 
     /**
      * Converts an array of SdkObjects to an array of the things the objects point to.
      */
     init(array: [SdkObject], fn: (OpaquePointer) -> T) {
-        swift = ContiguousArray(array.map { obj in fn(obj.inner) })
+        innerMemory = ContiguousArray(array.map { obj in fn(obj.inner) })
     }
 
     /**
@@ -352,12 +352,12 @@ class RustObjects<T> {
      */
     lazy var slice: CRustObjectSlice = {
         let step = UInt(MemoryLayout<T>.stride)
-        return swift.withContiguousStorageIfAvailable { pt in
+        return innerMemory.withContiguousStorageIfAvailable { pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(pt.count), step: step)
         }!
     }()
 
-    lazy var count: Int = { swift.count }()
+    lazy var count: Int = { innerMemory.count }()
 
     /**
      * Takes a function that needs a rust object slice as input, runs that function and returns the result.

@@ -85,7 +85,7 @@ struct Util {
     /**
      * Take the provided Rust result of Vec of i32 that on success contains an array of UInt32
      */
-    static func mapListResultToInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[UInt32], IronOxideError> {
+    static func mapListResultToUInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[UInt32], IronOxideError> {
         Util.toResult(result).map { rustList in
             Util.rustVecToBytes(rustList)
         }
