@@ -20,7 +20,8 @@ public class PrivateKey: SdkObject {
      * Create a new PrivateKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PrivateKey
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: PrivateKey_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(PrivateKey_validate) {
         case let .success(privKey):
             self.init(privKey)
         case .failure:
@@ -32,7 +33,7 @@ public class PrivateKey: SdkObject {
      * Get the PrivateKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(PrivateKey_asBytes(inner))
+        Util.rustVecToBytes(PrivateKey_asBytes(inner))
     }()
 
     deinit { PrivateKey_delete(inner) }
@@ -46,7 +47,7 @@ public class EncryptedPrivateKey: SdkObject {
      * Get the EncryptedPrivateKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(EncryptedPrivateKey_asBytes(inner))
+        Util.rustVecToBytes(EncryptedPrivateKey_asBytes(inner))
     }()
 
     deinit { EncryptedPrivateKey_delete(inner) }
@@ -60,7 +61,8 @@ public class PublicKey: SdkObject {
      * Create a new PublicKey from the provided array of bytes. Will fail if the provided bytes are not a valid IronCore PublicKey
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: PublicKey_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(PublicKey_validate) {
         case let .success(pubKey):
             self.init(pubKey)
         case .failure:
@@ -72,7 +74,7 @@ public class PublicKey: SdkObject {
      * Get the PublicKey data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(PublicKey_asBytes(inner))
+        Util.rustVecToBytes(PublicKey_asBytes(inner))
     }()
 
     deinit { PublicKey_delete(inner) }
@@ -86,7 +88,8 @@ public class DeviceSigningKeyPair: SdkObject {
      * Create a new DeviceSigningKeyPair from the provided array of bytes. Will fail if the provided bytes are not a valid device signing key pair
      */
     public convenience init?(_ bytes: [UInt8]) {
-        switch Util.validateBytesAs(bytes: bytes, validator: DeviceSigningKeyPair_validate) {
+        let rustBytes = RustBytes(bytes)
+        switch rustBytes.validateBytesAs(DeviceSigningKeyPair_validate) {
         case let .success(dskp):
             self.init(dskp)
         case .failure:
@@ -98,7 +101,7 @@ public class DeviceSigningKeyPair: SdkObject {
      * Get the DeviceSigningKeyPair data out as an array of bytes
      */
     public lazy var bytes: [UInt8] = {
-        Util.toBytes(DeviceSigningKeyPair_asBytes(inner))
+        Util.rustVecToBytes(DeviceSigningKeyPair_asBytes(inner))
     }()
 
     deinit { DeviceSigningKeyPair_delete(inner) }
@@ -242,6 +245,9 @@ public class DeviceContext: SdkObject {
     deinit { DeviceSigningKeyPair_delete(inner) }
 }
 
+/**
+ * Creates a new duration of time given either seconds or milliseconds. Used to provided timeout durations for SDK API requests
+ */
 public class Duration: SdkObject {
     public convenience init(millis: UInt64) {
         self.init(Duration_fromMillis(millis))
@@ -260,4 +266,104 @@ public class Duration: SdkObject {
     }()
 
     deinit { Duration_delete(inner) }
+}
+
+/**
+ * Representation of bytes within Rust
+ */
+class RustBytes {
+    let innerMemory: ContiguousArray<Int8>
+
+    /**
+     * Initialize with a swift array of signed bytes
+     */
+    init(_ a: [Int8]) {
+        innerMemory = ContiguousArray(a)
+    }
+
+    /**
+     * Initialize with a swift array of unsigned bytes. Internally stores as an array of swift bytes without changing any bits in the raw storage.
+     */
+    init(_ a: [UInt8]) {
+        innerMemory = ContiguousArray(a.map { Int8(bitPattern: $0) })
+    }
+
+    /**
+     * Initialize with a Rust slice. We copy the input since we can't know its lifetime. We take on faith the memory is accessible
+     * when init is called.
+     */
+    init(_ s: CRustSlicei8) {
+        // Create a temporary array using existing buffer. Don't mess with retain count.
+        // Copy that array and then store it locally.
+        innerMemory = ContiguousArray(Array(UnsafeBufferPointer(start: s.data, count: Int(s.len))))
+    }
+
+    /**
+     * Convert the initialized byte array into a slice that we can pass to libironoxide.
+     * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
+     */
+    lazy var slice: CRustSlicei8 = {
+        innerMemory.withContiguousStorageIfAvailable { ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count)) }!
+    }()
+
+    lazy var count: Int = { innerMemory.count }()
+
+    /**
+     * Takes a function that needs a rust slice as input, runs that function and returns the result.
+     * This is the safest way to pass a swift array to rust as a slice.
+     */
+    func withSlice<R>(_ body: (CRustSlicei8) throws -> R) rethrows -> R {
+        try body(slice)
+    }
+
+    /**
+     * Generic method to validate that the provided bytes can be used to create the type validated by the validator function.
+     */
+    func validateBytesAs(_ validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
+        Util.toResult(validator(slice))
+    }
+}
+
+/**
+ * Implement equality for RustBytes
+ */
+extension RustBytes: Equatable {
+    static func == (lhs: RustBytes, rhs: RustBytes) -> Bool {
+        lhs.innerMemory == rhs.innerMemory
+    }
+}
+
+/**
+ * Representaiton of an array of Rust objects in Swift
+ */
+class RustObjects<T> {
+    let innerMemory: ContiguousArray<T>
+
+    /**
+     * Converts an array of SdkObjects to an array of the things the objects point to.
+     */
+    init(array: [SdkObject], fn: (OpaquePointer) -> T) {
+        innerMemory = ContiguousArray(array.map { obj in fn(obj.inner) })
+    }
+
+    /**
+     * Convert the array of objects into a slice that we can pass to libironoxide.
+     * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
+     */
+    lazy var slice: CRustObjectSlice = {
+        let step = UInt(MemoryLayout<T>.stride)
+        return innerMemory.withContiguousStorageIfAvailable { pt in
+            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(pt.count), step: step)
+        }!
+    }()
+
+    lazy var count: Int = { innerMemory.count }()
+
+    /**
+     * Takes a function that needs a rust object slice as input, runs that function and returns the result.
+     * This is the safest way to pass a swift array to rust as a slice.
+     */
+    func withSlice<R>(_ body: (CRustObjectSlice) throws -> R) rethrows -> R {
+        try body(slice)
+    }
 }

@@ -15,7 +15,8 @@ Building this library is pretty manual at the moment and takes a lot of steps. W
 
 ## VSCode Setup
 
-+ Install the [SwiftLint](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint) and [SwiftFormat](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftformat) extensions. If you don't have it already, enable the `Format on Save` option in VSCode.
++ Install [SwiftLint](https://github.com/realm/SwiftLint) and [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) binaries.
++ Install the [SwiftLint](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint) and [SwiftFormat](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftformat) extensions. If you don't have it enabled already, enable the `Format on Save` option in VSCode.
 + Clone the [sourcekit-lsp extension](https://github.com/apple/sourcekit-lsp). Then follow the [instructions](https://github.com/apple/sourcekit-lsp/tree/master/Editors/vscode) for how to build and install the extension into VSCode. In order for this extension to work you'll need to have the `sourcekit-lsp` binary that came with your Swift installation in your path.
 
 ## Adding Library to iOS Project in XCode

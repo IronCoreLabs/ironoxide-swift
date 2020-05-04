@@ -2,15 +2,17 @@ import libironoxide
 
 public class EncryptedBlindIndexSalt: SdkObject {
     public convenience init(encryptedDeks: [UInt8], encryptedSaltBytes: [UInt8]) {
-        self.init(EncryptedBlindIndexSalt_create(Util.bytesToSlice(encryptedDeks), Util.bytesToSlice(encryptedSaltBytes)))
+        let rustEncryptedDeks = RustBytes(encryptedDeks)
+        let rustEncryptedSaltBytes = RustBytes(encryptedSaltBytes)
+        self.init(EncryptedBlindIndexSalt_create(rustEncryptedDeks.slice, rustEncryptedSaltBytes.slice))
     }
 
     public lazy var encryptedDeks: [UInt8] = {
-        Util.toBytes(EncryptedBlindIndexSalt_getEncryptedDeks(inner))
+        Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedDeks(inner))
     }()
 
     public lazy var encryptedSaltBytes: [UInt8] = {
-        Util.toBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
+        Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
     }()
 
     public func initializeSearch(sdk: SDK) -> Result<BlindIndexSearch, IronOxideError> {
@@ -24,7 +26,7 @@ public class BlindIndexSearch: SdkObject {
     /**
      * Generate the list of tokens to use to find entries that match the search query, given the specified partitionId.
      */
-    public func tokenizeQuery(query: String, partitionId: String?) -> Result<[Int32], IronOxideError> {
+    public func tokenizeQuery(query: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(query, partitionId, BlindIndexSearch_tokenizeQuery)
     }
 
@@ -33,7 +35,7 @@ public class BlindIndexSearch: SdkObject {
      * it harder for someone to know what the input was. Because of this, calling this function will not be the same as `tokenizeQuery`, but
      * `tokenizeQuery` will always return a subset of the values returned by `tokenizeData`.
      */
-    public func tokenizeData(data: String, partitionId: String?) -> Result<[Int32], IronOxideError> {
+    public func tokenizeData(data: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(data, partitionId, BlindIndexSearch_tokenizeData)
     }
 
@@ -41,7 +43,7 @@ public class BlindIndexSearch: SdkObject {
         _ query: String,
         _ partitionId: String?,
         _ fn: (OpaquePointer, CRustStrView, CRustOptionCRustStrView) -> CRustResultCRustVeci32CRustString
-    ) -> Result<[Int32], IronOxideError> {
+    ) -> Result<[UInt32], IronOxideError> {
         var partitionIdPtr: CRustOptionCRustStrView
         if let id = partitionId {
             let unionStrView = CRustOptionUnionCRustStrView(data: Util.swiftStringToRust(id))
@@ -49,7 +51,7 @@ public class BlindIndexSearch: SdkObject {
         } else {
             partitionIdPtr = CRustOptionCRustStrView()
         }
-        return Util.mapListResultToInt32Array(fn(inner, Util.swiftStringToRust(query), partitionIdPtr))
+        return Util.mapListResultToUInt32Array(fn(inner, Util.swiftStringToRust(query), partitionIdPtr))
     }
 
     deinit { BlindIndexSearch_delete(inner) }

@@ -1,6 +1,13 @@
 import struct Foundation.Date
 import libironoxide
 
+class Box<A> {
+    var unbox: A
+    init(_ value: A) {
+        self.unbox = value
+    }
+}
+
 struct Util {
     /**
      * Convert the provided Int64 timestamp into a Swift date.
@@ -76,11 +83,11 @@ struct Util {
     }
 
     /**
-     * Take the provided Rust result of Vec of i32 that on success contains an array of Int32
+     * Take the provided Rust result of Vec of i32 that on success contains an array of UInt32
      */
-    static func mapListResultToInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[Int32], IronOxideError> {
+    static func mapListResultToUInt32Array(_ result: CRustResultCRustVeci32CRustString) -> Result<[UInt32], IronOxideError> {
         Util.toResult(result).map { rustList in
-            Util.toBytes(rustList)
+            Util.rustVecToBytes(rustList)
         }
     }
 
@@ -138,45 +145,16 @@ struct Util {
      * Convert the provided Array of IronOxide bytes into Swift UInt8 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
-    static func toBytes(_ bytes: CRustVeci8) -> [UInt8] {
-        let swiftBytes = Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map(UInt8.init)
-        CRustVeci8_free(bytes)
-        return swiftBytes
+    static func rustVecToBytes(_ bytes: CRustVeci8) -> [UInt8] {
+        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map { UInt8(bitPattern: $0) }
     }
 
     /**
      * Convert the provided Array of IronOxide bytes into Swift Int32 bytes. The bytes will be copied into Swift managed memory and the
      * original bytes in Rust freed
      */
-    static func toBytes(_ rustVec: CRustVeci32) -> [Int32] {
-        let swiftArray = Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { value in Int32(value) }
-        CRustVeci32_free(rustVec)
-        return swiftArray
-    }
-
-    /**
-     * Convert the provided byte array into an OpaquePointer that we can pass to libironoxide
-     */
-    static func bytesToPointer(_ bytes: [UInt8]) -> UnsafePointer<Int8> {
-        // We can use the ! on baseAddress because the closure we pass to withUnsafeBufferPointer says:
-        //   - A closure with an UnsafeBufferPointer parameter that points to the contiguous storage for the array. If no such storage exists, it is created.
-        // So it should always exist
-        bytes.map(Int8.init).withUnsafeBufferPointer { pointerVal in pointerVal.baseAddress! }
-    }
-
-    /**
-     * Convert the provided byte array into a Rust int8 slice
-     */
-    static func bytesToSlice(_ bytes: [UInt8]) -> CRustSlicei8 {
-        CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.count))
-    }
-
-    /**
-     * Generic method to validate that the provided bytes can be used to create the type validated by validator.
-     */
-    static func validateBytesAs(bytes: [UInt8], validator: (CRustSlicei8) -> CRustResult4232mut3232c_voidCRustString) -> Result<OpaquePointer, IronOxideError> {
-        let rustSlice = CRustSlicei8(data: Util.bytesToPointer(bytes), len: UInt(bytes.capacity))
-        return Util.toResult(validator(rustSlice))
+    static func rustVecToBytes(_ rustVec: CRustVeci32) -> [UInt32] {
+        Array(UnsafeBufferPointer(start: rustVec.data, count: Int(rustVec.len))).map { UInt32(bitPattern: $0) }
     }
 
     /**
@@ -184,18 +162,6 @@ struct Util {
      */
     static func nullableBooleanToBool(_ nullableBoolean: OpaquePointer) -> Bool {
         Util.intToBool(NullableBoolean_getBoolean(nullableBoolean))
-    }
-
-    /**
-     * Converts an array of objects to a CRustSlice.
-     * Takes the array of objects and a function to the Rust internal representation of the object
-     */
-    static func arrayToRustSlice<T>(array: [SdkObject], fn: (OpaquePointer) -> T) -> CRustObjectSlice {
-        let rustInternalList = array.map { obj in fn(obj.inner) }
-        let step = UInt(MemoryLayout<T>.stride)
-        return rustInternalList.withUnsafeBufferPointer { pt in
-            CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(rustInternalList.count), step: step)
-        }
     }
 
     /**
