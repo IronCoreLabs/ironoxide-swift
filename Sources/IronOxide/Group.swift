@@ -47,10 +47,10 @@ public class GroupCreateOpts: SdkObject {
         let addAsAdminPtr = Util.boolToInt(addAsAdmin)
         let addAsMemberPtr = Util.boolToInt(addAsMember)
         let ownerPtr = Util.buildOptionOf(owner, CRustClassOptUserId.init)
-        let adminsPtr = Util.arrayToRustSlice(array: admins, fn: UserId_getId)
-        let membersPtr = Util.arrayToRustSlice(array: members, fn: UserId_getId)
+        let adminsRust = RustObjects(array: admins, fn: UserId_getId)
+        let membersRust = RustObjects(array: members, fn: UserId_getId)
         let needsRotationPtr = Util.boolToInt(needsRotation)
-        self.init(GroupCreateOpts_create(idPtr, namePtr, addAsAdminPtr, addAsMemberPtr, ownerPtr, adminsPtr, membersPtr, needsRotationPtr))
+        self.init(GroupCreateOpts_create(idPtr, namePtr, addAsAdminPtr, addAsMemberPtr, ownerPtr, adminsRust.slice, membersRust.slice, needsRotationPtr))
     }
 
     deinit { GroupCreateOpts_delete(inner) }
@@ -290,7 +290,7 @@ public struct GroupOperations {
         _ users: [UserId],
         _ fn: (OpaquePointer, OpaquePointer, CRustObjectSlice) -> CRustResult4232mut3232c_voidCRustString
     ) -> Result<GroupAccessEditResult, IronOxideError> {
-        let listOfUsers = Util.arrayToRustSlice(array: users, fn: UserId_getId)
-        return Util.toResult(fn(ironoxide, groupId.inner, listOfUsers)).map(GroupAccessEditResult.init)
+        let listOfUsers = RustObjects(array: users, fn: UserId_getId)
+        return Util.toResult(fn(ironoxide, groupId.inner, listOfUsers.slice)).map(GroupAccessEditResult.init)
     }
 }
