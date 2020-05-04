@@ -205,12 +205,12 @@ public struct UserOperations {
      */
     public func getPublicKey(users: [UserId]) -> Result<[UserWithKey], IronOxideError> {
         let listOfUsers = RustObjects(array: users, fn: UserId_getId)
-        return listOfUsers.withSlice({users in
-            return Util.mapListResultTo(
+        return listOfUsers.withSlice { users in
+            Util.mapListResultTo(
                 result: IronOxide_userGetPublicKey(ironoxide, users),
                 to: UserWithKey.init
-        )})
-        
+            )
+        }
     }
 
     /**

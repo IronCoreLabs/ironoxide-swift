@@ -146,7 +146,7 @@ struct Util {
      * original bytes in Rust freed
      */
     static func rustVecToBytes(_ bytes: CRustVeci8) -> [UInt8] {
-        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map { UInt8.init(bitPattern: $0)}
+        Array(UnsafeBufferPointer(start: bytes.data, count: Int(bytes.len))).map { UInt8(bitPattern: $0) }
     }
 
     /**
