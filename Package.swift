@@ -13,8 +13,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(name: "SwiftJWT", url: "https://github.com/IBM-Swift/Swift-JWT.git", from: "3.6.1"),
     ],
     targets: [
         .systemLibrary(name: "libironoxide"),
@@ -29,7 +28,7 @@ let package = Package(
         ),
         .testTarget(
             name: "IronOxideTests",
-            dependencies: ["IronOxide"]
+            dependencies: ["IronOxide", "SwiftJWT"]
         ),
     ]
 )

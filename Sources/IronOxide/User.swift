@@ -100,7 +100,7 @@ public class DeviceAddResult: SdkObject {
     }()
 
     public lazy var signingPrivateKey: DeviceSigningKeyPair = {
-        DeviceSigningKeyPair(DeviceAddResult_getDevicePrivateKey(inner))
+        DeviceSigningKeyPair(DeviceAddResult_getSigningPrivateKey(inner))
     }()
 
     public lazy var created: Date = {

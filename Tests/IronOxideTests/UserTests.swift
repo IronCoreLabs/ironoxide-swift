@@ -4,15 +4,13 @@ import XCTest
 
 final class UserTests: XCTestCase {
     func testGetPublicKey() throws {
-        let users = [
-            UserId("foo")!,
-            UserId("swifttester")!,
-            UserId("swifttester33")!,
+        let realUsers = [UserId("testuser1")!,
+                         UserId("testuser2")!]
+        let fakeUsers = [
+            UserId(UUID().uuidString)!,
         ]
-
-        let sdk = try initializeSdk()
-
-        var userKeyList = try unwrapResult(sdk.user.getPublicKey(users: users))
+        try realUsers.forEach { user in _ = try createUserAndDevice(user) }
+        var userKeyList = try unwrapResult(primarySdk?.user.getPublicKey(users: realUsers + fakeUsers))
 
         // Sort users so we can assert on the expected values
         userKeyList = userKeyList.sorted(by: { $0.id.id < $1.id.id })
@@ -22,13 +20,12 @@ final class UserTests: XCTestCase {
         let secondUser = userKeyList[1]
         assertByteLength(firstUser.publicKey.bytes, 64)
         assertByteLength(secondUser.publicKey.bytes, 64)
-        XCTAssertEqual(firstUser.id.id, "swifttester")
-        XCTAssertEqual(secondUser.id.id, "swifttester33")
+        XCTAssertEqual(firstUser.id.id, "testuser1")
+        XCTAssertEqual(secondUser.id.id, "testuser2")
     }
 
     func testListDevices() throws {
-        let sdk = try initializeSdk()
-        let deviceList = try unwrapResult(sdk.user.listDevices()).result
+        let deviceList = try unwrapResult(primarySdk?.user.listDevices()).result
 
         XCTAssertGreaterThan(deviceList.count, 0)
         XCTAssertTrue(deviceList[0].isCurrentDevice)

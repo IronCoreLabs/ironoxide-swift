@@ -226,6 +226,11 @@ public class DeviceContext: SdkObject {
         }
     }
 
+    public convenience init(deviceAddResult: DeviceAddResult) {
+        self.init(userId: deviceAddResult.accountId, segmentId: UInt64(deviceAddResult.segmentId), devicePrivateKey: deviceAddResult.devicePrivateKey,
+                  signingPrivateKey: deviceAddResult.signingPrivateKey)
+    }
+
     public lazy var accountId: UserId = {
         UserId(DeviceContext_getAccountId(inner))
     }()
