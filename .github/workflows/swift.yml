@@ -44,7 +44,7 @@ jobs:
       - name: Download generated headers
         uses: actions/download-artifact@v1
         with:
-          name: generated
+          name: generated.zip
       - name: Unzip generated headers
         run: unzip -o generated.zip -d generated/
       - name: Download libironoxide_shared
