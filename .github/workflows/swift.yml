@@ -1,0 +1,63 @@
+name: Swift
+
+on:
+  push:
+    branches: [master, ci-test]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-ironoxide-java:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout ironoxide-java
+        uses: actions/checkout@v2
+        with:
+          repository: IronCoreLabs/ironoxide-java
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build -p ironoxide-cpp --release
+      - name: Zip cpp/generated/sdk
+        run: |
+          cd cpp/generated/sdk
+          zip -r generated.zip *
+      - name: Upload cpp/generated/sdk as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: generated
+          path: cpp/generated/sdk/generated.zip
+      - name: Upload target/release/libironoxide_shared.so as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: libironoxide_shared
+          path: target/release/libironoxide_shared.so
+
+  build-ironoxide-swift:
+    needs: build-ironoxide-java
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download generated headers
+        uses: actions/download-artifact@v1
+        with:
+          name: generated
+      - name: Unzip generated headers
+        run: unzip -o generated.zip -d generated/
+      - name: Download libironoxide_shared
+        uses: actions/download-artifact@v1
+        with:
+          name: libironoxide_shared
+      - name: Fix path in "ironoxide.h"
+        run: sed -i 's|../../../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
+      - name: Set LD_LIBRARY_PATH
+        run: export LD_LIBRARY_PATH=$PWD
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v
