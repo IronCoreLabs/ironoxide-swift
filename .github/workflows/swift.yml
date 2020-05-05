@@ -2,9 +2,9 @@ name: Swift
 
 on:
   push:
-    branches: [master, ci-test]
+    branches: master
   pull_request:
-    branches: [master]
+    branches: master
 
 jobs:
   build-ironoxide-java:
@@ -40,7 +40,7 @@ jobs:
           name: libironoxide_shared
           path: target/debug/libironoxide_shared.so
 
-  build-ironoxide-swift:
+  test-ironoxide-swift:
     needs: build-ironoxide-java
     runs-on: ubuntu-18.04
     steps:
