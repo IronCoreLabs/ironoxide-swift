@@ -9,7 +9,6 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/rust_resultCRustForeignVecCRustString.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/rust_resultCRustVeci32CRustString.h"
 
-
 //Base IronOxide Types
 #include "../../../ironoxide-java/cpp/generated/sdk/c_PrivateKey.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_EncryptedPrivateKey.h"
@@ -55,6 +54,10 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditErr.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUpdatePrivateKeyResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentAccessResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_Category.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_Sensitivity.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_DataSubject.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyCachingConfig.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyGrant.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_Duration.h"

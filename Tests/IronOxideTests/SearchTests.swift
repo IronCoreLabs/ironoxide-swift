@@ -5,10 +5,8 @@ import XCTest
 final class SearchTests: ICLIntegrationTest {
     func tokenize() throws {
         let searchQuery = "ironcore labs"
-        let deviceJson =
-            #"{"accountId": "swifttester33","segmentId": 1,"signingPrivateKey": "pI1SrCz4OffvmviszBATjaELD8tGUc18CixZ+evqeX3m3UKWkM5fsgg7Lt7YdtWPX/GoPUwrL0C7YLar2MEKTw==","devicePrivateKey": "RVBKa0AUEbUxkNJXbp2ErGN4bwIAs1WMZbMxacTGQe0="}"#
-        let dc = IronOxide.DeviceContext(deviceContextJson: deviceJson)!
-        let sdk = try IronOxide.initialize(device: dc).get()
+
+        let sdk = try initializeSdk()
         let groupId = try sdk.group.create().get().groupId
 
         let ebis = try sdk.search.createBlindIndex(groupId: groupId).get()
