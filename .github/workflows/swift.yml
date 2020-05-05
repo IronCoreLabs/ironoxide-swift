@@ -19,9 +19,7 @@ jobs:
         with:
           toolchain: stable
       - name: Cargo build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build -p ironoxide-cpp --release
+        run: cargo build -p ironoxide-cpp --release
       - name: Zip cpp/generated/sdk
         run: |
           cd cpp/generated/sdk
