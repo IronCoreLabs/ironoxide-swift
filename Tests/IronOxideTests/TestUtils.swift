@@ -181,28 +181,21 @@ let primarySdk: SDK? = {
  * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
  * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`, and `secondarySDK`.
  */
-private let createSecondaryTestUser: (SDK?, DeviceContext?) = {
+private let createSecondaryTestUser: DeviceContext? = {
     let maybeDevice = try? createUserAndDevice()
-    let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
-    return (maybeSdk, maybeDevice)
+    return maybeDevice
 }()
 
 /**
  * Secondary UserId for test user created at start of tests
  */
 let secondaryTestUser: UserId? = {
-    let (_, device) = createSecondaryTestUser
+    let device = createSecondaryTestUser
     return device?.accountId
 }()
 
 /// DeviceContext for `secondaryTestUser`
 let secondaryTestUserDeviceContext: DeviceContext? = {
-    let (_, device) = createSecondaryTestUser
+    let device = createSecondaryTestUser
     return device
-}()
-
-/// SDK initialized by `secondaryTestUser`
-let secondarySdk: SDK? = {
-    let (sdk, _) = createSecondaryTestUser
-    return sdk
 }()
