@@ -19,10 +19,10 @@ jobs:
         with:
           toolchain: stable
       - name: Cache cargo build
-          uses: actions/cache@v1
-          with:
-            path: target
-            key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Cargo build
         run: cargo build -p ironoxide-cpp
       - name: Zip cpp/generated/sdk
@@ -65,7 +65,7 @@ jobs:
       - name: Build
         run: swift build
       - name: debugging
-        run: | 
+        run: |
           echo $LD_LIBRARY_PATH
           ls -al
       - name: Run tests
