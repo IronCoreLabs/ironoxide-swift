@@ -56,7 +56,7 @@ jobs:
       - name: Fix path in "ironoxide.h"
         run: sed -i 's|../../../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
       - name: Set LD_LIBRARY_PATH
-        run: export LD_LIBRARY_PATH=$PWD
+        run: export LD_LIBRARY_PATH=$PWD/libironoxide_shared
       - name: Build
         run: swift build -v
       - name: Run tests
