@@ -76,7 +76,7 @@ extension XCTestCase {
 class ICLIntegrationTest: XCTestCase {
     override func setUpWithError() throws {
         if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
-            XCTFail("Unable to create primary test user. Ensure tests are run with IRONCORE_ENV=stage.")
+            XCTFail("Failed to create primary test user/SDK.")
             throw IronOxideError.error("Initialization failed")
         }
     }
