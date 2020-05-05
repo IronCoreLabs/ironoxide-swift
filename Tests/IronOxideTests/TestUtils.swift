@@ -111,6 +111,7 @@ struct MyClaims: Claims {
 }
 
 func generateJWT(_ userId: UserId? = nil) throws -> String {
+    setenv("IRONCORE_ENV", "stage", 1)
     let projectId = 431
     let segmentId = "Ironoxide-swift"
     let identityAssertionKeyId = 594
