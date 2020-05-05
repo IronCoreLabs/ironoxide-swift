@@ -62,5 +62,9 @@ jobs:
         run: sed -i 's|../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
       - name: Build
         run: swift build
+      - name: set environment variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          LD_DEBUG: "all"
       - name: Run tests
         run: swift test --enable-test-discovery
