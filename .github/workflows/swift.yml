@@ -51,23 +51,16 @@ jobs:
         with:
           name: generated
       - name: Unzip generated headers
-        run: |
-          ls -al
-          unzip -o generated/generated.zip -d generated/
+        run: unzip -o generated/generated.zip -d generated/
       - name: Download libironoxide_shared
         uses: actions/download-artifact@v1
         with:
           name: libironoxide_shared
+      - name: Move libironoxide_shared
+        run: mv libironoxide_shared/libironoxide_shared.so ./
       - name: Fix path in "ironoxide.h"
         run: sed -i 's|../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
-      - name: Set LD_LIBRARY_PATH
-        run: export LD_LIBRARY_PATH=$PWD/libironoxide_shared
       - name: Build
         run: swift build
-      - name: debugging
-        run: |
-          echo $LD_LIBRARY_PATH
-          ls -al
-          ls libironoxide_shared
       - name: Run tests
-        run: LD_LIBRARY_PATH=$PWD/libironoxide_shared swift test --enable-test-discovery
+        run: swift test --enable-test-discovery
