@@ -68,5 +68,6 @@ jobs:
         run: |
           echo $LD_LIBRARY_PATH
           ls -al
+          ls libironoxide_shared
       - name: Run tests
         run: LD_LIBRARY_PATH=$PWD/libironoxide_shared swift test --enable-test-discovery
