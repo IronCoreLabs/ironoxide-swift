@@ -18,6 +18,11 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Cache cargo build
+          uses: actions/cache@v1
+          with:
+            path: target
+            key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Cargo build
         run: cargo build -p ironoxide-cpp
       - name: Zip cpp/generated/sdk
@@ -58,6 +63,10 @@ jobs:
       - name: Set LD_LIBRARY_PATH
         run: export LD_LIBRARY_PATH=$PWD/libironoxide_shared
       - name: Build
-        run: swift build -v
+        run: swift build
+      - name: debugging
+        run: | 
+          echo $LD_LIBRARY_PATH
+          ls -al
       - name: Run tests
-        run: swift test -v
+        run: LD_LIBRARY_PATH=$PWD/libironoxide_shared swift test --enable-test-discovery
