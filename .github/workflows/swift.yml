@@ -27,7 +27,7 @@ jobs:
       - name: Upload cpp/generated/sdk as artifact
         uses: actions/upload-artifact@v1
         with:
-          name: generated.zip
+          name: generated
           path: cpp/generated/sdk/generated.zip
       - name: Upload target/debug/libironoxide_shared.so as artifact
         uses: actions/upload-artifact@v1
@@ -44,9 +44,11 @@ jobs:
       - name: Download generated headers
         uses: actions/download-artifact@v1
         with:
-          name: generated.zip
+          name: generated
       - name: Unzip generated headers
-        run: unzip -o generated.zip -d generated/
+        run: |
+          ls -al
+          unzip -o generated/generated.zip -d generated/
       - name: Download libironoxide_shared
         uses: actions/download-artifact@v1
         with:
