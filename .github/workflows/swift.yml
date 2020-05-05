@@ -54,7 +54,7 @@ jobs:
         with:
           name: libironoxide_shared
       - name: Fix path in "ironoxide.h"
-        run: sed -i 's|../../../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
+        run: sed -i 's|../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
       - name: Set LD_LIBRARY_PATH
         run: export LD_LIBRARY_PATH=$PWD/libironoxide_shared
       - name: Build
