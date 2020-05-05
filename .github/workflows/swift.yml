@@ -19,7 +19,7 @@ jobs:
         with:
           toolchain: stable
       - name: Cargo build
-        run: cargo build -p ironoxide-cpp --release
+        run: cargo build -p ironoxide-cpp
       - name: Zip cpp/generated/sdk
         run: |
           cd cpp/generated/sdk
@@ -27,9 +27,9 @@ jobs:
       - name: Upload cpp/generated/sdk as artifact
         uses: actions/upload-artifact@v1
         with:
-          name: generated
+          name: generated.zip
           path: cpp/generated/sdk/generated.zip
-      - name: Upload target/release/libironoxide_shared.so as artifact
+      - name: Upload target/debug/libironoxide_shared.so as artifact
         uses: actions/upload-artifact@v1
         with:
           name: libironoxide_shared
