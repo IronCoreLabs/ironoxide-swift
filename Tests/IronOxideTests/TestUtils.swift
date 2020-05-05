@@ -76,7 +76,7 @@ extension XCTestCase {
 class ICLIntegrationTest: XCTestCase {
     override func setUpWithError() throws {
         if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
-            XCTFail("Unable to create primary test user. Make sure tests are run with IRONCORE_ENV=stage.")
+            XCTFail("Unable to create primary test user. Ensure tests are run with IRONCORE_ENV=stage.")
             throw IronOxideError.error("Initialization failed")
         }
     }
@@ -179,16 +179,14 @@ let primarySdk: SDK? = {
 
 /**
  * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
- * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`, and `secondarySDK`.
+ * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
  */
 private let createSecondaryTestUser: DeviceContext? = {
     let maybeDevice = try? createUserAndDevice()
     return maybeDevice
 }()
 
-/**
- * Secondary UserId for test user created at start of tests
- */
+/// Secondary UserId for test user created at start of tests
 let secondaryTestUser: UserId? = {
     let device = createSecondaryTestUser
     return device?.accountId
