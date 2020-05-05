@@ -56,11 +56,11 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: libironoxide_shared
-      - name: Move libironoxide_shared
-        run: mv libironoxide_shared/libironoxide_shared.so .build/x86_64-unknown-linux-gnu/debug
       - name: Fix path in "ironoxide.h"
         run: sed -i 's|../ironoxide-java/cpp/generated/sdk|generated|g' Sources/libironoxide/ironoxide.h
       - name: Build
         run: swift build
+      - name: Move libironoxide_shared
+        run: mv libironoxide_shared/libironoxide_shared.so .build/x86_64-unknown-linux-gnu/debug
       - name: Run tests
         run: swift test --enable-test-discovery -v
