@@ -73,6 +73,15 @@ extension XCTestCase {
     }
 }
 
+class ICLIntegrationTest: XCTestCase {
+    override func setUpWithError() throws {
+        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
+            XCTFail("Unable to create primary test user. Make sure tests are run with IRONCORE_ENV=stage.")
+            throw IronOxideError.error("Initialization failed")
+        }
+    }
+}
+
 /**
  * Convert the provided bytes into a UnsafeMutableRawPointer wrapper that can be used construct various
  * Rust structs

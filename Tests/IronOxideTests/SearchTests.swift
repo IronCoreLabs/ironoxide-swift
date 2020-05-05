@@ -2,7 +2,7 @@ import Foundation
 @testable import IronOxide
 import XCTest
 
-final class SearchTests: XCTestCase {
+final class SearchTests: ICLIntegrationTest {
     func tokenize() throws {
         let searchQuery = "ironcore labs"
         let deviceJson =
