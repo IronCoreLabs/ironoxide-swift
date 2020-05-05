@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: libironoxide_shared
-          path: target/release/libironoxide_shared.so
+          path: target/debug/libironoxide_shared.so
 
   build-ironoxide-swift:
     needs: build-ironoxide-java
