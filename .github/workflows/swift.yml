@@ -47,8 +47,6 @@ jobs:
           name: ${{ matrix.host }}-library
           path: target/debug/libironoxide_shared.so
         if: matrix.target == 'ubuntu-18.04'
-      - name: Cargo build (OSX)
-        run: cargo build -p ironoxide-cpp --target
       - name: Upload target/debug/libironoxide_shared.a as artifact (Mac only)
         uses: actions/upload-artifact@v2
         with:
