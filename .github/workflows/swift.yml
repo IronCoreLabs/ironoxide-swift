@@ -33,6 +33,7 @@ jobs:
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Change to staticlib (Mac only)
         run: sed -i -- "s|cdylib|staticlib|g" cpp/Cargo.toml
+        if: matrix.target == 'macos-10.15'
       - name: Cargo build
         run: cargo build -p ironoxide-cpp
       - name: Zip C headers (Linux only)
@@ -49,7 +50,7 @@ jobs:
       - name: Upload shared library
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.host }}-library
+          name: ${{ matrix.target }}-library
           path: target/debug/${{ matrix.library }}
 
   test-ironoxide-swift:
@@ -75,7 +76,7 @@ jobs:
       - name: Download shared library
         uses: actions/download-artifact@v2
         with:
-          name: ${{ matrix.host }}-library
+          name: ${{ matrix.target }}-library
       - name: Fix path in "ironoxide.h"
         run: sed -i -- "s|../ironoxide-java/cpp/generated/sdk|c_headers|g" Sources/libironoxide/ironoxide.h
       - name: Build
