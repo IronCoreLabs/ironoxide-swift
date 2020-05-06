@@ -110,6 +110,7 @@ struct MyClaims: Claims {
     let sub: String
 }
 
+@available(macOS 10.13, *)
 func generateJWT(_ userId: UserId? = nil) throws -> String {
     setenv("IRONCORE_ENV", "stage", 1)
     let projectId = 431
