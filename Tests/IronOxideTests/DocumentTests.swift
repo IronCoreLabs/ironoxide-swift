@@ -1,30 +1,26 @@
 @testable import IronOxide
 import XCTest
 
-final class DocumentTests: XCTestCase {
+final class DocumentTests: ICLIntegrationTest {
     func testEncryptDecryptRoundtrip() throws {
-        let sdk = try initializeSdk()
-
         let bytes: [UInt8] = [10, 42]
-        let createResult = try sdk.document
+        let createResult = try unwrapResult(primarySdk!.document
             .encrypt(bytes: bytes,
-                     options: DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: true, userGrants: [], groupGrants: [], policyGrant: nil)).get()
+                     options: DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: true, userGrants: [], groupGrants: [], policyGrant: nil)))
         XCTAssertNil(createResult.name)
         XCTAssertEqual(createResult.errors.groups.count, 0)
         XCTAssertEqual(createResult.errors.users.count, 0)
         XCTAssertEqual(createResult.changed.users.count, 1)
 
-        let decryptResult = try sdk.document.decrypt(encryptedBytes: createResult.encryptedData).get()
+        let decryptResult = try unwrapResult(primarySdk!.document.decrypt(encryptedBytes: createResult.encryptedData))
         XCTAssertEqual(decryptResult.decryptedData, bytes)
     }
 
     func testListWorks() throws {
-        let sdk = try initializeSdk()
-
         let bytes: [UInt8] = [10, 42]
-        try sdk.document.encrypt(bytes: bytes).get()
+        _ = primarySdk!.document.encrypt(bytes: bytes)
 
-        let listResult = try sdk.document.list().get()
+        let listResult = try unwrapResult(primarySdk!.document.list())
         XCTAssertGreaterThanOrEqual(listResult.result.count, 1)
     }
 }

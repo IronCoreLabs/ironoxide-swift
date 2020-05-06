@@ -1,5 +1,6 @@
 import IronOxide
 import libironoxide
+import SwiftJWT
 import XCTest
 
 extension XCTestCase {
@@ -72,24 +73,14 @@ extension XCTestCase {
     }
 }
 
-let deviceJson = """
-{"accountId": "swifttester33","segmentId": 1,"signingPrivateKey": "pI1SrCz4OffvmviszBATjaELD8tGUc18CixZ+evqeX3m3UKWkM5fsgg7Lt7YdtWPX/GoPUwrL0C7YLar2MEKTw==","devicePrivateKey": "RVBKa0AUEbUxkNJXbp2ErGN4bwIAs1WMZbMxacTGQe0="}
-"""
-
-let dc = IronOxide.DeviceContext(deviceContextJson: deviceJson)!
-
-/**
- * Attempt to initialize the IronOxide SDK with the fixed deviceJson above
- */
-func initializeSdk() throws -> SDK {
-    let sdk = try IronOxide.initialize(device: dc).get()
-    return sdk
+class ICLIntegrationTest: XCTestCase {
+    override func setUpWithError() throws {
+        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
+            XCTFail("Failed to create primary test user/SDK.")
+            throw IronOxideError.error("Initialization failed")
+        }
+    }
 }
-
-/**
- * Get the DeviceContext struct for our primary unit test user
- */
-func getPrimaryTestUserDeviceContext() -> DeviceContext { dc }
 
 /**
  * Convert the provided bytes into a UnsafeMutableRawPointer wrapper that can be used construct various
@@ -109,3 +100,101 @@ func createRustReject() -> CRustResult4232mut3232c_voidCRustString {
     let error = CRustResultUnion4232mut3232c_voidCRustString(err: errorString)
     return CRustResult4232mut3232c_voidCRustString(data: error, is_ok: 0)
 }
+
+struct MyClaims: Claims {
+    let pid: Int
+    let sid: String
+    let kid: Int
+    let iat: Int
+    let exp: Int
+    let sub: String
+}
+
+func generateJWT(_ userId: UserId? = nil) throws -> String {
+    setenv("IRONCORE_ENV", "stage", 1)
+    let projectId = 431
+    let segmentId = "Ironoxide-swift"
+    let identityAssertionKeyId = 594
+    let iat = Int(NSDate().timeIntervalSince1970)
+    let accountId = userId != nil ? userId!.id : UUID().uuidString
+    let myClaims = MyClaims(pid: projectId, sid: segmentId, kid: identityAssertionKeyId, iat: iat, exp: iat + 120, sub: accountId)
+    var myJWT = JWT(header: Header(), claims: myClaims)
+    let key = Data(
+        """
+        -----BEGIN PRIVATE KEY-----
+        MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgPscp0L2Y1RpVvs41
+        W5ncdg5RvTldeb+wB/AsStrTAQuhRANCAARrORv9Ub2bGfvevuovDb/zj61AcLqy
+        8ZaZbze8FsvGg15XfGdCOjk+OLqOU04OSWp3cq0eyMT2uWA4/GR9EI2D
+        -----END PRIVATE KEY-----
+        -----BEGIN PUBLIC KEY-----
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEazkb/VG9mxn73r7qLw2/84+tQHC6
+        svGWmW83vBbLxoNeV3xnQjo5Pji6jlNODklqd3KtHsjE9rlgOPxkfRCNgw==
+        -----END PUBLIC KEY-----
+        """.utf8)
+    let jwtSigner = JWTSigner.es256(privateKey: key)
+    return try myJWT.sign(using: jwtSigner)
+}
+
+/**
+ * Helper function to make a new user and device with an optional UserId. Returns only the DeviceContext,
+ * as the UserId can be obtained from `device.accountId`
+ */
+func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
+    let jwt = try generateJWT(userId)
+    let password = "foo"
+    _ = IronOxide.userCreate(jwt: jwt, password: password)
+    let newDevice = try IronOxide.generateNewDevice(jwt: jwt, password: password).get()
+    return DeviceContext(deviceAddResult: newDevice)
+}
+
+/**
+ * Private variable that calls and holds the primary test user's SDK and DeviceContext. Meant to be private to
+ * force use of `primaryTestUser`, `primaryTestUserDeviceContext`, and `primarySDK`.
+ */
+private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
+    let maybeDevice = try? createUserAndDevice()
+    let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
+    return (maybeSdk, maybeDevice)
+}()
+
+/**
+ * UserId for test user created at start of tests. It's encouraged to use this user
+ * when it's not necessary to create a new one for a given test.
+ */
+let primaryTestUser: UserId? = {
+    let (_, device) = createPrimaryTestUser
+    return device?.accountId
+}()
+
+/// DeviceContext for `primaryTestUser`
+let primaryTestUserDeviceContext: DeviceContext? = {
+    let (_, device) = createPrimaryTestUser
+    return device
+}()
+
+/// SDK initialized by `primaryTestUser`
+let primarySdk: SDK? = {
+    let (sdk, _) = createPrimaryTestUser
+    return sdk
+}()
+
+/**
+ * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
+ * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
+ */
+private let createSecondaryTestUser: DeviceContext? = {
+    let maybeDevice = try? createUserAndDevice()
+    return maybeDevice
+}()
+
+/// Secondary UserId for test user created at start of tests
+let secondaryTestUser: UserId? = {
+    let device = createSecondaryTestUser
+    return device?.accountId
+}()
+
+/// DeviceContext for `secondaryTestUser`
+let secondaryTestUserDeviceContext: DeviceContext? = {
+    let device = createSecondaryTestUser
+    return device
+}()
