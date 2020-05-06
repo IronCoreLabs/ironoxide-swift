@@ -110,7 +110,6 @@ struct MyClaims: Claims {
     let sub: String
 }
 
-@available(OSX 10.13, *)
 func generateJWT(_ userId: UserId? = nil) throws -> String {
     setenv("IRONCORE_ENV", "stage", 1)
     let projectId = 431
@@ -132,7 +131,7 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
         svGWmW83vBbLxoNeV3xnQjo5Pji6jlNODklqd3KtHsjE9rlgOPxkfRCNgw==
         -----END PUBLIC KEY-----
         """.utf8)
-    if #available(OSX 10.13, *) {
+    if #available(macOS 10.13, *) {
         let jwtSigner = JWTSigner.es256(privateKey: key)
         return try myJWT.sign(using: jwtSigner)
     }
