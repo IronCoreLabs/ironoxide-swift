@@ -7,21 +7,22 @@ on:
     branches: master
 
 jobs:
-  build-ironoxide-java:
+  test-ironoxide-swift:
     strategy:
       matrix:
         target: [ubuntu-18.04, macos-10.15]
-        include:
-          - target: ubuntu-18.04
-            library: libironoxide_shared.so
-          - target: macos-10.15
-            library: libironoxide_shared.a
+        # include:
+        #   - target: ubuntu-18.04
+        #     library: libironoxide_shared.so
+        #   - target: macos-10.15
+        #     library: libironoxide_shared.a
     runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-java
         uses: actions/checkout@v2
         with:
           repository: IronCoreLabs/ironoxide-java
+          path: ironoxide-java
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -29,62 +30,75 @@ jobs:
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
-          path: target
+          path: ironoxide-java/target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Change to staticlib (Mac only)
-        run: sed -i -- "s|cdylib|staticlib|g" cpp/Cargo.toml
+        run: sed -i -- "s|cdylib|staticlib|g" ironoxide-java/cpp/Cargo.toml
         if: matrix.target == 'macos-10.15'
       - name: Cargo build
-        run: cargo build -p ironoxide-cpp
-      - name: Zip C headers (Linux only)
-        run: |
-          cd cpp/generated/sdk
-          zip -r c_headers.zip *
-        if: matrix.target == 'ubuntu-18.04'
-      - name: Upload C headers as artifact (Linux only)
-        uses: actions/upload-artifact@v1
-        with:
-          name: c_headers
-          path: cpp/generated/sdk/c_headers.zip
-        if: matrix.target == 'ubuntu-18.04'
-      - name: Upload shared library
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.target }}-library
-          path: target/debug/${{ matrix.library }}
-
-  test-ironoxide-swift:
-    needs: build-ironoxide-java
-    strategy:
-      matrix:
-        target: [ubuntu-18.04, macos-10.15]
-        include:
-          - target: ubuntu-18.04
-            library: libironoxide_shared.so
-          - target: macos-10.15
-            library: libironoxide_shared.a
-    runs-on: ${{ matrix.target }}
-    steps:
+        run: cargo build -p ironoxide-cpp --release
+        working-directory: ironoxide-java
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Download C headers
-        uses: actions/download-artifact@v2
         with:
-          name: c_headers
-      - name: Unzip C headers
-        run: unzip -o c_headers.zip -d c_headers/
-      - name: Download shared library
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.target }}-library
-      - name: Fix path in "ironoxide.h"
-        run: sed -i -- "s|../ironoxide-java/cpp/generated/sdk|c_headers|g" Sources/libironoxide/ironoxide.h
-      - name: Fix path in "Package.swift"
-        run: sed -i -- "s|../ironoxide-java/target/release|./|g" Package.swift
+          path: ironoxide-swift
       - name: Build
-        run: swift build
+        run: |
+          cd ironoxide-swift
+          swift build
       - name: Move libironoxide_shared (Linux)
-        run: mv ${{ matrix.library }} .build/x86_64-unknown-linux-gnu/debug
+        run: cp ../ironoxide-java/target/release/libironoxide_shared.so .build/x86_64-unknown-linux-gnu/debug
         if: matrix.target == 'ubuntu-18.04'
       - name: Run tests
         run: swift test --enable-test-discovery -v
+      # - name: Zip C headers (Linux only)
+      #   run: |
+      #     cd cpp/generated/sdk
+      #     zip -r c_headers.zip *
+      #   if: matrix.target == 'ubuntu-18.04'
+      # - name: Upload C headers as artifact (Linux only)
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: c_headers
+      #     path: cpp/generated/sdk/c_headers.zip
+      #   if: matrix.target == 'ubuntu-18.04'
+      # - name: Upload shared library
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: ${{ matrix.target }}-library
+      #     path: target/debug/${{ matrix.library }}
+  # test-ironoxide-swift:
+  #   needs: build-ironoxide-java
+  #   strategy:
+  #     matrix:
+  #       target: [ubuntu-18.04, macos-10.15]
+  #       include:
+  #         - target: ubuntu-18.04
+  #           library: libironoxide_shared.so
+  #         - target: macos-10.15
+  #           library: libironoxide_shared.a
+  #   runs-on: ${{ matrix.target }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  # - name: Download C headers
+  #   uses: actions/download-artifact@v2
+  #   with:
+  #     name: c_headers
+  # - name: Unzip C headers
+  #   run: unzip -o c_headers.zip -d c_headers/
+  # - name: Download shared library
+  #   uses: actions/download-artifact@v2
+  #   with:
+  #     name: ${{ matrix.target }}-library
+  # - name: Fix path in "ironoxide.h"
+  #   run: sed -i -- "s|../ironoxide-java/cpp/generated/sdk|c_headers|g" Sources/libironoxide/ironoxide.h
+  # - name: Fix path in "Package.swift"
+  #   run: sed -i -- "s|../ironoxide-java/target/release|./|g" Package.swift
+  # - name: Build
+  #   run: swift build
+  # - name: Move libironoxide_shared (Linux)
+  #   run: mv ${{ matrix.library }} .build/x86_64-unknown-linux-gnu/debug
+  #   if: matrix.target == 'ubuntu-18.04'
+  # - name: Run tests
+  #   run: swift test --enable-test-discovery -v
