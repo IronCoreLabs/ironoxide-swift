@@ -43,14 +43,14 @@ jobs:
         with:
           path: ironoxide-swift
       - name: Build
-        run: |
-          cd ironoxide-swift
-          swift build
+        run: swift build
+        working-directory: ironoxide-swift
       - name: Move libironoxide_shared (Linux)
-        run: cp ../ironoxide-java/target/release/libironoxide_shared.so .build/x86_64-unknown-linux-gnu/debug
+        run: cp ironoxide-java/target/release/libironoxide_shared.so ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug
         if: matrix.target == 'ubuntu-18.04'
       - name: Run tests
-        run: swift test --enable-test-discovery -v
+        run: swift test --enable-test-discovery
+        working-directory: ironoxide-swift
       # - name: Zip C headers (Linux only)
       #   run: |
       #     cd cpp/generated/sdk
