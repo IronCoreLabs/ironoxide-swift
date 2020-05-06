@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         target: [ubuntu-18.04, macos-10.15]
-    runs-on: ${{ matrix.host }}
+    runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-java
         uses: actions/checkout@v2
