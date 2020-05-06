@@ -39,7 +39,7 @@ jobs:
         with:
           path: ironoxide-swift
       - name: Move libironoxide_shared (Linux)
-        run: mkdir ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-java/target/release/libironoxide_shared.so $_
+        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-java/target/release/libironoxide_shared.so $_
         if: matrix.target == 'ubuntu-18.04'
       - name: Run tests
         run: swift test --enable-test-discovery
