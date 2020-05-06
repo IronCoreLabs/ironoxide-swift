@@ -79,6 +79,8 @@ jobs:
           name: ${{ matrix.target }}-library
       - name: Fix path in "ironoxide.h"
         run: sed -i -- "s|../ironoxide-java/cpp/generated/sdk|c_headers|g" Sources/libironoxide/ironoxide.h
+      - name: Fix path in "Package.swift"
+        run: sed -i -- "s|../ironoxide-java/target/release|./|g" Package.swift
       - name: Build
         run: swift build
       - name: Move libironoxide_shared (Linux)
