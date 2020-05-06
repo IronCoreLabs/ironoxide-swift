@@ -2,12 +2,12 @@ name: Swift
 
 on:
   push:
-    branches: [master, 27-swift-ci]
+    branches: master
   pull_request:
     branches: master
 
 jobs:
-  test-ironoxide-swift:
+  build-and-test:
     strategy:
       fail-fast: false
       matrix:
