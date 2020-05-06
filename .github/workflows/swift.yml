@@ -82,6 +82,6 @@ jobs:
         run: swift build
       - name: Move libironoxide_shared (Linux)
         run: mv ${{ matrix.library }} .build/x86_64-unknown-linux-gnu/debug
-        if: matrix.target == ubuntu-18.04
+        if: matrix.target == 'ubuntu-18.04'
       - name: Run tests
         run: swift test --enable-test-discovery -v
