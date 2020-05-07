@@ -279,6 +279,46 @@ public class DocumentDecryptResult: SdkObject {
     deinit { DocumentDecryptResult_delete(inner) }
 }
 
+public class DocumentEncryptUnmanagedResult: SdkObject {
+    public lazy var id: DocumentId = {
+        DocumentId(DocumentEncryptUnmanagedResult_getId(inner))
+    }()
+
+    public lazy var encryptedDeks: [UInt8] = {
+        Util.rustVecToBytes(DocumentEncryptUnmanagedResult_getEncryptedDeks(inner))
+    }()
+
+    public lazy var changed: SucceededResult = {
+        SucceededResult(DocumentEncryptUnmanagedResult_getChanged(inner))
+    }()
+
+    public lazy var errors: FailedResult = {
+        FailedResult(DocumentEncryptUnmanagedResult_getErrors(inner))
+    }()
+
+    public lazy var encryptedData: [UInt8] = {
+        Util.rustVecToBytes(DocumentEncryptUnmanagedResult_getEncryptedData(inner))
+    }()
+
+    deinit { DocumentEncryptUnmanagedResult_delete(inner) }
+}
+
+public class DocumentDecryptUnmanagedResult: SdkObject {
+    public lazy var id: DocumentId = {
+        DocumentId(DocumentDecryptUnmanagedResult_getId(inner))
+    }()
+
+    public lazy var decryptedData: [UInt8] = {
+        Util.rustVecToBytes(DocumentDecryptUnmanagedResult_getDecryptedData(inner))
+    }()
+
+    public lazy var accessVia: UserOrGroupId = {
+        UserOrGroupId(DocumentDecryptUnmanagedResult_getAccessViaUserOrGroup(inner))
+    }()
+
+    deinit { DocumentDecryptUnmanagedResult_delete(inner) }
+}
+
 public class DocumentAccessResult: SdkObject {
     public lazy var changed: SucceededResult = {
         SucceededResult(DocumentAccessResult_getChanged(inner))
@@ -297,9 +337,15 @@ public struct AdvancedDocumentOperations {
         ironoxide = instance
     }
 
-    public func encryptUnmanaged() {}
+    public func encryptUnmanaged(bytes: [UInt8],
+                                 options: DocumentEncryptOpts = DocumentEncryptOpts()) -> Result<DocumentEncryptUnmanagedResult, IronOxideError> {
+        Util.toResult(IronOxide_advancedDocumentEncryptUnmanaged(ironoxide, RustBytes(bytes).slice, options.inner)).map(DocumentEncryptUnmanagedResult.init)
+    }
 
-    public func decryptUnmanaged() {}
+    public func decryptUnmanaged(encryptedBytes: [UInt8], encryptedDeks: [UInt8]) -> Result<DocumentDecryptUnmanagedResult, IronOxideError> {
+        Util.toResult(IronOxide_advancedDocumentDecryptUnmanaged(ironoxide, RustBytes(encryptedBytes).slice, RustBytes(encryptedDeks).slice))
+            .map(DocumentDecryptUnmanagedResult.init)
+    }
 }
 
 public struct DocumentOperations {
