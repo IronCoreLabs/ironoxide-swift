@@ -1,0 +1,46 @@
+name: Swift
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ubuntu-18.04, macos-10.15]
+    runs-on: ${{ matrix.target }}
+    steps:
+      - name: Checkout ironoxide-java
+        uses: actions/checkout@v2
+        with:
+          repository: IronCoreLabs/ironoxide-java
+          path: ironoxide-java
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: ironoxide-java/target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+      - name: Change to staticlib (Mac only)
+        run: sed -i -- "s|cdylib|staticlib|g" ironoxide-java/cpp/Cargo.toml
+        if: matrix.target == 'macos-10.15'
+      - name: Cargo build
+        run: cargo build -p ironoxide-cpp --release
+        working-directory: ironoxide-java
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ironoxide-swift
+      - name: Move libironoxide_shared (Linux)
+        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-java/target/release/libironoxide_shared.so $_
+        if: matrix.target == 'ubuntu-18.04'
+      - name: Run tests
+        run: swift test --enable-test-discovery
+        working-directory: ironoxide-swift
