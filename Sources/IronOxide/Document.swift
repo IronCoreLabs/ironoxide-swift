@@ -370,7 +370,9 @@ public struct DocumentOperations {
     }
 
     public func getIdFromBytes(bytes: [UInt8]) -> Result<DocumentId, IronOxideError> {
-        Util.toResult(IronOxide_documentGetIdFromBytes(ironoxide, RustBytes(bytes).slice)).map(DocumentId.init)
+        // Util.toResult(IronOxide_documentGetIdFromBytes(ironoxide, RustBytes(bytes).slice)).map(DocumentId.init)
+        Util.toResult(RustBytes(bytes).withSlice { rustSlice in IronOxide_documentGetIdFromBytes(ironoxide, rustSlice) })
+            .map(DocumentId.init)
     }
 
     public func encrypt(bytes: [UInt8], options: DocumentEncryptOpts = DocumentEncryptOpts()) -> Result<DocumentEncryptResult, IronOxideError> {

@@ -130,4 +130,6 @@ final class DocumentTests: ICLIntegrationTest {
         let metadata2 = try unwrapResult(primarySdk!.document.getMetadata(documentId: encryptResult.id))
         XCTAssertEqual(metadata2.visibleToUsers.count, 1)
     }
+
+    func testEncryptUnmanagedRoundtrip() throws {}
 }
