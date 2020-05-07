@@ -2,9 +2,11 @@ import libironoxide
 
 public class EncryptedBlindIndexSalt: SdkObject {
     public convenience init(encryptedDeks: [UInt8], encryptedSaltBytes: [UInt8]) {
-        let rustEncryptedDeks = RustBytes(encryptedDeks)
-        let rustEncryptedSaltBytes = RustBytes(encryptedSaltBytes)
-        self.init(EncryptedBlindIndexSalt_create(rustEncryptedDeks.slice, rustEncryptedSaltBytes.slice))
+        self.init(RustBytes(encryptedDeks).withSlice { deksSlice in
+            RustBytes(encryptedSaltBytes).withSlice { saltSlice in
+                EncryptedBlindIndexSalt_create(deksSlice, saltSlice)
+            }
+        })
     }
 
     public lazy var encryptedDeks: [UInt8] = {
