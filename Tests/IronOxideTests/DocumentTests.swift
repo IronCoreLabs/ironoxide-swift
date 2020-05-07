@@ -131,5 +131,34 @@ final class DocumentTests: ICLIntegrationTest {
         XCTAssertEqual(metadata2.visibleToUsers.count, 1)
     }
 
-    func testEncryptUnmanagedRoundtrip() throws {}
+    func testEncryptUnmanagedRoundtrip() throws {
+        let bytes: [UInt8] = [1, 2, 3]
+        let encryptResult = try unwrapResult(primarySdk!.document.advanced.encryptUnmanaged(bytes: bytes))
+        let decryptResult = try unwrapResult(primarySdk!.document.advanced
+            .decryptUnmanaged(encryptedBytes: encryptResult.encryptedData, encryptedDeks: encryptResult.encryptedDeks))
+        XCTAssertEqual(decryptResult.decryptedData, bytes)
+    }
+
+    func testEncryptUnmanagedToOther() throws {
+        let bytes: [UInt8] = [1, 2, 3]
+        let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [secondaryTestUser!], groupGrants: [], policyGrant: nil)
+        let encryptResult = try unwrapResult(primarySdk!.document.advanced.encryptUnmanaged(bytes: bytes, options: opts))
+        let decryptResult = primarySdk!.document.advanced
+            .decryptUnmanaged(encryptedBytes: encryptResult.encryptedData, encryptedDeks: encryptResult.encryptedDeks)
+        XCTAssertThrowsError(try decryptResult.get())
+    }
+
+    func testEncryptUnmanagedToNothing() throws {
+        let bytes: [UInt8] = [1, 2, 3]
+        let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [], groupGrants: [], policyGrant: nil)
+        let encryptResult = primarySdk!.document.advanced.encryptUnmanaged(bytes: bytes, options: opts)
+        XCTAssertThrowsError(try encryptResult.get())
+    }
+
+    func testGetIdFromBytes() throws {
+        let bytes: [UInt8] = [2, 3, 4]
+        let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: bytes))
+        let id = try unwrapResult(primarySdk!.document.getIdFromBytes(bytes: encryptResult.encryptedData))
+        XCTAssertEqual(encryptResult.id, id)
+    }
 }

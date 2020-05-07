@@ -32,6 +32,12 @@ public class DocumentId: SdkObject {
     deinit { DocumentId_delete(inner) }
 }
 
+extension DocumentId: Equatable {
+    public static func == (lhs: DocumentId, rhs: DocumentId) -> Bool {
+        return Util.intToBool(private_DocumentId_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 /**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
