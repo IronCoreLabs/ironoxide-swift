@@ -142,7 +142,8 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
 func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
     let jwt = try generateJWT(userId)
     let password = "foo"
-    _ = IronOxide.userCreate(jwt: jwt, password: password)
+    let opts = UserCreateOpts(needsRotation: true)
+    _ = IronOxide.userCreate(jwt: jwt, password: password, options: opts)
     let newDevice = try IronOxide.generateNewDevice(jwt: jwt, password: password).get()
     return DeviceContext(deviceAddResult: newDevice)
 }

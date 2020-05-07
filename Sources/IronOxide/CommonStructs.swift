@@ -150,6 +150,12 @@ public class UserId: SdkObject {
     deinit { UserId_delete(inner) }
 }
 
+extension UserId: Equatable {
+    public static func == (lhs: UserId, rhs: UserId) -> Bool {
+        return Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 /**
  * ID of a group. Unique with in a segment.
  */
@@ -171,6 +177,12 @@ public class GroupId: SdkObject {
     }()
 
     deinit { GroupId_delete(inner) }
+}
+
+extension GroupId: Equatable {
+    public static func == (lhs: GroupId, rhs: GroupId) -> Bool {
+        return Util.intToBool(private_GroupId_rustEq(lhs.inner, rhs.inner))
+    }
 }
 
 /**
@@ -359,7 +371,7 @@ extension RustBytes: Equatable {
 }
 
 /**
- * Representaiton of an array of Rust objects in Swift
+ * Representation of an array of Rust objects in Swift
  */
 class RustObjects<T> {
     let innerMemory: ContiguousArray<T>
