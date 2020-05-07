@@ -63,10 +63,6 @@ final class DocumentTests: ICLIntegrationTest {
         XCTAssertEqual(sdk.clearPolicyCache(), 1)
     }
 
-    func testEncryptUnmanaged() throws {
-        primarySdk!.document.advanced.encryptUnmanaged()
-    }
-
     func testEncryptToOther() throws {
         let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [secondaryTestUser!], groupGrants: [], policyGrant: nil)
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [], options: opts))

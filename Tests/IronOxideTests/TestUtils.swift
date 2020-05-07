@@ -131,8 +131,11 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
         svGWmW83vBbLxoNeV3xnQjo5Pji6jlNODklqd3KtHsjE9rlgOPxkfRCNgw==
         -----END PUBLIC KEY-----
         """.utf8)
-    let jwtSigner = JWTSigner.es256(privateKey: key)
-    return try myJWT.sign(using: jwtSigner)
+    if #available(macOS 10.13, *) {
+        let jwtSigner = JWTSigner.es256(privateKey: key)
+        return try myJWT.sign(using: jwtSigner)
+    }
+    throw IronOxideError.error("Unable to sign JWT. ES256 requires OSX 10.13 or later.")
 }
 
 /**

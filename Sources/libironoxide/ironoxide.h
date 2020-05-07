@@ -51,6 +51,8 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentEncryptResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentDecryptResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentEncryptUnmanagedResult.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_UserOrGroupId.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_DocumentDecryptUnmanagedResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditErr.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupAccessEditResult.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_GroupUpdatePrivateKeyResult.h"

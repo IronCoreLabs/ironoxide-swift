@@ -185,6 +185,22 @@ extension GroupId: Equatable {
     }
 }
 
+public class UserOrGroupId: SdkObject {
+    public lazy var id: String = {
+        Util.rustStringToSwift(UserOrGroupId_getId(inner))
+    }()
+
+    public lazy var isUser: Bool = {
+        Util.intToBool(UserOrGroupId_isUser(inner))
+    }()
+
+    public lazy var isGroup: Bool = {
+        Util.intToBool(UserOrGroupId_isGroup(inner))
+    }()
+
+    deinit { UserOrGroupId_delete(inner) }
+}
+
 /**
  * ID of a device. Device IDs are numeric and will always be greater than 0.
  */
