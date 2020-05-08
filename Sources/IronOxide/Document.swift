@@ -409,6 +409,10 @@ public struct DocumentOperations {
         modifyAccess(documentId, users, groups, IronOxide_documentRevokeAccess)
     }
 
+    /**
+     * Helper function to reduce copy/paste in `grantAccess` and `revokeAccess`. Takes the function's documentId, users, groups, and
+     * IronOxide C function to call with the parameters (should only be IronOxide_documentGrantAccess or IronOxide_documentRevokeAccess).
+     */
     func modifyAccess(
         _ documentId: DocumentId,
         _ users: [UserId],
