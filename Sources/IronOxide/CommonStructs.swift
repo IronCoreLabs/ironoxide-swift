@@ -333,7 +333,7 @@ class RustBytes {
      * Convert the initialized byte array into a slice that we can pass to libironoxide.
      * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
      */
-    lazy var slice: CRustSlicei8 = {
+    private lazy var slice: CRustSlicei8 = {
         innerMemory.withContiguousStorageIfAvailable { ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count)) }!
     }()
 
@@ -381,7 +381,7 @@ class RustObjects<T> {
      * Convert the array of objects into a slice that we can pass to libironoxide.
      * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
      */
-    lazy var slice: CRustObjectSlice = {
+    private lazy var slice: CRustObjectSlice = {
         let step = UInt(MemoryLayout<T>.stride)
         return innerMemory.withContiguousStorageIfAvailable { pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(pt.count), step: step)
