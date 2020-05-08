@@ -2,7 +2,7 @@ import Foundation
 import libironoxide
 // Name of a document (Note that this is unencrypted).
 public class DocumentName: SdkObject {
-    public convenience init?(name: String) {
+    public convenience init?(_ name: String) {
         switch Util.toResult(DocumentName_validate(Util.swiftStringToRust(name))) {
         case let .success(name):
             self.init(name)

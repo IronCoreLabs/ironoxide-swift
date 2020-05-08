@@ -49,7 +49,7 @@ final class DocumentTests: ICLIntegrationTest {
         _ = sdk.group.create(groupCreateOpts: groupOpts)
         let bytes: [UInt8] = [1, 2, 3, 4]
         let policy = PolicyGrant(category: Category(s: "PII"), sensitivity: Sensitivity(s: "INTERNAL"), dataSubject: nil, substituteUser: nil)
-        let documentOpts = DocumentEncryptOpts(id: nil, documentName: DocumentName(name: "doc name"), grantToAuthor: false, userGrants: [], groupGrants: [],
+        let documentOpts = DocumentEncryptOpts(id: nil, documentName: DocumentName("doc name"), grantToAuthor: false, userGrants: [], groupGrants: [],
                                                policyGrant: policy)
         let encryptResult = try unwrapResult(sdk.document.encrypt(bytes: bytes, options: documentOpts))
         XCTAssertEqual(encryptResult.changed.groups, [groupId])
@@ -80,13 +80,13 @@ final class DocumentTests: ICLIntegrationTest {
 
     func testUpdateName() throws {
         let originalName = "top secret"
-        let opts = DocumentEncryptOpts(id: nil, documentName: DocumentName(name: originalName), grantToAuthor: true, userGrants: [], groupGrants: [],
+        let opts = DocumentEncryptOpts(id: nil, documentName: DocumentName(originalName), grantToAuthor: true, userGrants: [], groupGrants: [],
                                        policyGrant: nil)
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [1, 2], options: opts))
         XCTAssertEqual(encryptResult.name?.name, originalName)
 
         let newName = "declassified"
-        let updateResult = try unwrapResult(primarySdk!.document.updateName(documentId: encryptResult.id, newName: DocumentName(name: newName)))
+        let updateResult = try unwrapResult(primarySdk!.document.updateName(documentId: encryptResult.id, newName: DocumentName(newName)))
         XCTAssertEqual(updateResult.name?.name, newName)
     }
 
