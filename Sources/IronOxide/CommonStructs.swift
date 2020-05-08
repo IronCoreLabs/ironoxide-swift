@@ -330,20 +330,10 @@ class RustBytes {
     }
 
     /**
-     * Initialize with a Rust slice. We copy the input since we can't know its lifetime. We take on faith the memory is accessible
-     * when init is called.
-     */
-    init(_ s: CRustSlicei8) {
-        // Create a temporary array using existing buffer. Don't mess with retain count.
-        // Copy that array and then store it locally.
-        innerMemory = ContiguousArray(Array(UnsafeBufferPointer(start: s.data, count: Int(s.len))))
-    }
-
-    /**
      * Convert the initialized byte array into a slice that we can pass to libironoxide.
      * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
      */
-    lazy var slice: CRustSlicei8 = {
+    private lazy var slice: CRustSlicei8 = {
         innerMemory.withContiguousStorageIfAvailable { ptr in CRustSlicei8(data: ptr.baseAddress, len: UInt(ptr.count)) }!
     }()
 
@@ -391,7 +381,7 @@ class RustObjects<T> {
      * Convert the array of objects into a slice that we can pass to libironoxide.
      * If possible, use withSlice() instead to ensure the lifetime of the swift array and the rust slice stay in sync.
      */
-    lazy var slice: CRustObjectSlice = {
+    private lazy var slice: CRustObjectSlice = {
         let step = UInt(MemoryLayout<T>.stride)
         return innerMemory.withContiguousStorageIfAvailable { pt in
             CRustObjectSlice(data: UnsafeMutableRawPointer(mutating: pt.baseAddress!), len: UInt(pt.count), step: step)

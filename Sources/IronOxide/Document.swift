@@ -244,12 +244,16 @@ public class DocumentEncryptOpts: SdkObject {
         groupGrants: [GroupId],
         policyGrant: PolicyGrant?
     ) {
-        self.init(DocumentEncryptOpts_create(Util.buildOptionOf(id, CRustClassOptDocumentId.init),
-                                             Util.buildOptionOf(documentName, CRustClassOptDocumentName.init),
-                                             Util.boolToInt(grantToAuthor),
-                                             RustObjects(array: userGrants, fn: UserId_getId).slice,
-                                             RustObjects(array: groupGrants, fn: GroupId_getId).slice,
-                                             Util.buildOptionOf(policyGrant, CRustClassOptPolicyGrant.init)))
+        self.init(RustObjects(array: userGrants, fn: UserId_getId).withSlice { userSlice in
+            RustObjects(array: groupGrants, fn: GroupId_getId).withSlice { groupSlice in
+                DocumentEncryptOpts_create(Util.buildOptionOf(id, CRustClassOptDocumentId.init),
+                                           Util.buildOptionOf(documentName, CRustClassOptDocumentName.init),
+                                           Util.boolToInt(grantToAuthor),
+                                           userSlice,
+                                           groupSlice,
+                                           Util.buildOptionOf(policyGrant, CRustClassOptPolicyGrant.init))
+            }
+        })
     }
 
     deinit { DocumentEncryptOpts_delete(inner) }
@@ -337,14 +341,21 @@ public struct AdvancedDocumentOperations {
         ironoxide = instance
     }
 
-    public func encryptUnmanaged(bytes: [UInt8],
-                                 options: DocumentEncryptOpts = DocumentEncryptOpts()) -> Result<DocumentEncryptUnmanagedResult, IronOxideError> {
-        Util.toResult(IronOxide_advancedDocumentEncryptUnmanaged(ironoxide, RustBytes(bytes).slice, options.inner)).map(DocumentEncryptUnmanagedResult.init)
+    public func encryptUnmanaged(
+        bytes: [UInt8],
+        options: DocumentEncryptOpts = DocumentEncryptOpts()
+    ) -> Result<DocumentEncryptUnmanagedResult, IronOxideError> {
+        Util.toResult(RustBytes(bytes).withSlice { rustSlice in
+            IronOxide_advancedDocumentEncryptUnmanaged(ironoxide, rustSlice, options.inner)
+        }).map(DocumentEncryptUnmanagedResult.init)
     }
 
     public func decryptUnmanaged(encryptedBytes: [UInt8], encryptedDeks: [UInt8]) -> Result<DocumentDecryptUnmanagedResult, IronOxideError> {
-        Util.toResult(IronOxide_advancedDocumentDecryptUnmanaged(ironoxide, RustBytes(encryptedBytes).slice, RustBytes(encryptedDeks).slice))
-            .map(DocumentDecryptUnmanagedResult.init)
+        Util.toResult(RustBytes(encryptedBytes).withSlice { bytesSlice in
+            RustBytes(encryptedDeks).withSlice { deksSlice in
+                IronOxide_advancedDocumentDecryptUnmanaged(ironoxide, bytesSlice, deksSlice)
+            }
+        }).map(DocumentDecryptUnmanagedResult.init)
     }
 }
 
@@ -366,19 +377,23 @@ public struct DocumentOperations {
     }
 
     public func getIdFromBytes(bytes: [UInt8]) -> Result<DocumentId, IronOxideError> {
-        Util.toResult(IronOxide_documentGetIdFromBytes(ironoxide, RustBytes(bytes).slice)).map(DocumentId.init)
+        Util.toResult(RustBytes(bytes).withSlice { rustSlice in IronOxide_documentGetIdFromBytes(ironoxide, rustSlice) })
+            .map(DocumentId.init)
     }
 
     public func encrypt(bytes: [UInt8], options: DocumentEncryptOpts = DocumentEncryptOpts()) -> Result<DocumentEncryptResult, IronOxideError> {
-        Util.toResult(IronOxide_documentEncrypt(ironoxide, RustBytes(bytes).slice, options.inner)).map(DocumentEncryptResult.init)
+        Util.toResult(RustBytes(bytes).withSlice { rustSlice in IronOxide_documentEncrypt(ironoxide, rustSlice, options.inner) })
+            .map(DocumentEncryptResult.init)
     }
 
     public func updateBytes(documentId: DocumentId, newBytes: [UInt8]) -> Result<DocumentEncryptResult, IronOxideError> {
-        Util.toResult(IronOxide_documentUpdateBytes(ironoxide, documentId.inner, RustBytes(newBytes).slice)).map(DocumentEncryptResult.init)
+        Util.toResult(RustBytes(newBytes).withSlice { rustSlice in IronOxide_documentUpdateBytes(ironoxide, documentId.inner, rustSlice) })
+            .map(DocumentEncryptResult.init)
     }
 
     public func decrypt(encryptedBytes: [UInt8]) -> Result<DocumentDecryptResult, IronOxideError> {
-        Util.toResult(IronOxide_documentDecrypt(ironoxide, RustBytes(encryptedBytes).slice)).map(DocumentDecryptResult.init)
+        Util.toResult(RustBytes(encryptedBytes).withSlice { rustSlice in IronOxide_documentDecrypt(ironoxide, rustSlice) })
+            .map(DocumentDecryptResult.init)
     }
 
     public func updateName(documentId: DocumentId, newName: DocumentName?) -> Result<DocumentMetadataResult, IronOxideError> {
@@ -387,14 +402,27 @@ public struct DocumentOperations {
     }
 
     public func grantAccess(documentId: DocumentId, users: [UserId], groups: [GroupId]) -> Result<DocumentAccessResult, IronOxideError> {
-        Util.toResult(IronOxide_documentGrantAccess(ironoxide, documentId.inner,
-                                                    RustObjects(array: users, fn: UserId_getId).slice,
-                                                    RustObjects(array: groups, fn: GroupId_getId).slice)).map(DocumentAccessResult.init)
+        modifyAccess(documentId, users, groups, IronOxide_documentGrantAccess)
     }
 
     public func revokeAccess(documentId: DocumentId, users: [UserId], groups: [GroupId]) -> Result<DocumentAccessResult, IronOxideError> {
-        Util.toResult(IronOxide_documentRevokeAccess(ironoxide, documentId.inner,
-                                                     RustObjects(array: users, fn: UserId_getId).slice,
-                                                     RustObjects(array: groups, fn: GroupId_getId).slice)).map(DocumentAccessResult.init)
+        modifyAccess(documentId, users, groups, IronOxide_documentRevokeAccess)
+    }
+
+    /**
+     * Helper function to reduce copy/paste in `grantAccess` and `revokeAccess`. Takes the function's documentId, users, groups, and
+     * IronOxide C function to call with the parameters (should only be IronOxide_documentGrantAccess or IronOxide_documentRevokeAccess).
+     */
+    func modifyAccess(
+        _ documentId: DocumentId,
+        _ users: [UserId],
+        _ groups: [GroupId],
+        _ fn: (OpaquePointer, OpaquePointer, CRustObjectSlice, CRustObjectSlice) -> CRustResult4232mut3232c_voidCRustString
+    ) -> Result<DocumentAccessResult, IronOxideError> {
+        Util.toResult(RustObjects(array: users, fn: UserId_getId).withSlice { userSlice in
+            RustObjects(array: groups, fn: GroupId_getId).withSlice { groupSlice in
+                fn(ironoxide, documentId.inner, userSlice, groupSlice)
+            }
+            }).map(DocumentAccessResult.init)
     }
 }
