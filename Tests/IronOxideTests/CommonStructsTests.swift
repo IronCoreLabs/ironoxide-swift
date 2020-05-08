@@ -47,7 +47,7 @@ final class CommonStructsTests: XCTestCase {
 
     func testSdkTimeout() throws {
         let dc = try createUserAndDevice()
-        let sdk = initialize(device: dc, config: IronOxideConfig(policyCaching: PolicyCachingConfig(), sdkOperationTimeout: Duration(millis: 5)))
+        let sdk = IronOxide.initialize(device: dc, config: IronOxideConfig(policyCaching: PolicyCachingConfig(), sdkOperationTimeout: Duration(millis: 5)))
         XCTAssertThrowsError(try sdk.get())
     }
 }

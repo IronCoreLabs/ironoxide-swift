@@ -43,7 +43,7 @@ final class DocumentTests: ICLIntegrationTest {
 
     func testEncryptWithPolicy() throws {
         let dc = try createUserAndDevice()
-        let sdk = try unwrapResult(initialize(device: dc))
+        let sdk = try unwrapResult(IronOxide.initialize(device: dc))
         let groupId = GroupId("data_recovery_\(dc.accountId.id)")
         let groupOpts = GroupCreateOpts(id: groupId, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [], needsRotation: false)
         _ = sdk.group.create(groupCreateOpts: groupOpts)
@@ -93,7 +93,7 @@ final class DocumentTests: ICLIntegrationTest {
     func testDecryptAfterRotation() throws {
         let bytes: [UInt8] = [1, 2]
         let dc = try createUserAndDevice()
-        let sdk = try unwrapResult(initialize(device: dc))
+        let sdk = try unwrapResult(IronOxide.initialize(device: dc))
         let encryptResult = try unwrapResult(sdk.document.encrypt(bytes: bytes))
 
         _ = sdk.user.rotatePrivateKey(password: "foo")
