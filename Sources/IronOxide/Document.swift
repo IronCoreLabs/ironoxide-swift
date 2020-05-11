@@ -18,6 +18,12 @@ public class DocumentName: SdkObject {
     deinit { DocumentName_delete(inner) }
 }
 
+extension DocumentName: Equatable {
+    public static func == (lhs: DocumentName, rhs: DocumentName) -> Bool {
+        Util.intToBool(private_DocumentName_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 public enum DocumentAssociationType {
     init(_ i: UInt32) {
         let associationType = AssociationType(i)
@@ -149,11 +155,11 @@ public class DocumentEncryptResult: SdkObject {
         Util.timestampToDate(DocumentEncryptResult_getLastUpdated(inner))
     }()
 
-    public lazy var changed: SucceededResult = {
+    public lazy var grants: SucceededResult = {
         SucceededResult(DocumentEncryptResult_getChanged(inner))
     }()
 
-    public lazy var errors: FailedResult = {
+    public lazy var accessErrors: FailedResult = {
         FailedResult(DocumentEncryptResult_getErrors(inner))
     }()
 
@@ -226,6 +232,10 @@ public class PolicyGrant: SdkObject {
                                      Util.buildOptionOf(sensitivity, CRustClassOptSensitivity.init),
                                      Util.buildOptionOf(dataSubject, CRustClassOptDataSubject.init),
                                      Util.buildOptionOf(substituteUser, CRustClassOptUserId.init)))
+    }
+
+    public convenience init() {
+        self.init(PolicyGrant_default())
     }
 
     deinit { PolicyGrant_delete(inner) }

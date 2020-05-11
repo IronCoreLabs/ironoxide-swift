@@ -68,8 +68,27 @@ extension XCTestCase {
     /**
      * Assert that the provided bytes have the provided length.
      */
-    func assertByteLength(_ bytes: [UInt8], _ length: Int) {
-        XCTAssertEqual(bytes.count, length, "Expected bytes of length \(bytes.count) to have length \(length)")
+    func assertByteLength(_ bytes: [UInt8], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        XCTAssertEqual(bytes.count, length, "Expected bytes of length \(bytes.count) to have length \(length)", file: file, line: line)
+    }
+
+    /**
+     * Assert that an array of type S is a given length. Must provide a function to map S to String so it can be printed.
+     */
+    func assertArrayCount<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
+        if array.count == length {
+            XCTAssertEqual(array.count, length, file: file, line: line)
+        } else {
+            let message = "\nError: Expected array of length \(length), found array of length \(array.count): \(array.map { fn($0) }))"
+            XCTAssertEqual(array.count, length, message, file: file, line: line)
+        }
+    }
+
+    /**
+     * Assert that an array of Strings has a given length
+     */
+    func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
     }
 }
 
@@ -145,7 +164,8 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
 func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
     let jwt = try generateJWT(userId)
     let password = "foo"
-    _ = IronOxide.userCreate(jwt: jwt, password: password)
+    let opts = UserCreateOpts(needsRotation: true)
+    _ = IronOxide.userCreate(jwt: jwt, password: password, options: opts)
     let newDevice = try IronOxide.generateNewDevice(jwt: jwt, password: password).get()
     return DeviceContext(deviceAddResult: newDevice)
 }

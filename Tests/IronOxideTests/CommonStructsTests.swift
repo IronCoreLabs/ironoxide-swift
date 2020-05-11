@@ -44,4 +44,12 @@ final class CommonStructsTests: XCTestCase {
         let theEnd = Array(UnsafeBufferPointer(start: pointerWrapper, count: originalBytes.count))
         XCTAssertEqual(theEnd, originalBytes)
     }
+
+    func testSdkTimeout() throws {
+        let dc = try createUserAndDevice()
+        let shortTimeout = Duration(millis: 5)
+        // This will return a Result error because 5ms is not enough time to make the initialization call
+        let sdk = IronOxide.initialize(device: dc, config: IronOxideConfig(policyCaching: PolicyCachingConfig(), sdkOperationTimeout: shortTimeout))
+        XCTAssertThrowsError(try sdk.get())
+    }
 }
