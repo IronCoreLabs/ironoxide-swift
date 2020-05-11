@@ -5,7 +5,7 @@ import XCTest
 final class UtilTests: XCTestCase {
     func testAssertArrayCount() {
         let array = [DocumentId("1")!, DocumentId("2")!]
-        assertArrayCount(array, 2) { $0.id }
+        assertArrayCount(array, 2, fn: { $0.id })
     }
 
     func testTimestampToDate() {

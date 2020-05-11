@@ -75,7 +75,7 @@ extension XCTestCase {
     /**
      * Assert that an array of type S is a given length. Must provide a function to map S to String so it can be printed.
      */
-    func assertArrayCount<S>(_ array: [S], _ length: Int, file: StaticString = #file, line: UInt = #line, _ fn: (S) -> String) {
+    func assertArrayCount<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
         if array.count == length {
             XCTAssertEqual(array.count, length, file: file, line: line)
         } else {
@@ -88,7 +88,7 @@ extension XCTestCase {
      * Assert that an array of Strings has a given length
      */
     func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
-        assertArrayCount(array, length, file: file, line: line) { $0 }
+        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
     }
 }
 
