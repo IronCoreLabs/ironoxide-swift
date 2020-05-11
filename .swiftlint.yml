@@ -3,3 +3,4 @@ disabled_rules:
   - line_length
   - trailing_comma
   - trailing_newline
+  - large_tuple

@@ -75,7 +75,7 @@ extension XCTestCase {
 
 class ICLIntegrationTest: XCTestCase {
     override func setUpWithError() throws {
-        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
+        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil || primaryGroup == nil {
             XCTFail("Failed to create primary test user/SDK.")
             throw IronOxideError.error("Initialization failed")
         }
@@ -154,10 +154,12 @@ func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
  * Private variable that calls and holds the primary test user's SDK and DeviceContext. Meant to be private to
  * force use of `primaryTestUser`, `primaryTestUserDeviceContext`, and `primarySDK`.
  */
-private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
+private let createPrimaryTestUser: (SDK?, DeviceContext?, GroupId?) = {
     let maybeDevice = try? createUserAndDevice()
     let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
-    return (maybeSdk, maybeDevice)
+    let opts = GroupCreateOpts(id: nil, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [], needsRotation: true)
+    let groupId = try? maybeSdk?.group.create(groupCreateOpts: opts).get()
+    return (maybeSdk, maybeDevice, groupId?.groupId)
 }()
 
 /**
@@ -165,39 +167,52 @@ private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
  * when it's not necessary to create a new one for a given test.
  */
 let primaryTestUser: UserId? = {
-    let (_, device) = createPrimaryTestUser
+    let (_, device, _) = createPrimaryTestUser
     return device?.accountId
 }()
 
 /// DeviceContext for `primaryTestUser`
 let primaryTestUserDeviceContext: DeviceContext? = {
-    let (_, device) = createPrimaryTestUser
+    let (_, device, _) = createPrimaryTestUser
     return device
 }()
 
 /// SDK initialized by `primaryTestUser`
 let primarySdk: SDK? = {
-    let (sdk, _) = createPrimaryTestUser
+    let (sdk, _, _) = createPrimaryTestUser
     return sdk
+}()
+
+/// Group created with `primaryTestUser` as only owner/admin
+let primaryGroup: GroupId? = {
+    let (_, _, groupId) = createPrimaryTestUser
+    return groupId
 }()
 
 /**
  * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
  * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
  */
-private let createSecondaryTestUser: DeviceContext? = {
+private let createSecondaryTestUser: (SDK?, DeviceContext?) = {
     let maybeDevice = try? createUserAndDevice()
-    return maybeDevice
+    let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
+    return (maybeSdk, maybeDevice)
 }()
 
 /// Secondary UserId for test user created at start of tests
 let secondaryTestUser: UserId? = {
-    let device = createSecondaryTestUser
+    let (_, device) = createSecondaryTestUser
     return device?.accountId
 }()
 
 /// DeviceContext for `secondaryTestUser`
 let secondaryTestUserDeviceContext: DeviceContext? = {
-    let device = createSecondaryTestUser
+    let (_, device) = createSecondaryTestUser
     return device
+}()
+
+/// SDK initialized by `secondaryTestUser`
+let secondarySdk: SDK? = {
+    let (sdk, _) = createSecondaryTestUser
+    return sdk
 }()
