@@ -22,7 +22,7 @@ final class GroupTests: ICLIntegrationTest {
 
     func testAddAndRemoveMember() throws {
         let group = try unwrapResult(primarySdk!.group.create())
-        let memberAdd = try unwrapResult(primarySdk!.group.addAdmins(groupId: group.groupId, users: [secondaryTestUser!]))
+        let memberAdd = try unwrapResult(primarySdk!.group.addMembers(groupId: group.groupId, users: [secondaryTestUser!]))
         XCTAssertEqual(memberAdd.succeeded.count, 1)
         XCTAssertEqual(memberAdd.failed.count, 0)
 

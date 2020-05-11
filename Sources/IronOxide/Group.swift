@@ -99,7 +99,7 @@ public class GroupCreateResult: SdkObject {
     }()
 
     public lazy var memberList: GroupUserList = {
-        GroupUserList(GroupCreateResult_getAdminList(inner))
+        GroupUserList(GroupCreateResult_getMemberList(inner))
     }()
 
     public lazy var created: Date = {
@@ -115,6 +115,53 @@ public class GroupCreateResult: SdkObject {
     }()
 
     deinit { GroupCreateResult_delete(inner) }
+}
+
+/**
+ * Metadata for a group
+ */
+public class GroupGetResult: SdkObject {
+    public lazy var groupId: GroupId = {
+        GroupId(GroupGetResult_getId(inner))
+    }()
+
+    public lazy var groupName: GroupName? = {
+        Util.toOption(GroupGetResult_getName(inner)).map(GroupName.init)
+    }()
+
+    public lazy var groupMasterPublicKey: PublicKey = {
+        PublicKey(GroupGetResult_getGroupMasterPublicKey(inner))
+    }()
+
+    public lazy var isAdmin: Bool = {
+        Util.intToBool(GroupGetResult_isAdmin(inner))
+    }()
+
+    public lazy var isMember: Bool = {
+        Util.intToBool(GroupGetResult_isMember(inner))
+    }()
+
+    public lazy var adminList: GroupUserList? = {
+        Util.toOption(GroupGetResult_getAdminList(inner)).map(GroupUserList.init)
+    }()
+
+    public lazy var memberList: GroupUserList? = {
+        Util.toOption(GroupGetResult_getMemberList(inner)).map(GroupUserList.init)
+    }()
+
+    public lazy var created: Date = {
+        Util.timestampToDate(GroupGetResult_getCreated(inner))
+    }()
+
+    public lazy var lastUpdated: Date = {
+        Util.timestampToDate(GroupGetResult_getLastUpdated(inner))
+    }()
+
+    public lazy var needsRotation: Bool? = {
+        Util.toOption(GroupGetResult_getNeedsRotation(inner)).map(Util.nullableBooleanToBool)
+    }()
+
+    deinit { GroupGetResult_delete(inner) }
 }
 
 /**
@@ -222,8 +269,8 @@ public struct GroupOperations {
     /**
      * Get the full metadata for a specific group given its ID.
      */
-    public func getMetadata(groupId: GroupId) -> Result<GroupMetaResult, IronOxideError> {
-        Util.toResult(IronOxide_groupGetMetadata(ironoxide, groupId.inner)).map(GroupMetaResult.init)
+    public func getMetadata(groupId: GroupId) -> Result<GroupGetResult, IronOxideError> {
+        Util.toResult(IronOxide_groupGetMetadata(ironoxide, groupId.inner)).map(GroupGetResult.init)
     }
 
     /**
