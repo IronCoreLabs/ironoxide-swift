@@ -32,6 +32,12 @@ public class DocumentId: SdkObject {
     deinit { DocumentId_delete(inner) }
 }
 
+extension DocumentId: Equatable {
+    public static func == (lhs: DocumentId, rhs: DocumentId) -> Bool {
+        Util.intToBool(private_DocumentId_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 /**
  * Represents an asymmetric private key that wraps the underlying bytes of the key.
  */
@@ -152,7 +158,7 @@ public class UserId: SdkObject {
 
 extension UserId: Equatable {
     public static func == (lhs: UserId, rhs: UserId) -> Bool {
-        return Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
+        Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
     }
 }
 
@@ -181,7 +187,7 @@ public class GroupId: SdkObject {
 
 extension GroupId: Equatable {
     public static func == (lhs: GroupId, rhs: GroupId) -> Bool {
-        return Util.intToBool(private_GroupId_rustEq(lhs.inner, rhs.inner))
+        Util.intToBool(private_GroupId_rustEq(lhs.inner, rhs.inner))
     }
 }
 
@@ -377,7 +383,7 @@ extension RustBytes: Equatable {
 }
 
 /**
- * Representaiton of an array of Rust objects in Swift
+ * Representation of an array of Rust objects in Swift
  */
 class RustObjects<T> {
     let innerMemory: ContiguousArray<T>

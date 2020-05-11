@@ -4,3 +4,4 @@ disabled_rules:
   - trailing_comma
   - trailing_newline
   - large_tuple
+  - file_length
