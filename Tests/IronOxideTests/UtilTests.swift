@@ -3,6 +3,11 @@ import libironoxide
 import XCTest
 
 final class UtilTests: XCTestCase {
+    func testAssertArrayCount() {
+        let array = [DocumentId("1")!, DocumentId("2")!]
+        assertArrayCount(array, 2) { $0.id }
+    }
+
     func testTimestampToDate() {
         let time: Int64 = 1_587_745_315_000
         let date = Util.timestampToDate(time)

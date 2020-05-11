@@ -68,8 +68,27 @@ extension XCTestCase {
     /**
      * Assert that the provided bytes have the provided length.
      */
-    func assertByteLength(_ bytes: [UInt8], _ length: Int) {
-        XCTAssertEqual(bytes.count, length, "Expected bytes of length \(bytes.count) to have length \(length)")
+    func assertByteLength(_ bytes: [UInt8], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        XCTAssertEqual(bytes.count, length, "Expected bytes of length \(bytes.count) to have length \(length)", file: file, line: line)
+    }
+
+    /**
+     * Assert that an array of type S is a given length. Must provide a function to map S to String so it can be printed.
+     */
+    func assertArrayCount<S>(_ array: [S], _ length: Int, file: StaticString = #file, line: UInt = #line, _ fn: (S) -> String) {
+        if array.count == length {
+            XCTAssertEqual(array.count, length, file: file, line: line)
+        } else {
+            let message = "\nError: Expected array of length \(length), found array of length \(array.count): \(array.map { fn($0) }))"
+            XCTAssertEqual(array.count, length, message, file: file, line: line)
+        }
+    }
+
+    /**
+     * Assert that an array of Strings has a given length
+     */
+    func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        assertArrayCount(array, length, file: file, line: line) { $0 }
     }
 }
 

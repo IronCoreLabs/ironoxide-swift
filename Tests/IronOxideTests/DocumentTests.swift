@@ -16,9 +16,9 @@ final class DocumentTests: ICLIntegrationTest {
                      options: DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: true, userGrants: [primaryTestUser!], groupGrants: [],
                                                   policyGrant: nil)))
         XCTAssertNil(createResult.name)
-        XCTAssertEqual(createResult.errors.groups.count, 0)
-        XCTAssertEqual(createResult.errors.users.count, 0)
-        XCTAssertEqual(createResult.changed.users.count, 1)
+        assertArrayCount(createResult.accessErrors.groups, 0) { $0.id }
+        assertArrayCount(createResult.accessErrors.users, 0) { $0.id }
+        assertArrayCount(createResult.grants.users, 1) { $0.id }
 
         let decryptResult = try unwrapResult(primarySdk!.document.decrypt(encryptedBytes: createResult.encryptedData))
         XCTAssertEqual(decryptResult.decryptedData, bytes)
@@ -35,27 +35,27 @@ final class DocumentTests: ICLIntegrationTest {
     func testEncryptDefault() throws {
         let bytes: [UInt8] = [1, 10, 100]
         let createResult = try unwrapResult(primarySdk!.document.encrypt(bytes: bytes, options: DocumentEncryptOpts()))
-        XCTAssertEqual(createResult.changed.users.count, 1)
-        XCTAssertEqual(createResult.changed.groups.count, 0)
-        XCTAssertEqual(createResult.errors.users.count, 0)
-        XCTAssertEqual(createResult.errors.groups.count, 0)
+        assertArrayCount(createResult.grants.users, 1) { $0.id }
+        assertArrayCount(createResult.grants.groups, 0) { $0.id }
+        assertArrayCount(createResult.accessErrors.users, 0) { $0.id }
+        assertArrayCount(createResult.accessErrors.groups, 0) { $0.id }
     }
 
     func testEncryptWithPolicy() throws {
         let dc = try createUserAndDevice()
         let sdk = try unwrapResult(IronOxide.initialize(device: dc))
-        let groupId = GroupId("data_recovery_\(dc.accountId.id)")
+        let groupId = GroupId("data_recovery_\(dc.accountId.id)")!
         let groupOpts = GroupCreateOpts(id: groupId, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [], needsRotation: false)
         _ = sdk.group.create(groupCreateOpts: groupOpts)
         let bytes: [UInt8] = [1, 2, 3, 4]
-        let policy = PolicyGrant(category: Category(s: "PII"), sensitivity: Sensitivity(s: "INTERNAL"), dataSubject: nil, substituteUser: nil)
+        let policy = PolicyGrant(category: Category(s: "PII"), sensitivity: Sensitivity(s: "INTERNAL"), dataSubject: nil, substituteUser: nil)!
         let documentOpts = DocumentEncryptOpts(id: nil, documentName: DocumentName("doc name"), grantToAuthor: false, userGrants: [], groupGrants: [],
                                                policyGrant: policy)
         let encryptResult = try unwrapResult(sdk.document.encrypt(bytes: bytes, options: documentOpts))
-        XCTAssertEqual(encryptResult.changed.groups, [groupId])
-        XCTAssertEqual(encryptResult.changed.users, [dc.accountId])
-        XCTAssertEqual(encryptResult.errors.groups, [GroupId("badgroupid_frompolicy")])
-        XCTAssertEqual(encryptResult.errors.users, [UserId("baduserid_frompolicy")])
+        XCTAssertEqual(encryptResult.grants.groups, [groupId])
+        XCTAssertEqual(encryptResult.grants.users, [dc.accountId])
+        XCTAssertEqual(encryptResult.accessErrors.groups, [GroupId("badgroupid_frompolicy")])
+        XCTAssertEqual(encryptResult.accessErrors.users, [UserId("baduserid_frompolicy")])
 
         // try with empty policy
         let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [], groupGrants: [], policyGrant: PolicyGrant())
@@ -66,10 +66,10 @@ final class DocumentTests: ICLIntegrationTest {
     func testEncryptToOther() throws {
         let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [secondaryTestUser!], groupGrants: [], policyGrant: nil)
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [], options: opts))
-        XCTAssertEqual(encryptResult.changed.users, [secondaryTestUser])
-        XCTAssertEqual(encryptResult.changed.groups.count, 0)
-        XCTAssertEqual(encryptResult.errors.users.count, 0)
-        XCTAssertEqual(encryptResult.errors.groups.count, 0)
+        XCTAssertEqual(encryptResult.grants.users, [secondaryTestUser])
+        assertArrayCount(encryptResult.grants.groups, 0) { $0.id }
+        assertArrayCount(encryptResult.accessErrors.users, 0) { $0.id }
+        assertArrayCount(encryptResult.accessErrors.groups, 0) { $0.id }
     }
 
     func testEncryptToNothing() throws {
@@ -79,15 +79,15 @@ final class DocumentTests: ICLIntegrationTest {
     }
 
     func testUpdateName() throws {
-        let originalName = "top secret"
-        let opts = DocumentEncryptOpts(id: nil, documentName: DocumentName(originalName), grantToAuthor: true, userGrants: [], groupGrants: [],
+        let originalName = DocumentName("top secret")!
+        let opts = DocumentEncryptOpts(id: nil, documentName: originalName, grantToAuthor: true, userGrants: [], groupGrants: [],
                                        policyGrant: nil)
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [1, 2], options: opts))
-        XCTAssertEqual(encryptResult.name?.name, originalName)
+        XCTAssertEqual(encryptResult.name, originalName)
 
-        let newName = "declassified"
-        let updateResult = try unwrapResult(primarySdk!.document.updateName(documentId: encryptResult.id, newName: DocumentName(newName)))
-        XCTAssertEqual(updateResult.name?.name, newName)
+        let newName = DocumentName("declassified")
+        let updateResult = try unwrapResult(primarySdk!.document.updateName(documentId: encryptResult.id, newName: newName))
+        XCTAssertEqual(updateResult.name, newName)
     }
 
     func testDecryptAfterRotation() throws {
@@ -113,22 +113,22 @@ final class DocumentTests: ICLIntegrationTest {
 
     func testAddRemoveMembers() throws {
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [1]))
-        XCTAssertEqual(encryptResult.changed.users.count, 1)
-        XCTAssertEqual(encryptResult.changed.groups.count, 0)
+        assertArrayCount(encryptResult.grants.users, 1) { $0.id }
+        assertArrayCount(encryptResult.grants.groups, 0) { $0.id }
 
         let addResult = try unwrapResult(primarySdk!.document.grantAccess(documentId: encryptResult.id, users: [secondaryTestUser!], groups: []))
-        XCTAssertEqual(addResult.changed.users.count, 1)
-        XCTAssertEqual(addResult.changed.groups.count, 0)
+        assertArrayCount(addResult.changed.users, 1) { $0.id }
+        assertArrayCount(addResult.changed.groups, 0) { $0.id }
 
         let metadata = try unwrapResult(primarySdk!.document.getMetadata(documentId: encryptResult.id))
-        XCTAssertEqual(metadata.visibleToUsers.count, 2)
+        assertArrayCount(metadata.visibleToUsers, 2) { $0.id }
 
         let removeResult = try unwrapResult(primarySdk!.document.revokeAccess(documentId: encryptResult.id, users: [secondaryTestUser!], groups: []))
-        XCTAssertEqual(removeResult.changed.users.count, 1)
-        XCTAssertEqual(removeResult.changed.groups.count, 0)
+        assertArrayCount(removeResult.changed.users, 1) { $0.id }
+        assertArrayCount(removeResult.changed.groups, 0) { $0.id }
 
         let metadata2 = try unwrapResult(primarySdk!.document.getMetadata(documentId: encryptResult.id))
-        XCTAssertEqual(metadata2.visibleToUsers.count, 1)
+        assertArrayCount(metadata2.visibleToUsers, 1) { $0.id }
     }
 
     func testEncryptUnmanagedRoundtrip() throws {

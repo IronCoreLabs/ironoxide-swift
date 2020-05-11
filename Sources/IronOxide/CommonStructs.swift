@@ -34,7 +34,7 @@ public class DocumentId: SdkObject {
 
 extension DocumentId: Equatable {
     public static func == (lhs: DocumentId, rhs: DocumentId) -> Bool {
-        return Util.intToBool(private_DocumentId_rustEq(lhs.inner, rhs.inner))
+        Util.intToBool(private_DocumentId_rustEq(lhs.inner, rhs.inner))
     }
 }
 
@@ -158,7 +158,7 @@ public class UserId: SdkObject {
 
 extension UserId: Equatable {
     public static func == (lhs: UserId, rhs: UserId) -> Bool {
-        return Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
+        Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
     }
 }
 
@@ -187,7 +187,7 @@ public class GroupId: SdkObject {
 
 extension GroupId: Equatable {
     public static func == (lhs: GroupId, rhs: GroupId) -> Bool {
-        return Util.intToBool(private_GroupId_rustEq(lhs.inner, rhs.inner))
+        Util.intToBool(private_GroupId_rustEq(lhs.inner, rhs.inner))
     }
 }
 
