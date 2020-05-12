@@ -24,6 +24,12 @@ public class GroupName: SdkObject {
     deinit { GroupName_delete(inner) }
 }
 
+extension GroupName: Equatable {
+    public static func == (lhs: GroupName, rhs: GroupName) -> Bool {
+        Util.intToBool(private_GroupName_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 /**
  * Options that can be specified creating a group.
  */
