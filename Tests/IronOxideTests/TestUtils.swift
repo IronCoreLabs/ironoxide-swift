@@ -94,7 +94,7 @@ extension XCTestCase {
 
 class ICLIntegrationTest: XCTestCase {
     override func setUpWithError() throws {
-        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil || primaryGroup == nil {
+        if primarySdk == nil || primaryTestUser == nil || primaryTestUserDeviceContext == nil {
             XCTFail("Failed to create primary test user/SDK.")
             throw IronOxideError.error("Initialization failed")
         }
@@ -174,12 +174,10 @@ func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
  * Private variable that calls and holds the primary test user's SDK and DeviceContext. Meant to be private to
  * force use of `primaryTestUser`, `primaryTestUserDeviceContext`, and `primarySDK`.
  */
-private let createPrimaryTestUser: (SDK?, DeviceContext?, GroupId?) = {
+private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
     let maybeDevice = try? createUserAndDevice()
     let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
-    let opts = GroupCreateOpts(id: nil, name: nil, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [], needsRotation: true)
-    let groupId = try? maybeSdk?.group.create(groupCreateOpts: opts).get()
-    return (maybeSdk, maybeDevice, groupId?.groupId)
+    return (maybeSdk, maybeDevice)
 }()
 
 /**
@@ -187,26 +185,20 @@ private let createPrimaryTestUser: (SDK?, DeviceContext?, GroupId?) = {
  * when it's not necessary to create a new one for a given test.
  */
 let primaryTestUser: UserId? = {
-    let (_, device, _) = createPrimaryTestUser
+    let (_, device) = createPrimaryTestUser
     return device?.accountId
 }()
 
 /// DeviceContext for `primaryTestUser`
 let primaryTestUserDeviceContext: DeviceContext? = {
-    let (_, device, _) = createPrimaryTestUser
+    let (_, device) = createPrimaryTestUser
     return device
 }()
 
 /// SDK initialized by `primaryTestUser`
 let primarySdk: SDK? = {
-    let (sdk, _, _) = createPrimaryTestUser
+    let (sdk, _) = createPrimaryTestUser
     return sdk
-}()
-
-/// Group created with `primaryTestUser` as only owner/admin
-let primaryGroup: GroupId? = {
-    let (_, _, groupId) = createPrimaryTestUser
-    return groupId
 }()
 
 /**
