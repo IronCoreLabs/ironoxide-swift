@@ -47,8 +47,8 @@ final class GroupTests: ICLIntegrationTest {
 
     func testInitAndRotate() throws {
         let createResult = try unwrapResult(primarySdk!.group.create())
-        _ = try unwrapResult(initializeAndRotate(device: primaryTestUserDeviceContext!, password: "foo", config: IronOxideConfig(),
-                                                 timeout: Duration(seconds: 30)))
+        _ = try unwrapResult(IronOxide.initializeAndRotate(device: primaryTestUserDeviceContext!, password: "foo", config: IronOxideConfig(),
+                                                           timeout: Duration(seconds: 30)))
         let groupGet = try unwrapResult(primarySdk!.group.getMetadata(groupId: createResult.groupId))
         XCTAssertFalse(groupGet.needsRotation!)
     }
