@@ -90,6 +90,25 @@ extension XCTestCase {
     func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
         assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
     }
+
+    /**
+     * Assert that an array of type S is greater than a given length. Must provide a function to map S to String so it can be printed.
+     */
+    func assertArrayCountGreaterThan<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
+        if array.count > length {
+            XCTAssertGreaterThan(array.count, length, file: file, line: line)
+        } else {
+            let message = "\nError: Expected array with length greater than \(length), found array of length \(array.count): \(array.map { fn($0) }))"
+            XCTAssertGreaterThan(array.count, length, message, file: file, line: line)
+        }
+    }
+
+    /**
+     * Assert that an array of Strings is greater than a given length.
+     */
+    func assertArrayCountGreaterThan(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
+    }
 }
 
 class ICLIntegrationTest: XCTestCase {

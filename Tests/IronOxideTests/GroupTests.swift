@@ -3,6 +3,7 @@ import XCTest
 
 final class GroupTests: ICLIntegrationTest {
     func testGroupCreateDefault() throws {
+        // create with defaults
         let createResult = try unwrapResult(primarySdk!.group.create())
         assertArrayCount(createResult.adminList.list, 1, fn: { $0.id })
         assertArrayCount(createResult.memberList.list, 1, fn: { $0.id })
@@ -55,7 +56,7 @@ final class GroupTests: ICLIntegrationTest {
     func testGroupList() throws {
         _ = try unwrapResult(primarySdk!.group.create())
         let listResult1 = try unwrapResult(primarySdk!.group.list())
-        XCTAssertGreaterThan(listResult1.result.count, 0)
+        assertArrayCountGreaterThan(listResult1.result, 0, fn: { $0.id.id })
     }
 
     func testAddAndRemoveMember() throws {
@@ -108,5 +109,13 @@ final class GroupTests: ICLIntegrationTest {
         let newName = GroupName("new name")!
         let updateNameResult = try unwrapResult(primarySdk!.group.updateName(groupId: createResult.groupId, groupName: newName))
         XCTAssertEqual(updateNameResult.name, newName)
+    }
+
+    func testGroupRemoveName() throws {
+        let opts = GroupCreateOpts(id: nil, name: GroupName("original")!, addAsAdmin: true, addAsMember: true, owner: nil, admins: [], members: [],
+                                   needsRotation: true)
+        let createResult = try unwrapResult(primarySdk!.group.create(groupCreateOpts: opts))
+        let updateNameResult = try unwrapResult(primarySdk!.group.updateName(groupId: createResult.groupId, groupName: nil))
+        XCTAssertNil(updateNameResult.name)
     }
 }
