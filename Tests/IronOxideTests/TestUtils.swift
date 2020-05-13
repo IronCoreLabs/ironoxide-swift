@@ -90,6 +90,25 @@ extension XCTestCase {
     func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
         assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
     }
+
+    /**
+     * Assert that an array of type S is greater than a given length. Must provide a function to map S to String so it can be printed.
+     */
+    func assertArrayCountGreaterThan<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
+        if array.count > length {
+            XCTAssertGreaterThan(array.count, length, file: file, line: line)
+        } else {
+            let message = "\nError: Expected array with length greater than \(length), found array of length \(array.count): \(array.map { fn($0) }))"
+            XCTAssertGreaterThan(array.count, length, message, file: file, line: line)
+        }
+    }
+
+    /**
+     * Assert that an array of Strings is greater than a given length.
+     */
+    func assertArrayCountGreaterThan(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
+        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
+    }
 }
 
 class ICLIntegrationTest: XCTestCase {
@@ -205,19 +224,26 @@ let primarySdk: SDK? = {
  * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
  * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
  */
-private let createSecondaryTestUser: DeviceContext? = {
+private let createSecondaryTestUser: (SDK?, DeviceContext?) = {
     let maybeDevice = try? createUserAndDevice()
-    return maybeDevice
+    let maybeSdk = try? maybeDevice.flatMap { device in IronOxide.initialize(device: device) }?.get()
+    return (maybeSdk, maybeDevice)
 }()
 
 /// Secondary UserId for test user created at start of tests
 let secondaryTestUser: UserId? = {
-    let device = createSecondaryTestUser
+    let (_, device) = createSecondaryTestUser
     return device?.accountId
 }()
 
 /// DeviceContext for `secondaryTestUser`
 let secondaryTestUserDeviceContext: DeviceContext? = {
-    let device = createSecondaryTestUser
+    let (_, device) = createSecondaryTestUser
     return device
+}()
+
+/// SDK initialized by `secondaryTestUser`
+let secondarySdk: SDK? = {
+    let (sdk, _) = createSecondaryTestUser
+    return sdk
 }()
