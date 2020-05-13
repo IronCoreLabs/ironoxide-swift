@@ -5,8 +5,8 @@ final class GroupTests: ICLIntegrationTest {
     func testGroupCreateDefault() throws {
         // create with defaults
         let createResult = try unwrapResult(primarySdk!.group.create())
-        assertCollectionCount(createResult.adminList.list, 1, fn: { $0.id })
-        assertCollectionCount(createResult.memberList.list, 1, fn: { $0.id })
+        assertCollectionCount(createResult.adminList.list, 1)
+        assertCollectionCount(createResult.memberList.list, 1)
         XCTAssertNil(createResult.groupName)
         XCTAssertEqual(createResult.owner, primaryTestUser!)
         XCTAssertFalse(createResult.needsRotation!)
@@ -62,7 +62,7 @@ final class GroupTests: ICLIntegrationTest {
     func testAddAndRemoveMember() throws {
         let groupCreate = try unwrapResult(primarySdk!.group.create())
         let memberAdd = try unwrapResult(primarySdk!.group.addMembers(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertCollectionCount(memberAdd.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(memberAdd.succeeded, 1)
         assertCollectionCount(memberAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
 
         let secondaryGet = try unwrapResult(secondarySdk!.group.getMetadata(groupId: groupCreate.groupId))
@@ -70,14 +70,14 @@ final class GroupTests: ICLIntegrationTest {
         XCTAssertFalse(secondaryGet.isAdmin)
 
         let memberRemove = try unwrapResult(primarySdk!.group.removeMembers(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertCollectionCount(memberRemove.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(memberRemove.succeeded, 1)
         assertCollectionCount(memberRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
     }
 
     func testAddAndRemoveAdmin() throws {
         let groupCreate = try unwrapResult(primarySdk!.group.create())
         let adminAdd = try unwrapResult(primarySdk!.group.addAdmins(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertCollectionCount(adminAdd.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(adminAdd.succeeded, 1)
         assertCollectionCount(adminAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
 
         let secondaryGet = try unwrapResult(secondarySdk!.group.getMetadata(groupId: groupCreate.groupId))
@@ -85,7 +85,7 @@ final class GroupTests: ICLIntegrationTest {
         XCTAssertFalse(secondaryGet.isMember)
 
         let adminRemove = try unwrapResult(primarySdk!.group.removeAdmins(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertCollectionCount(adminRemove.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(adminRemove.succeeded, 1)
         assertCollectionCount(adminRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
     }
 

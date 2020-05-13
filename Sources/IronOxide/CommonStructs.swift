@@ -32,6 +32,12 @@ public class DocumentId: SdkObject {
     deinit { DocumentId_delete(inner) }
 }
 
+extension DocumentId: CustomStringConvertible {
+    public var description: String {
+        id
+    }
+}
+
 extension DocumentId: Equatable {
     public static func == (lhs: DocumentId, rhs: DocumentId) -> Bool {
         Util.intToBool(private_DocumentId_rustEq(lhs.inner, rhs.inner))
@@ -156,6 +162,12 @@ public class UserId: SdkObject {
     deinit { UserId_delete(inner) }
 }
 
+extension UserId: CustomStringConvertible {
+    public var description: String {
+        id
+    }
+}
+
 extension UserId: Equatable {
     public static func == (lhs: UserId, rhs: UserId) -> Bool {
         Util.intToBool(private_UserId_rustEq(lhs.inner, rhs.inner))
@@ -183,6 +195,12 @@ public class GroupId: SdkObject {
     }()
 
     deinit { GroupId_delete(inner) }
+}
+
+extension GroupId: CustomStringConvertible {
+    public var description: String {
+        id
+    }
 }
 
 extension GroupId: Equatable {
@@ -228,6 +246,12 @@ public class DeviceId: SdkObject {
     }()
 
     deinit { DeviceId_delete(inner) }
+}
+
+extension DeviceId: CustomStringConvertible {
+    public var description: String {
+        String(id)
+    }
 }
 
 extension DeviceId: Equatable {

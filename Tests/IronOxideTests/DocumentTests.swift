@@ -16,9 +16,9 @@ final class DocumentTests: ICLIntegrationTest {
                      options: DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: true, userGrants: [primaryTestUser!], groupGrants: [],
                                                   policyGrant: nil)))
         XCTAssertNil(createResult.name)
-        assertCollectionCount(createResult.accessErrors.groups, 0, fn: { $0.id })
-        assertCollectionCount(createResult.accessErrors.users, 0, fn: { $0.id })
-        assertCollectionCount(createResult.grants.users, 1, fn: { $0.id })
+        assertCollectionCount(createResult.accessErrors.groups, 0)
+        assertCollectionCount(createResult.accessErrors.users, 0)
+        assertCollectionCount(createResult.grants.users, 1)
 
         let decryptResult = try unwrapResult(primarySdk!.document.decrypt(encryptedBytes: createResult.encryptedData))
         XCTAssertEqual(decryptResult.decryptedData, bytes)
@@ -35,10 +35,10 @@ final class DocumentTests: ICLIntegrationTest {
     func testEncryptDefault() throws {
         let bytes: [UInt8] = [1, 10, 100]
         let createResult = try unwrapResult(primarySdk!.document.encrypt(bytes: bytes, options: DocumentEncryptOpts()))
-        assertCollectionCount(createResult.grants.users, 1, fn: { $0.id })
-        assertCollectionCount(createResult.grants.groups, 0, fn: { $0.id })
-        assertCollectionCount(createResult.accessErrors.users, 0, fn: { $0.id })
-        assertCollectionCount(createResult.accessErrors.groups, 0, fn: { $0.id })
+        assertCollectionCount(createResult.grants.users, 1)
+        assertCollectionCount(createResult.grants.groups, 0)
+        assertCollectionCount(createResult.accessErrors.users, 0)
+        assertCollectionCount(createResult.accessErrors.groups, 0)
     }
 
     func testEncryptWithPolicy() throws {
@@ -67,9 +67,9 @@ final class DocumentTests: ICLIntegrationTest {
         let opts = DocumentEncryptOpts(id: nil, documentName: nil, grantToAuthor: false, userGrants: [secondaryTestUser!], groupGrants: [], policyGrant: nil)
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [], options: opts))
         XCTAssertEqual(encryptResult.grants.users, [secondaryTestUser])
-        assertCollectionCount(encryptResult.grants.groups, 0, fn: { $0.id })
-        assertCollectionCount(encryptResult.accessErrors.users, 0, fn: { $0.id })
-        assertCollectionCount(encryptResult.accessErrors.groups, 0, fn: { $0.id })
+        assertCollectionCount(encryptResult.grants.groups, 0)
+        assertCollectionCount(encryptResult.accessErrors.users, 0)
+        assertCollectionCount(encryptResult.accessErrors.groups, 0)
     }
 
     func testEncryptToNothing() throws {
@@ -113,22 +113,22 @@ final class DocumentTests: ICLIntegrationTest {
 
     func testAddRemoveMembers() throws {
         let encryptResult = try unwrapResult(primarySdk!.document.encrypt(bytes: [1]))
-        assertCollectionCount(encryptResult.grants.users, 1, fn: { $0.id })
-        assertCollectionCount(encryptResult.grants.groups, 0, fn: { $0.id })
+        assertCollectionCount(encryptResult.grants.users, 1)
+        assertCollectionCount(encryptResult.grants.groups, 0)
 
         let addResult = try unwrapResult(primarySdk!.document.grantAccess(documentId: encryptResult.id, users: [secondaryTestUser!], groups: []))
-        assertCollectionCount(addResult.changed.users, 1, fn: { $0.id })
-        assertCollectionCount(addResult.changed.groups, 0, fn: { $0.id })
+        assertCollectionCount(addResult.changed.users, 1)
+        assertCollectionCount(addResult.changed.groups, 0)
 
         let metadata = try unwrapResult(primarySdk!.document.getMetadata(documentId: encryptResult.id))
-        assertCollectionCount(metadata.visibleToUsers, 2, fn: { $0.id })
+        assertCollectionCount(metadata.visibleToUsers, 2)
 
         let removeResult = try unwrapResult(primarySdk!.document.revokeAccess(documentId: encryptResult.id, users: [secondaryTestUser!], groups: []))
-        assertCollectionCount(removeResult.changed.users, 1, fn: { $0.id })
-        assertCollectionCount(removeResult.changed.groups, 0, fn: { $0.id })
+        assertCollectionCount(removeResult.changed.users, 1)
+        assertCollectionCount(removeResult.changed.groups, 0)
 
         let metadata2 = try unwrapResult(primarySdk!.document.getMetadata(documentId: encryptResult.id))
-        assertCollectionCount(metadata2.visibleToUsers, 1, fn: { $0.id })
+        assertCollectionCount(metadata2.visibleToUsers, 1)
     }
 
     func testEncryptUnmanagedRoundtrip() throws {

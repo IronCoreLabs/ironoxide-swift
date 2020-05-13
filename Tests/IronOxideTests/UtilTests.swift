@@ -3,9 +3,9 @@ import libironoxide
 import XCTest
 
 final class UtilTests: XCTestCase {
-    func testassertCollectionCount() {
+    func testAssertCollectionCount() {
         let array = [DocumentId("1")!, DocumentId("2")!]
-        assertCollectionCount(array, 2, fn: { $0.id })
+        assertCollectionCount(array, 2)
     }
 
     func testTimestampToDate() {
