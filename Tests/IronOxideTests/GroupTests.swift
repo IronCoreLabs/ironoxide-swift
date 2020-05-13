@@ -5,8 +5,8 @@ final class GroupTests: ICLIntegrationTest {
     func testGroupCreateDefault() throws {
         // create with defaults
         let createResult = try unwrapResult(primarySdk!.group.create())
-        assertArrayCount(createResult.adminList.list, 1, fn: { $0.id })
-        assertArrayCount(createResult.memberList.list, 1, fn: { $0.id })
+        assertCollectionCount(createResult.adminList.list, 1, fn: { $0.id })
+        assertCollectionCount(createResult.memberList.list, 1, fn: { $0.id })
         XCTAssertNil(createResult.groupName)
         XCTAssertEqual(createResult.owner, primaryTestUser!)
         XCTAssertFalse(createResult.needsRotation!)
@@ -56,37 +56,37 @@ final class GroupTests: ICLIntegrationTest {
     func testGroupList() throws {
         _ = try unwrapResult(primarySdk!.group.create())
         let listResult1 = try unwrapResult(primarySdk!.group.list())
-        assertArrayCountGreaterThan(listResult1.result, 0, fn: { $0.id.id })
+        assertCollectionCountGreaterThan(listResult1.result, 0, fn: { $0.id.id })
     }
 
     func testAddAndRemoveMember() throws {
         let groupCreate = try unwrapResult(primarySdk!.group.create())
         let memberAdd = try unwrapResult(primarySdk!.group.addMembers(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertArrayCount(memberAdd.succeeded, 1, fn: { $0.id })
-        assertArrayCount(memberAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
+        assertCollectionCount(memberAdd.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(memberAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
 
         let secondaryGet = try unwrapResult(secondarySdk!.group.getMetadata(groupId: groupCreate.groupId))
         XCTAssertTrue(secondaryGet.isMember)
         XCTAssertFalse(secondaryGet.isAdmin)
 
         let memberRemove = try unwrapResult(primarySdk!.group.removeMembers(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertArrayCount(memberRemove.succeeded, 1, fn: { $0.id })
-        assertArrayCount(memberRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
+        assertCollectionCount(memberRemove.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(memberRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
     }
 
     func testAddAndRemoveAdmin() throws {
         let groupCreate = try unwrapResult(primarySdk!.group.create())
         let adminAdd = try unwrapResult(primarySdk!.group.addAdmins(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertArrayCount(adminAdd.succeeded, 1, fn: { $0.id })
-        assertArrayCount(adminAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
+        assertCollectionCount(adminAdd.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(adminAdd.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
 
         let secondaryGet = try unwrapResult(secondarySdk!.group.getMetadata(groupId: groupCreate.groupId))
         XCTAssertTrue(secondaryGet.isAdmin)
         XCTAssertFalse(secondaryGet.isMember)
 
         let adminRemove = try unwrapResult(primarySdk!.group.removeAdmins(groupId: groupCreate.groupId, users: [secondaryTestUser!]))
-        assertArrayCount(adminRemove.succeeded, 1, fn: { $0.id })
-        assertArrayCount(adminRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
+        assertCollectionCount(adminRemove.succeeded, 1, fn: { $0.id })
+        assertCollectionCount(adminRemove.failed, 0, fn: { "(\($0.user.id), \($0.error))" })
     }
 
     func testGroupRotation() throws {

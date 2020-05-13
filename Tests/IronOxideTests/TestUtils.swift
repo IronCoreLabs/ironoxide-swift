@@ -73,9 +73,10 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that an array of type S is a given length. Must provide a function to map S to String so it can be printed.
+     * Assert that a collection is a given length. Must provide a function to map the elements to a type with a `.description`.
      */
-    func assertArrayCount<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
+    func assertCollectionCount<S: Collection, T: CustomStringConvertible>(_ array: S, _ length: Int, fn: (S.Element) -> T, file: StaticString = #file,
+                                                                          line: UInt = #line) {
         if array.count == length {
             XCTAssertEqual(array.count, length, file: file, line: line)
         } else {
@@ -85,16 +86,19 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that an array of Strings has a given length
+     * Assert that a collection has a given length. Elements must have a `.description`.
      */
-    func assertArrayCount(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
-        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
+    func assertCollectionCount<S: Collection>(_ array: S, _ length: Int, file: StaticString = #file, line: UInt = #line)
+        where S.Element: CustomStringConvertible {
+        assertCollectionCount(array, length, fn: { $0 }, file: file, line: line)
     }
 
     /**
-     * Assert that an array of type S is greater than a given length. Must provide a function to map S to String so it can be printed.
+     * Assert that a collection is greater than a given length. Must provide a function to map the elements to a type with a `.description`.
      */
-    func assertArrayCountGreaterThan<S>(_ array: [S], _ length: Int, fn: (S) -> String, file: StaticString = #file, line: UInt = #line) {
+    func assertCollectionCountGreaterThan<S: Collection, T: CustomStringConvertible>(_ array: S, _ length: Int, fn: (S.Element) -> T,
+                                                                                     file: StaticString = #file,
+                                                                                     line: UInt = #line) {
         if array.count > length {
             XCTAssertGreaterThan(array.count, length, file: file, line: line)
         } else {
@@ -104,10 +108,11 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that an array of Strings is greater than a given length.
+     * Assert that a collection is greater than a given length. Elements must have a `.description`.
      */
-    func assertArrayCountGreaterThan(_ array: [String], _ length: Int, file: StaticString = #file, line: UInt = #line) {
-        assertArrayCount(array, length, fn: { $0 }, file: file, line: line)
+    func assertCollectionCountGreaterThan<S: Collection>(_ array: S, _ length: Int, file: StaticString = #file, line: UInt = #line)
+        where S.Element: CustomStringConvertible {
+        assertCollectionCountGreaterThan(array, length, fn: { $0 }, file: file, line: line)
     }
 }
 

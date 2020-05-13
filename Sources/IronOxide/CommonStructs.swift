@@ -230,6 +230,12 @@ public class DeviceId: SdkObject {
     deinit { DeviceId_delete(inner) }
 }
 
+extension DeviceId: Equatable {
+    public static func == (lhs: DeviceId, rhs: DeviceId) -> Bool {
+        Util.intToBool(private_DeviceId_rustEq(lhs.inner, rhs.inner))
+    }
+}
+
 /**
  * Readable device name.
  */
