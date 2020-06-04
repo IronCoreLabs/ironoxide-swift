@@ -17,10 +17,6 @@ public class EncryptedBlindIndexSalt: SdkObject {
         Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
     }()
 
-    public func initializeSearch(sdk: SDK) -> Result<BlindIndexSearch, IronOxideError> {
-        Util.toResult(EncryptedBlindIndexSalt_initializeSearch(inner, sdk.ironoxide)).map(BlindIndexSearch.init)
-    }
-
     deinit { EncryptedBlindIndexSalt_delete(inner) }
 }
 
@@ -68,5 +64,10 @@ public struct SearchOperations {
     /// Create an index and encrypt it to the provided groupId.
     public func createBlindIndex(groupId: GroupId) -> Result<EncryptedBlindIndexSalt, IronOxideError> {
         Util.toResult(IronOxide_createBlindIndex(ironoxide, groupId.inner)).map(EncryptedBlindIndexSalt.init)
+    }
+
+    /// Initializes the blind index search
+    public func initializeSearch(encryptedSalt: EncryptedBlindIndexSalt) -> Result<BlindIndexSearch, IronOxideError> {
+        Util.toResult(IronOxide_initializeBlindIndexSearch(ironoxide, encryptedSalt.inner)).map(BlindIndexSearch.init)
     }
 }
