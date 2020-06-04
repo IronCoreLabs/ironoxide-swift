@@ -64,9 +64,10 @@
 #include "../../../ironoxide-java/cpp/generated/sdk/c_PolicyGrant.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_Duration.h"
 
+#include "../../../ironoxide-java/cpp/generated/sdk/c_BlindIndexSearch.h"
+#include "../../../ironoxide-java/cpp/generated/sdk/c_EncryptedBlindIndexSalt.h"
+
 //IronOxide
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxideConfig.h"
 #include "../../../ironoxide-java/cpp/generated/sdk/c_IronOxide.h"
 
-#include "../../../ironoxide-java/cpp/generated/sdk/c_BlindIndexSearch.h"
-#include "../../../ironoxide-java/cpp/generated/sdk/c_EncryptedBlindIndexSalt.h"
