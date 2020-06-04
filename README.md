@@ -31,3 +31,9 @@ XCode dependencies are added via URLs, usually pointing directly to a GitHub rep
 - Now we have to include the native library to the project. Click on your iOS project and select the `Build Settings` tab. Click the `All` option to show all values, then scroll down to the `Search Paths` section. Add an option to the `Library Search Paths` and put in the fully qualified path to your `ironoxide-java/target/x86_64-apple-ios/release/` directory.
 
 Once complete, you should be able to do `import IronOxide` in your Swift files and use the SDK.
+
+## Generating Docs
+
+We use [jazzy](https://github.com/realm/jazzy) to generate an HTML version of our API docs. Jazzy requires Ruby and can be installed with `[sudo] gem install jazzy`.
+On a Mac, the docs can be generated simply by running `jazzy` from the root of the repository. This will generate a `docs/` folder that contains the html files.
+To run jazzy on Linux, additional steps for installing and running can be found [here](https://github.com/realm/jazzy#linux).
