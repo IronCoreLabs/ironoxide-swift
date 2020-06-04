@@ -1,4 +1,4 @@
 module libironoxide {
     umbrella header "ironoxide.h"
-    link "ironoxide_shared"
+    link "ironoxide"
 }
