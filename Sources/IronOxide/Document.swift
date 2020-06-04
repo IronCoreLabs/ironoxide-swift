@@ -10,7 +10,7 @@ import libironoxide
  */
 public class DocumentName: SdkObject {
     /**
-     Constructs a `DocumentName` from a string.
+     Constructs a `DocumentName` from a String.
 
      Fails if the string contains invalid characters.
      */
@@ -142,14 +142,14 @@ public class DocumentMetadataResult: SdkObject {
     deinit { DocumentMetadataResult_delete(inner) }
 }
 
-/// Successful document grants or revokes.
+/// Successful document grants or revocations.
 public class SucceededResult: SdkObject {
-    /// Users who were successfully granted to
+    /// Users who successfully had their access changed
     public lazy var users: [UserId] = {
         Util.collectTo(list: SucceededResult_getUsers(inner), to: UserId.init)
     }()
 
-    /// Groups that were successfully granted to
+    /// Groups that successfully had their access changed
     public lazy var groups: [GroupId] = {
         Util.collectTo(list: SucceededResult_getGroups(inner), to: GroupId.init)
     }()
@@ -157,14 +157,14 @@ public class SucceededResult: SdkObject {
     deinit { SucceededResult_delete(inner) }
 }
 
-/// Failed document grants or revokes
+/// Failed document grants or revocations.
 public class FailedResult: SdkObject {
-    /// Users who were failed to be granted to
+    /// Users who failed to have their access changed
     public lazy var users: [UserId] = {
         Util.collectTo(list: FailedResult_getUsers(inner), to: UserId.init)
     }()
 
-    /// Groups that were failed to be granted to
+    /// Groups that failed to have their access changed
     public lazy var groups: [GroupId] = {
         Util.collectTo(list: FailedResult_getGroups(inner), to: GroupId.init)
     }()

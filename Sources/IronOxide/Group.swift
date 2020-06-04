@@ -58,7 +58,7 @@ public class GroupCreateOpts: SdkObject {
          - owner: The provided user will be the owner of the group. If `nil`, the creating user will be the group owner.
          - admins: The list of users to be added as group admins.
          - members: The list of users to be added as group members.
-         - needs_rotation: Whether the group's private key should be marked for rotation.
+         - needsRotation: Whether the group's private key should be marked for rotation.
      */
     public convenience init(
         id: GroupId?,
@@ -138,12 +138,12 @@ public class GroupCreateResult: SdkObject {
         GroupUserList(GroupCreateResult_getMemberList(inner))
     }()
 
-    /// Date and time of when the group was created
+    /// Date and time when the group was created
     public lazy var created: Date = {
         Util.timestampToDate(GroupCreateResult_getCreated(inner))
     }()
 
-    /// Date and time of when the group was last updated
+    /// Date and time when the group was last updated
     public lazy var lastUpdated: Date = {
         Util.timestampToDate(GroupCreateResult_getLastUpdated(inner))
     }()
@@ -201,12 +201,12 @@ public class GroupGetResult: SdkObject {
         Util.toOption(GroupGetResult_getMemberList(inner)).map(GroupUserList.init)
     }()
 
-    /// Date and time of when the group was created
+    /// Date and time when the group was created
     public lazy var created: Date = {
         Util.timestampToDate(GroupGetResult_getCreated(inner))
     }()
 
-    /// Date and time of when the group was last updated
+    /// Date and time when the group was last updated
     public lazy var lastUpdated: Date = {
         Util.timestampToDate(GroupGetResult_getLastUpdated(inner))
     }()
@@ -249,12 +249,12 @@ public class GroupMetaResult: SdkObject {
         Util.intToBool(GroupMetaResult_isMember(inner))
     }()
 
-    /// Date and time of when the group was created
+    /// Date and time when the group was created
     public lazy var created: Date = {
         Util.timestampToDate(GroupMetaResult_getCreated(inner))
     }()
 
-    /// Date and time of when the group was last updated
+    /// Date and time when the group was last updated
     public lazy var lastUpdated: Date = {
         Util.timestampToDate(GroupMetaResult_getLastUpdated(inner))
     }()

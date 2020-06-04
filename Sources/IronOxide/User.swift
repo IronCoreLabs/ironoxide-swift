@@ -15,7 +15,7 @@ public class UserCreateOpts: SdkObject {
     /**
      Constructs a `UserCreateOpts`.
 
-     - parameter needs_rotation: `true` if the private key for this user marked for rotation
+     - parameter needsRotation: `true` if the private key for this user should be marked for rotation
      */
     public convenience init(needsRotation: Bool) {
         self.init(UserCreateOpts_create(Util.boolToInt(needsRotation)))
@@ -166,12 +166,12 @@ public class UserDevice: SdkObject {
         Util.intToBool(UserDevice_isCurrentDevice(inner))
     }()
 
-    /// Date and time of when the device was created
+    /// Date and time when the device was created
     public lazy var created: Date = {
         Util.timestampToDate(UserDevice_getCreated(inner))
     }()
 
-    /// Date and time of when the device was last updated
+    /// Date and time when the device was last updated
     public lazy var lastUpdated: Date = {
         Util.timestampToDate(UserDevice_getLastUpdated(inner))
     }()

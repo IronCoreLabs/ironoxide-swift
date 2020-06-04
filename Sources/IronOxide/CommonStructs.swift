@@ -323,7 +323,7 @@ public class DeviceContext: SdkObject {
     }
 
     /**
-     Attempt to create a new device from the provided JSON string. Expects the keys to be
+     Attempts to construct a `DeviceContext` from the provided JSON string. Expects the keys to be
       - accountId: string
       - segmentId: int
       - devicePrivateKey: Base64 encoded string
@@ -338,7 +338,7 @@ public class DeviceContext: SdkObject {
         }
     }
 
-    /// Constructs a `DeviceContext` from a `DeviceAddResult`, the result of `SDK.generate_new_device`.
+    /// Constructs a `DeviceContext` from a `DeviceAddResult`, the result of `SDK.generateNewDevice`.
     public convenience init(deviceAddResult: DeviceAddResult) {
         self.init(userId: deviceAddResult.accountId, segmentId: UInt64(deviceAddResult.segmentId), devicePrivateKey: deviceAddResult.devicePrivateKey,
                   signingPrivateKey: deviceAddResult.signingPrivateKey)
