@@ -63,10 +63,9 @@
 #include "c_PolicyCachingConfig.h"
 #include "c_PolicyGrant.h"
 #include "c_Duration.h"
+#include "c_BlindIndexSearch.h"
+#include "c_EncryptedBlindIndexSalt.h"
 
 //IronOxide
 #include "c_IronOxideConfig.h"
 #include "c_IronOxide.h"
-
-#include "c_BlindIndexSearch.h"
-#include "c_EncryptedBlindIndexSalt.h"

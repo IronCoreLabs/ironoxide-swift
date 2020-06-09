@@ -5,8 +5,8 @@ import XCTest
 
 extension XCTestCase {
     /**
-     * Unwrap the provided result and throw if the result was rejected with a useful error. Otherwise
-     * return the unwrapped value.
+     Unwrap the provided result and throw if the result was rejected with a useful error. Otherwise
+     return the unwrapped value.
      */
     func unwrapResult<S>(_ result: Result<S, IronOxide.IronOxideError>?,
                          in file: StaticString = #file,
@@ -22,9 +22,7 @@ extension XCTestCase {
         throw IronOxideError.error("Result was invalid")
     }
 
-    /**
-     * Assert that the provided result is a rejection with the provided error message
-     */
+    /// Assert that the provided result is a rejection with the provided error message
     func assertResultFailure<S>(_ result: Result<S, IronOxide.IronOxideError>?,
                                 hasError expectedError: String,
                                 in file: StaticString = #file,
@@ -44,8 +42,8 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that the provided result is a success with the provided expectedValue. Value must have an EQ instance
-     * in order to use this function for comparison.
+     Assert that the provided result is a success with the provided expectedValue. Value must have an EQ instance
+     in order to use this function for comparison.
      */
     func assertResultSuccess<S: Equatable>(_ result: Result<S, IronOxide.IronOxideError>?,
                                            hasValue expectedValue: S,
@@ -65,15 +63,15 @@ extension XCTestCase {
         }
     }
 
-    /**
-     * Assert that the provided bytes have the provided length.
-     */
+    /// Assert that the provided bytes have the provided length.
     func assertByteLength(_ bytes: [UInt8], _ length: Int, file: StaticString = #file, line: UInt = #line) {
         XCTAssertEqual(bytes.count, length, "Expected bytes of length \(bytes.count) to have length \(length)", file: file, line: line)
     }
 
     /**
-     * Assert that a collection is a given length. Must provide a function to map the elements to a type with a `.description`.
+     Assert that a collection is a given length.
+
+     Must provide a function to map the elements to a type with a `.description`.
      */
     func assertCollectionCount<S: Collection, T: CustomStringConvertible>(_ array: S, _ length: Int, fn: (S.Element) -> T, file: StaticString = #file,
                                                                           line: UInt = #line) {
@@ -86,7 +84,9 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that a collection has a given length. Elements must have a `.description`.
+     Assert that a collection has a given length.
+
+     Elements must have a `.description`.
      */
     func assertCollectionCount<S: Collection>(_ array: S, _ length: Int, file: StaticString = #file, line: UInt = #line)
         where S.Element: CustomStringConvertible {
@@ -94,7 +94,9 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that a collection is greater than a given length. Must provide a function to map the elements to a type with a `.description`.
+     Assert that a collection is greater than a given length.
+
+     Must provide a function to map the elements to a type with a `.description`.
      */
     func assertCollectionCountGreaterThan<S: Collection, T: CustomStringConvertible>(_ array: S, _ length: Int, fn: (S.Element) -> T,
                                                                                      file: StaticString = #file,
@@ -108,7 +110,9 @@ extension XCTestCase {
     }
 
     /**
-     * Assert that a collection is greater than a given length. Elements must have a `.description`.
+     Assert that a collection is greater than a given length.
+
+     Elements must have a `.description`.
      */
     func assertCollectionCountGreaterThan<S: Collection>(_ array: S, _ length: Int, file: StaticString = #file, line: UInt = #line)
         where S.Element: CustomStringConvertible {
@@ -125,19 +129,14 @@ class ICLIntegrationTest: XCTestCase {
     }
 }
 
-/**
- * Convert the provided bytes into a UnsafeMutableRawPointer wrapper that can be used construct various
- * Rust structs
- */
+/// Convert the provided bytes into a UnsafeMutableRawPointer wrapper that can be used construct various Rust structs
 func bytesToUnsafePointer(_ bytes: [UInt8]) -> UnsafeMutableRawPointer {
     let uint8Pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8)
     uint8Pointer.initialize(from: bytes, count: 8)
     return UnsafeMutableRawPointer(uint8Pointer)
 }
 
-/**
- * Create a rejected result with an empty error message
- */
+/// Create a rejected result with an empty error message
 func createRustReject() -> CRustResult4232mut3232c_voidCRustString {
     let errorString = CRustString()
     let error = CRustResultUnion4232mut3232c_voidCRustString(err: errorString)
@@ -182,8 +181,8 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
 }
 
 /**
- * Helper function to make a new user and device with an optional UserId. Returns only the DeviceContext,
- * as the UserId can be obtained from `device.accountId`
+ Helper function to make a new user and device with an optional UserId. Returns only the DeviceContext,
+ as the UserId can be obtained from `device.accountId`
  */
 func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
     let jwt = try generateJWT(userId)
@@ -195,8 +194,8 @@ func createUserAndDevice(_ userId: UserId? = nil) throws -> DeviceContext {
 }
 
 /**
- * Private variable that calls and holds the primary test user's SDK and DeviceContext. Meant to be private to
- * force use of `primaryTestUser`, `primaryTestUserDeviceContext`, and `primarySDK`.
+ Private variable that calls and holds the primary test user's SDK and DeviceContext. Meant to be private to
+ force use of `primaryTestUser`, `primaryTestUserDeviceContext`, and `primarySDK`.
  */
 private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
     let maybeDevice = try? createUserAndDevice()
@@ -205,8 +204,8 @@ private let createPrimaryTestUser: (SDK?, DeviceContext?) = {
 }()
 
 /**
- * UserId for test user created at start of tests. It's encouraged to use this user
- * when it's not necessary to create a new one for a given test.
+ UserId for test user created at start of tests. It's encouraged to use this user
+ when it's not necessary to create a new one for a given test.
  */
 let primaryTestUser: UserId? = {
     let (_, device) = createPrimaryTestUser
@@ -226,8 +225,8 @@ let primarySdk: SDK? = {
 }()
 
 /**
- * Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
- * force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
+ Private variable that calls and holds a secondary test user's SDK and DeviceContext. Meant to be private to
+ force use of `secondaryTestUser`, `secondaryTestUserDeviceContext`.
  */
 private let createSecondaryTestUser: (SDK?, DeviceContext?) = {
     let maybeDevice = try? createUserAndDevice()

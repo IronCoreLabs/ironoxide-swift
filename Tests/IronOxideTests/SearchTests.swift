@@ -7,7 +7,7 @@ final class SearchTests: ICLIntegrationTest {
         let searchQuery = "ironcore labs"
         let groupId = try unwrapResult(primarySdk!.group.create()).groupId
         let ebis = try unwrapResult(primarySdk!.search.createBlindIndex(groupId: groupId))
-        let bis = try unwrapResult(ebis.initializeSearch(sdk: primarySdk!))
+        let bis = try unwrapResult(primarySdk!.search.initializeSearch(encryptedSalt: ebis))
         let queryTokens = Set(try unwrapResult(bis.tokenizeQuery(query: searchQuery, partitionId: nil)))
         let dataTokens = Set(try unwrapResult(bis.tokenizeData(data: searchQuery, partitionId: nil)))
         assertCollectionCount(queryTokens, 8)
@@ -19,7 +19,7 @@ final class SearchTests: ICLIntegrationTest {
         let searchQuery = "ironcore labs"
         let groupId = try unwrapResult(primarySdk!.group.create()).groupId
         let ebis = try unwrapResult(primarySdk!.search.createBlindIndex(groupId: groupId))
-        let bis = try unwrapResult(ebis.initializeSearch(sdk: primarySdk!))
+        let bis = try unwrapResult(primarySdk!.search.initializeSearch(encryptedSalt: ebis))
         let queryTokens = Set(try unwrapResult(bis.tokenizeQuery(query: searchQuery, partitionId: nil)))
         let queryTokens2 = Set(try unwrapResult(bis.tokenizeQuery(query: searchQuery, partitionId: "foo")))
         assertCollectionCount(queryTokens2, 8)

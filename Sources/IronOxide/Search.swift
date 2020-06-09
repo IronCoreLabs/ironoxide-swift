@@ -17,25 +17,21 @@ public class EncryptedBlindIndexSalt: SdkObject {
         Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
     }()
 
-    public func initializeSearch(sdk: SDK) -> Result<BlindIndexSearch, IronOxideError> {
-        Util.toResult(EncryptedBlindIndexSalt_initializeSearch(inner, sdk.ironoxide)).map(BlindIndexSearch.init)
-    }
-
     deinit { EncryptedBlindIndexSalt_delete(inner) }
 }
 
 public class BlindIndexSearch: SdkObject {
-    /**
-     * Generate the list of tokens to use to find entries that match the search query, given the specified partitionId.
-     */
+    /// Generates the list of tokens to use to find entries that match the search query, given the specified partitionId.
     public func tokenizeQuery(query: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(query, partitionId, BlindIndexSearch_tokenizeQuery)
     }
 
     /**
-     * Generate the list of tokens to create a search entry for `data`. This function will also return some random values in the array, which will make
-     * it harder for someone to know what the input was. Because of this, calling this function will not be the same as `tokenizeQuery`, but
-     * `tokenizeQuery` will always return a subset of the values returned by `tokenizeData`.
+     Generates the list of tokens to create a search entry for `data`.
+
+     This function will also return some random values in the array, which will make it harder for someone to know what
+     the input was. Because of this, calling this function will not be the same as `tokenizeQuery`, but
+     `tokenizeQuery` will always return a subset of the values returned by `tokenizeData`.
      */
     public func tokenizeData(data: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
         tokenize(data, partitionId, BlindIndexSearch_tokenizeData)
@@ -68,5 +64,10 @@ public struct SearchOperations {
     /// Create an index and encrypt it to the provided groupId.
     public func createBlindIndex(groupId: GroupId) -> Result<EncryptedBlindIndexSalt, IronOxideError> {
         Util.toResult(IronOxide_createBlindIndex(ironoxide, groupId.inner)).map(EncryptedBlindIndexSalt.init)
+    }
+
+    /// Initializes the blind index search
+    public func initializeSearch(encryptedSalt: EncryptedBlindIndexSalt) -> Result<BlindIndexSearch, IronOxideError> {
+        Util.toResult(IronOxide_initializeBlindIndexSearch(ironoxide, encryptedSalt.inner)).map(BlindIndexSearch.init)
     }
 }
