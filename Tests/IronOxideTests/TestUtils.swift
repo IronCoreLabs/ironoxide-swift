@@ -173,7 +173,7 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
         svGWmW83vBbLxoNeV3xnQjo5Pji6jlNODklqd3KtHsjE9rlgOPxkfRCNgw==
         -----END PUBLIC KEY-----
         """.utf8)
-    if #available(macOS 10.13, *) {
+    if #available(macOS 10.13, iOS 11, *) {
         let jwtSigner = JWTSigner.es256(privateKey: key)
         return try myJWT.sign(using: jwtSigner)
     }
