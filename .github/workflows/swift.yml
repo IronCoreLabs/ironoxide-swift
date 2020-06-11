@@ -29,9 +29,6 @@ jobs:
         with:
           path: ironoxide-java/target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-      # - name: Change to staticlib (Mac only)
-      #   run: sed -i -- "s|cdylib|staticlib|g" ironoxide-java/cpp/Cargo.toml
-      #   if: matrix.target == 'macos-10.15'
       - name: Cargo build
         run: cargo build -p ironoxide-cpp --release
         working-directory: ironoxide-java
@@ -39,12 +36,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ironoxide-swift
+      - name: Move libironoxide (OSX)
+        run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp ironoxide-java/target/release/libironoxide.dylib $_
+        if: matrix.target == 'macos-10.15'
       - name: Move libironoxide (Linux)
         run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-java/target/release/libironoxide.so $_
         if: matrix.target == 'ubuntu-18.04'
-      - name: Move header files (Linux)
+      - name: Move header files
         run: cp -R ironoxide-java/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
-        if: matrix.target == 'ubuntu-18.04'
       - name: Run tests
         run: swift test --enable-test-discovery
         working-directory: ironoxide-swift
