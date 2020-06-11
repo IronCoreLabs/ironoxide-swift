@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "IronOxide",
+        "repositoryURL": "https://github.com/IronCoreLabs/ironoxide-swift",
+        "state": {
+          "branch": "removeUnsafeFlags",
+          "revision": "5ffe781f8e35bbd0fb320e5a0344c617d6564763",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
