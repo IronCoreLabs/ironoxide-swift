@@ -5,55 +5,62 @@
 //  Copyright © 2020 IronCore Labs. All rights reserved.
 //
 
-import UIKit
-import os.log
 import IronOxide
+import os.log
+import UIKit
 
-//Represents an encrypted Todo list which holds the list ID, (unencrypted) name, updated timestamp, and
-//the encrypted todo list content bytes.
+// Represents an encrypted Todo list which holds the list ID, (unencrypted) name, updated timestamp, and
+// the encrypted todo list content bytes. Note that storing the name of the list in plaintext can cause
+// information leakage. Think carefully when storing unencrypted data next to encrypted data, as in this
+// example.
 class TodoList: NSObject, NSCoding {
-    //MARK: Properties
+    // MARK: Properties
+
     var id: String
     var name: String
     var updated: Date
     var encryptedContent: [UInt8]
-    
-    //MARK: Archiving Paths
+
+    // MARK: Archiving Paths
+
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("encryptedTodos")
-    
-    //MARK: Types
-    struct PropertyKey{
+
+    // MARK: Types
+
+    struct PropertyKey {
         static let id = "id"
         static let name = "name"
         static let updated = "updated"
         static let encryptedContent = "encryptedContent"
     }
-    
-    //MARK: Initialization
-    init(id: String, name: String, updated: Date, encryptedContent: [UInt8]){
+
+    // MARK: Initialization
+
+    init(id: String, name: String, updated: Date, encryptedContent: [UInt8]) {
         self.id = id
         self.name = name
         self.updated = updated
         self.encryptedContent = encryptedContent
     }
-    
+
     init(name: String, encryptResult: IronOxide.DocumentEncryptResult) {
         self.name = name
-        self.id = encryptResult.id.id
-        self.updated = encryptResult.lastUpdated
-        self.encryptedContent = encryptResult.encryptedData
+        id = encryptResult.id.id
+        updated = encryptResult.lastUpdated
+        encryptedContent = encryptResult.encryptedData
     }
-    
-    //MARK: NSCoding
-    func encode(with aCoder: NSCoder){
+
+    // MARK: NSCoding
+
+    func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: PropertyKey.id)
         aCoder.encode(name, forKey: PropertyKey.name)
         aCoder.encode(updated, forKey: PropertyKey.updated)
         aCoder.encode(encryptedContent, forKey: PropertyKey.encryptedContent)
     }
-    
-    required convenience init?(coder aDecoder: NSCoder){
+
+    required convenience init?(coder aDecoder: NSCoder) {
         guard let id = aDecoder.decodeObject(forKey: PropertyKey.id) as? String else {
             os_log("Unable to decode the ID for the TodoList object.", log: OSLog.default, type: .debug)
             return nil
