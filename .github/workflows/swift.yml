@@ -19,7 +19,6 @@ jobs:
         with:
           repository: IronCoreLabs/ironoxide-swig-bindings
           path: ironoxide-swig-bindings
-          ref: osx_build
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
