@@ -4,7 +4,8 @@ Swift SDK for using IronCore Labs from your iOS mobile applications.
 
 ## Setup
 
-Within XCode, go to `File > Swift Packages > Add Package Dependency`. Put in the URL for this GitHub repo and select the latest version to use. Then go to your build target `Build Phases > Dependencies` and select `IronOxide` from the list. Then you'll be able to `import IronOxide` into your XCode project.
++ Install `libironoxide` via Homebrew with `brew install IronCoreLabs/ironcore/ironoxide`.
++ Within XCode, go to `File > Swift Packages > Add Package Dependency`. Put in the URL for this GitHub repo and select the latest version to use. Then go to your build target `Build Phases > Dependencies` and select `IronOxide` from the list. Then you'll be able to `import IronOxide` into your XCode project.
 
 ## SDK Documentation
 

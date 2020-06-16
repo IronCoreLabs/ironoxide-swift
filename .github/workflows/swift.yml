@@ -14,12 +14,11 @@ jobs:
         target: [ubuntu-18.04, macos-10.15]
     runs-on: ${{ matrix.target }}
     steps:
-      - name: Checkout ironoxide-java
+      - name: Checkout ironoxide-swig-bindings
         uses: actions/checkout@v2
         with:
-          repository: IronCoreLabs/ironoxide-java
-          path: ironoxide-java
-          ref: osx_build
+          repository: IronCoreLabs/ironoxide-swig-bindings
+          path: ironoxide-swig-bindings
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -27,11 +26,11 @@ jobs:
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
-          path: ironoxide-java/target
+          path: ironoxide-swig-bindings/target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Cargo build
         run: cargo build -p ironoxide-cpp --release
-        working-directory: ironoxide-java
+        working-directory: ironoxide-swig-bindings
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -41,13 +40,13 @@ jobs:
       # but a) that won't work for Linux and b) we only publish the iOS binary to Homebrew, not one for MacOS. Therefore
       # we do this hacks below so the library can find the right files.
       - name: Move libironoxide (OSX)
-        run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp ironoxide-java/target/release/libironoxide.dylib $_
+        run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp ironoxide-swig-bindings/target/release/libironoxide.dylib $_
         if: matrix.target == 'macos-10.15'
       - name: Move libironoxide (Linux)
-        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-java/target/release/libironoxide.so $_
+        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-swig-bindings/target/release/libironoxide.so $_
         if: matrix.target == 'ubuntu-18.04'
       - name: Move header files
-        run: cp -R ironoxide-java/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
+        run: cp -R ironoxide-swig-bindings/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
       - name: Run tests
         run: swift test --enable-test-discovery
         working-directory: ironoxide-swift

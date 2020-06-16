@@ -1,0 +1,387 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		565ECDA824902B4100D10F3F /* TodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDA724902B4100D10F3F /* TodoList.swift */; };
+		565ECDAB24902C3200D10F3F /* IronOxide in Frameworks */ = {isa = PBXBuildFile; productRef = 565ECDAA24902C3200D10F3F /* IronOxide */; };
+		565ECDAF24902DCA00D10F3F /* TodoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDAE24902DCA00D10F3F /* TodoListTableViewCell.swift */; };
+		565ECDB124902FCB00D10F3F /* TodoListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDB024902FCB00D10F3F /* TodoListTableViewController.swift */; };
+		56E2092524900938007BA7BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092424900938007BA7BC /* AppDelegate.swift */; };
+		56E2092724900938007BA7BC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092624900938007BA7BC /* SceneDelegate.swift */; };
+		56E2092924900938007BA7BC /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092824900938007BA7BC /* TodoListViewController.swift */; };
+		56E2092C24900938007BA7BC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56E2092A24900938007BA7BC /* Main.storyboard */; };
+		56E2092E24900939007BA7BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56E2092D24900939007BA7BC /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		565ECDA724902B4100D10F3F /* TodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoList.swift; sourceTree = "<group>"; };
+		565ECDAE24902DCA00D10F3F /* TodoListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTableViewCell.swift; sourceTree = "<group>"; };
+		565ECDB024902FCB00D10F3F /* TodoListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTableViewController.swift; sourceTree = "<group>"; };
+		56E2092124900938007BA7BC /* encrypted-todos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "encrypted-todos.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		56E2092424900938007BA7BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		56E2092624900938007BA7BC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		56E2092824900938007BA7BC /* TodoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewController.swift; sourceTree = "<group>"; };
+		56E2092B24900938007BA7BC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		56E2092D24900939007BA7BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		56E2093224900939007BA7BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		56E2091E24900938007BA7BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				565ECDAB24902C3200D10F3F /* IronOxide in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		56E2091824900938007BA7BC = {
+			isa = PBXGroup;
+			children = (
+				56E2092324900938007BA7BC /* encrypted-todos */,
+				56E2092224900938007BA7BC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		56E2092224900938007BA7BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				56E2092124900938007BA7BC /* encrypted-todos.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		56E2092324900938007BA7BC /* encrypted-todos */ = {
+			isa = PBXGroup;
+			children = (
+				56E2092424900938007BA7BC /* AppDelegate.swift */,
+				56E2092624900938007BA7BC /* SceneDelegate.swift */,
+				56E2092824900938007BA7BC /* TodoListViewController.swift */,
+				565ECDA724902B4100D10F3F /* TodoList.swift */,
+				565ECDAE24902DCA00D10F3F /* TodoListTableViewCell.swift */,
+				56E2092A24900938007BA7BC /* Main.storyboard */,
+				565ECDB024902FCB00D10F3F /* TodoListTableViewController.swift */,
+				56E2092D24900939007BA7BC /* Assets.xcassets */,
+				56E2093224900939007BA7BC /* Info.plist */,
+			);
+			path = "encrypted-todos";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		56E2092024900938007BA7BC /* encrypted-todos */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56E2093524900939007BA7BC /* Build configuration list for PBXNativeTarget "encrypted-todos" */;
+			buildPhases = (
+				56E2091D24900938007BA7BC /* Sources */,
+				56E2091E24900938007BA7BC /* Frameworks */,
+				56E2091F24900938007BA7BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				565ECDAD24902C3C00D10F3F /* PBXTargetDependency */,
+			);
+			name = "encrypted-todos";
+			packageProductDependencies = (
+				565ECDAA24902C3200D10F3F /* IronOxide */,
+			);
+			productName = "encrypted-todos";
+			productReference = 56E2092124900938007BA7BC /* encrypted-todos.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		56E2091924900938007BA7BC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1150;
+				LastUpgradeCheck = 1150;
+				ORGANIZATIONNAME = "IronCore Labs";
+				TargetAttributes = {
+					56E2092024900938007BA7BC = {
+						CreatedOnToolsVersion = 11.5;
+					};
+				};
+			};
+			buildConfigurationList = 56E2091C24900938007BA7BC /* Build configuration list for PBXProject "encrypted-todos" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 56E2091824900938007BA7BC;
+			packageReferences = (
+				565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */,
+			);
+			productRefGroup = 56E2092224900938007BA7BC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				56E2092024900938007BA7BC /* encrypted-todos */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		56E2091F24900938007BA7BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56E2092E24900939007BA7BC /* Assets.xcassets in Resources */,
+				56E2092C24900938007BA7BC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		56E2091D24900938007BA7BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56E2092924900938007BA7BC /* TodoListViewController.swift in Sources */,
+				56E2092524900938007BA7BC /* AppDelegate.swift in Sources */,
+				56E2092724900938007BA7BC /* SceneDelegate.swift in Sources */,
+				565ECDAF24902DCA00D10F3F /* TodoListTableViewCell.swift in Sources */,
+				565ECDA824902B4100D10F3F /* TodoList.swift in Sources */,
+				565ECDB124902FCB00D10F3F /* TodoListTableViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		565ECDAD24902C3C00D10F3F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 565ECDAC24902C3C00D10F3F /* IronOxide */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		56E2092A24900938007BA7BC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				56E2092B24900938007BA7BC /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		56E2093324900939007BA7BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		56E2093424900939007BA7BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		56E2093624900939007BA7BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H5P284ZKXV;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "encrypted-todos/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ironcorelabs.encrypted-todos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		56E2093724900939007BA7BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H5P284ZKXV;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "encrypted-todos/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "ironcorelabs.encrypted-todos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		56E2091C24900938007BA7BC /* Build configuration list for PBXProject "encrypted-todos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56E2093324900939007BA7BC /* Debug */,
+				56E2093424900939007BA7BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56E2093524900939007BA7BC /* Build configuration list for PBXNativeTarget "encrypted-todos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56E2093624900939007BA7BC /* Debug */,
+				56E2093724900939007BA7BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/IronCoreLabs/ironoxide-swift";
+			requirement = {
+				branch = sampleApp;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		565ECDAA24902C3200D10F3F /* IronOxide */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
+			productName = IronOxide;
+		};
+		565ECDAC24902C3C00D10F3F /* IronOxide */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
+			productName = IronOxide;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 56E2091924900938007BA7BC /* Project object */;
+}
