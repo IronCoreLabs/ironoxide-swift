@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .systemLibrary(
             name: "libironoxide",
-            pkgConfig: "libironoxide",
+            pkgConfig: "ironoxide",
             providers: [
                 .brew(["libironoxide"]),
             ]
