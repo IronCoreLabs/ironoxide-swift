@@ -364,7 +364,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/IronCoreLabs/ironoxide-swift";
 			requirement = {
-				branch = removeUnsafeFlags;
+				branch = sampleApp;
 				kind = branch;
 			};
 		};
