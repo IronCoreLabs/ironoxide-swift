@@ -37,4 +37,4 @@ jobs:
         uses: steven0351/publish-jazzy-docs@v1
         with:
           personal_access_token: ${{ secrets.DEPLOY_KEY }}
-          config: ironoxide-swift/.jazzy.yaml
+          config: .jazzy.yaml
