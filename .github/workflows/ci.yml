@@ -1,4 +1,4 @@
-name: Swift
+name: CI
 
 on:
   push:
@@ -19,10 +19,6 @@ jobs:
         with:
           repository: IronCoreLabs/ironoxide-swig-bindings
           path: ironoxide-swig-bindings
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
