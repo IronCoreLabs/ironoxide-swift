@@ -2,6 +2,7 @@ name: Docs
 
 on:
   push:
+    tags: "*"
     branches: doc-trigger
 
 jobs:
@@ -25,21 +26,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ironoxide-swift
-      # The following steps move the compiled libironoxide binaries and headers into the proper place in order for them
-      # to work with Swift. Currently this library expects the headers/binary to be installed on the system via Homebrew
-      # but we only publish the iOS binary to Homebrew, not one for MacOS. Therefore we do these hacks below so the library
-      # can find the right files.
-      - name: Move libironoxide
-        run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp ironoxide-swig-bindings/target/release/libironoxide.dylib $_
       - name: Move header files
         run: cp -R ironoxide-swig-bindings/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
       - name: Move ironoxide-swift files so jazzy can find them
-        run: |
-          shopt -s dotglob nullglob
-          mv * ../
+        run: mv .* * ../
         working-directory: ironoxide-swift
       - name: Publish Jazzy Docs
         uses: steven0351/publish-jazzy-docs@v1
         with:
           personal_access_token: ${{ secrets.DEPLOY_KEY }}
-          args: --module IronOxide
+          config: ironoxide-swift/.jazzy.yaml

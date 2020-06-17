@@ -6,3 +6,5 @@ xcuserdata/
 .swiftpm
 /docs
 doc.json
+Sources/libironoxide/*.h
+!Sources/libironoxide/ironoxide.h

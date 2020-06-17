@@ -1,6 +1,8 @@
 import libironoxide
 
+/// Encrypted Blind Index Salt
 public class EncryptedBlindIndexSalt: SdkObject {
+    /// Constructs an EncryptedBlindIndexSalt from its DEKs and bytes
     public convenience init(encryptedDeks: [UInt8], encryptedSaltBytes: [UInt8]) {
         self.init(RustBytes(encryptedDeks).withSlice { deksSlice in
             RustBytes(encryptedSaltBytes).withSlice { saltSlice in
@@ -9,10 +11,12 @@ public class EncryptedBlindIndexSalt: SdkObject {
         })
     }
 
+    /// Encrypted DEKs
     public lazy var encryptedDeks: [UInt8] = {
         Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedDeks(inner))
     }()
 
+    /// Encrypted Salt Bytes
     public lazy var encryptedSaltBytes: [UInt8] = {
         Util.rustVecToBytes(EncryptedBlindIndexSalt_getEncryptedSaltBytes(inner))
     }()
@@ -20,6 +24,7 @@ public class EncryptedBlindIndexSalt: SdkObject {
     deinit { EncryptedBlindIndexSalt_delete(inner) }
 }
 
+/// Blind Index Search
 public class BlindIndexSearch: SdkObject {
     /// Generates the list of tokens to use to find entries that match the search query, given the specified partitionId.
     public func tokenizeQuery(query: String, partitionId: String?) -> Result<[UInt32], IronOxideError> {
@@ -55,6 +60,7 @@ public class BlindIndexSearch: SdkObject {
     deinit { BlindIndexSearch_delete(inner) }
 }
 
+/// IronOxide Search Operations
 public struct SearchOperations {
     let ironoxide: OpaquePointer
     init(_ instance: OpaquePointer) {
