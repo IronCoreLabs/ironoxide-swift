@@ -41,5 +41,5 @@ jobs:
       - name: Publish Jazzy Docs
         uses: steven0351/publish-jazzy-docs@v1
         with:
-          personal_access_token: ${{ secrets.DEPLOY_TOKEN }}
+          personal_access_token: ${{ secrets.DEPLOY_KEY }}
           args: --module IronOxide
