@@ -23,6 +23,8 @@ jobs:
         working-directory: ironoxide-swig-bindings
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          clean: false
       # The following steps move the compiled libironoxide binaries and headers into the proper place in order for them
       # to work with Swift. Currently this library expects the headers/binary to be installed on the system via Homebrew
       # but we only publish the iOS binary to Homebrew, not one for MacOS. Therefore we do these hacks below so the library
