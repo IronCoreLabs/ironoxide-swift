@@ -29,7 +29,9 @@ jobs:
       - name: Move header files
         run: cp -R ironoxide-swig-bindings/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
       - name: Move ironoxide-swift files so jazzy can find them
-        run: mv .* * ../
+        run: |
+          shopt -s dotglob nullglob
+          mv * ../
         working-directory: ironoxide-swift
       - name: Publish Jazzy Docs
         uses: steven0351/publish-jazzy-docs@v1
