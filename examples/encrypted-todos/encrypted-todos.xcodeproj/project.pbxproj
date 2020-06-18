@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		565ECDA824902B4100D10F3F /* TodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDA724902B4100D10F3F /* TodoList.swift */; };
-		565ECDAB24902C3200D10F3F /* IronOxide in Frameworks */ = {isa = PBXBuildFile; productRef = 565ECDAA24902C3200D10F3F /* IronOxide */; };
 		565ECDAF24902DCA00D10F3F /* TodoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDAE24902DCA00D10F3F /* TodoListTableViewCell.swift */; };
 		565ECDB124902FCB00D10F3F /* TodoListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565ECDB024902FCB00D10F3F /* TodoListTableViewController.swift */; };
+		56CD479E249BD81E00AF6E58 /* IronOxide in Frameworks */ = {isa = PBXBuildFile; productRef = 56CD479D249BD81E00AF6E58 /* IronOxide */; };
 		56E2092524900938007BA7BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092424900938007BA7BC /* AppDelegate.swift */; };
 		56E2092724900938007BA7BC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092624900938007BA7BC /* SceneDelegate.swift */; };
 		56E2092924900938007BA7BC /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E2092824900938007BA7BC /* TodoListViewController.swift */; };
@@ -36,7 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				565ECDAB24902C3200D10F3F /* IronOxide in Frameworks */,
+				56CD479E249BD81E00AF6E58 /* IronOxide in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,11 +89,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				565ECDAD24902C3C00D10F3F /* PBXTargetDependency */,
+				56CD47A0249BD82900AF6E58 /* PBXTargetDependency */,
 			);
 			name = "encrypted-todos";
 			packageProductDependencies = (
-				565ECDAA24902C3200D10F3F /* IronOxide */,
+				56CD479D249BD81E00AF6E58 /* IronOxide */,
 			);
 			productName = "encrypted-todos";
 			productReference = 56E2092124900938007BA7BC /* encrypted-todos.app */;
@@ -124,7 +124,7 @@
 			);
 			mainGroup = 56E2091824900938007BA7BC;
 			packageReferences = (
-				565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */,
+				56CD479C249BD81E00AF6E58 /* XCRemoteSwiftPackageReference "ironoxide-swift" */,
 			);
 			productRefGroup = 56E2092224900938007BA7BC /* Products */;
 			projectDirPath = "";
@@ -164,9 +164,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		565ECDAD24902C3C00D10F3F /* PBXTargetDependency */ = {
+		56CD47A0249BD82900AF6E58 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 565ECDAC24902C3C00D10F3F /* IronOxide */;
+			productRef = 56CD479F249BD82900AF6E58 /* IronOxide */;
 		};
 /* End PBXTargetDependency section */
 
@@ -360,25 +360,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */ = {
+		56CD479C249BD81E00AF6E58 /* XCRemoteSwiftPackageReference "ironoxide-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/IronCoreLabs/ironoxide-swift";
 			requirement = {
-				branch = sampleApp;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.13.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		565ECDAA24902C3200D10F3F /* IronOxide */ = {
+		56CD479D249BD81E00AF6E58 /* IronOxide */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
+			package = 56CD479C249BD81E00AF6E58 /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
 			productName = IronOxide;
 		};
-		565ECDAC24902C3C00D10F3F /* IronOxide */ = {
+		56CD479F249BD82900AF6E58 /* IronOxide */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 565ECDA924902C3200D10F3F /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
+			package = 56CD479C249BD81E00AF6E58 /* XCRemoteSwiftPackageReference "ironoxide-swift" */;
 			productName = IronOxide;
 		};
 /* End XCSwiftPackageProductDependency section */
