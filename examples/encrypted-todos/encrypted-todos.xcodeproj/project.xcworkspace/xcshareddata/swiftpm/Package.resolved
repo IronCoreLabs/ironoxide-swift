@@ -5,9 +5,9 @@
         "package": "IronOxide",
         "repositoryURL": "https://github.com/IronCoreLabs/ironoxide-swift",
         "state": {
-          "branch": "sampleApp",
-          "revision": "150f28b6aaf4f0000d01683d03b56995887dd720",
-          "version": null
+          "branch": null,
+          "revision": "a41eacdedb4d21393619dea919cdb150f33359b9",
+          "version": "0.13.2"
         }
       }
     ]
