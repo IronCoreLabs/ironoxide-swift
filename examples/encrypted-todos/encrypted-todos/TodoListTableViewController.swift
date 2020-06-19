@@ -53,7 +53,7 @@ class TodoListTableViewController: UITableViewController {
             else {
                 //Add a new todo list
                 let newIndexPath = IndexPath(row: todoLists.count, section: 0)
-                todoLists.insert(newList, at: 0)
+                todoLists.append(newList)
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             saveTodoLists()
