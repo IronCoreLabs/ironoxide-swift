@@ -112,7 +112,6 @@ class TodoListTableViewController: UITableViewController {
         formatter.timeStyle = .short
         let list = todoLists[indexPath.row]
         cell.todoListName.text = list.name
-        os_log("adding new name row %d, value is %s", log: OSLog.default, type: .debug, indexPath.row, list.name)
         cell.todoListUpdated.text = formatter.string(from: list.updated)
         return cell
     }
