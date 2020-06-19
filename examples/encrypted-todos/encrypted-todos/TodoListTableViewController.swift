@@ -53,7 +53,7 @@ class TodoListTableViewController: UITableViewController {
             else {
                 //Add a new todo list
                 let newIndexPath = IndexPath(row: todoLists.count, section: 0)
-                todoLists.insert(newList, at: 0)
+                todoLists.append(newList)
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             saveTodoLists()
@@ -112,6 +112,7 @@ class TodoListTableViewController: UITableViewController {
         formatter.timeStyle = .short
         let list = todoLists[indexPath.row]
         cell.todoListName.text = list.name
+        os_log("adding new name row %d, value is %s", log: OSLog.default, type: .debug, indexPath.row, list.name)
         cell.todoListUpdated.text = formatter.string(from: list.updated)
         return cell
     }
