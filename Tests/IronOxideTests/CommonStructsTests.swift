@@ -52,4 +52,19 @@ final class CommonStructsTests: XCTestCase {
         let sdk = IronOxide.initialize(device: dc, config: IronOxideConfig(policyCaching: PolicyCachingConfig(), sdkOperationTimeout: shortTimeout))
         XCTAssertThrowsError(try sdk.get())
     }
+
+    func testInvalidJwt() throws {
+        let jwt = Jwt("foo")
+        XCTAssertNil(jwt)
+    }
+
+    func testValidJwt() throws {
+        let jwt = try generateJWT()
+        XCTAssertNotNil(jwt)
+        XCTAssertEqual(jwt.algorithm, "ES256")
+        XCTAssertEqual(jwt.claims.pid, 431)
+        XCTAssertEqual(jwt.claims.sid, "Ironoxide-swift")
+        XCTAssertEqual(jwt.claims.kid, 594)
+        XCTAssertEqual(jwt.claims.exp, jwt.claims.iat + 120)
+    }
 }

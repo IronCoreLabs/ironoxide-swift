@@ -65,6 +65,8 @@
 #include "c_Duration.h"
 #include "c_BlindIndexSearch.h"
 #include "c_EncryptedBlindIndexSalt.h"
+#include "c_JwtClaims.h"
+#include "c_Jwt.h"
 
 //IronOxide
 #include "c_IronOxideConfig.h"

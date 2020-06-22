@@ -79,9 +79,9 @@ public class PolicyCachingConfig: SdkObject {
     - jwt: Valid IronCore or Auth0 JWT
     - timeout: Timeout for this operation or `nil` for no timeout
  */
-public func userVerify(jwt: String, timeout: Duration? = nil) -> Result<UserResult?, IronOxideError> {
+public func userVerify(jwt: Jwt, timeout: Duration? = nil) -> Result<UserResult?, IronOxideError> {
     let timeoutPtr = Util.buildOptionOf(timeout, CRustClassOptDuration.init)
-    return Util.toResult(IronOxide_userVerify(Util.swiftStringToRust(jwt), timeoutPtr)).map { maybeUser in
+    return Util.toResult(IronOxide_userVerify(jwt.inner, timeoutPtr)).map { maybeUser in
         Util.toOption(maybeUser).map(UserResult.init)
     }
 }
@@ -96,14 +96,14 @@ public func userVerify(jwt: String, timeout: Duration? = nil) -> Result<UserResu
     - timeout: Timeout for this operation or `nil` for no timeout
  */
 public func userCreate(
-    jwt: String,
+    jwt: Jwt,
     password: String,
     options: UserCreateOpts = UserCreateOpts(),
     timeout: Duration? = nil
 ) -> Result<UserCreateResult, IronOxideError> {
     let timeoutPtr = Util.buildOptionOf(timeout, CRustClassOptDuration.init)
     return Util.toResult(IronOxide_userCreate(
-        Util.swiftStringToRust(jwt),
+        jwt.inner,
         Util.swiftStringToRust(password),
         options.inner,
         timeoutPtr
@@ -123,14 +123,14 @@ public func userCreate(
     - timeout: Timeout for this operation or `nil` for no timeout
  */
 public func generateNewDevice(
-    jwt: String,
+    jwt: Jwt,
     password: String,
     options: DeviceCreateOpts = DeviceCreateOpts(),
     timeout: Duration? = nil
 ) -> Result<DeviceAddResult, IronOxideError> {
     let timeoutPtr = Util.buildOptionOf(timeout, CRustClassOptDuration.init)
     return Util.toResult(IronOxide_generateNewDevice(
-        Util.swiftStringToRust(jwt),
+        jwt.inner,
         Util.swiftStringToRust(password),
         options.inner,
         timeoutPtr

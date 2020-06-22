@@ -396,6 +396,76 @@ public class Duration: SdkObject {
     deinit { Duration_delete(inner) }
 }
 
+/// Claims required to form a valid `Jwt`.
+public class JwtClaims: SdkObject {
+    /// Unique user ID
+    public lazy var sub: String = {
+        Util.rustStringToSwift(JwtClaims_getSub(inner))
+    }()
+
+    /// Project ID
+    public lazy var pid: UInt = {
+        JwtClaims_getPid(inner)
+    }()
+
+    /// Segment ID
+    public lazy var sid: String = {
+        Util.rustStringToSwift(JwtClaims_getSid(inner))
+    }()
+
+    /// Service key ID
+    public lazy var kid: UInt = {
+        JwtClaims_getKid(inner)
+    }()
+
+    /// Issued time (seconds)
+    public lazy var iat: UInt64 = {
+        JwtClaims_getIat(inner)
+    }()
+
+    /// Expiration time (seconds)
+    public lazy var exp: UInt64 = {
+        JwtClaims_getExp(inner)
+    }()
+}
+
+/**
+ IronCore JWT.
+
+ Must be either ES256 or RS256 and have a payload similar to `JwtClaims`, but could be
+ generated from an external source.
+ */
+public class Jwt: SdkObject {
+    /**
+     Constructs a `Jwt` from the provided String.
+
+     Fails if the provided String is not a valid JWT, or if the JWT does not have a valid IronCore payload.
+     */
+    public convenience init?(_ jwt: String) {
+        switch Util.toResult(Jwt_validate(Util.swiftStringToRust(jwt))) {
+        case let .success(validJwt):
+            self.init(validJwt)
+        case .failure:
+            return nil
+        }
+    }
+
+    /// Raw JWT string
+    public lazy var jwt: String = {
+        Util.rustStringToSwift(Jwt_getJwt(inner))
+    }()
+
+    /// Algorithm used by the JWT
+    public lazy var algorithm: String = {
+        Util.rustStringToSwift(Jwt_getAlgorithm(inner))
+    }()
+
+    /// Payload of the JWT
+    public lazy var claims: JwtClaims = {
+        JwtClaims(Jwt_getClaims(inner))
+    }()
+}
+
 /// Representation of bytes within Rust
 class RustBytes {
     let innerMemory: ContiguousArray<Int8>
