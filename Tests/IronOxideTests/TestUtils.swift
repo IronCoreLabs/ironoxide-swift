@@ -152,7 +152,7 @@ struct MyClaims: Claims {
     let sub: String
 }
 
-func generateJWT(_ userId: UserId? = nil) throws -> String {
+func generateJWT(_ userId: UserId? = nil) throws -> Jwt {
     setenv("IRONCORE_ENV", "stage", 1)
     let projectId = 431
     let segmentId = "Ironoxide-swift"
@@ -175,7 +175,8 @@ func generateJWT(_ userId: UserId? = nil) throws -> String {
         """.utf8)
     if #available(macOS 10.13, iOS 11, *) {
         let jwtSigner = JWTSigner.es256(privateKey: key)
-        return try myJWT.sign(using: jwtSigner)
+        let jwtString = try myJWT.sign(using: jwtSigner)
+        return Jwt(jwtString)!
     }
     throw IronOxideError.error("Unable to sign JWT. ES256 requires OSX 10.13 or later.")
 }
