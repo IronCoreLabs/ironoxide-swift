@@ -427,6 +427,8 @@ public class JwtClaims: SdkObject {
     public lazy var exp: UInt64 = {
         JwtClaims_getExp(inner)
     }()
+
+    deinit { JwtClaims_delete(inner) }
 }
 
 /**
@@ -464,6 +466,8 @@ public class Jwt: SdkObject {
     public lazy var claims: JwtClaims = {
         JwtClaims(Jwt_getClaims(inner))
     }()
+
+    deinit { Jwt_delete(inner) }
 }
 
 /// Representation of bytes within Rust
