@@ -11,6 +11,15 @@ Swift SDK for using IronCore Labs from your iOS mobile applications.
 
 Documentation for the latest GitHub tag can be viewed at https://ironcorelabs.github.io/ironoxide-swift/.
 
+## Version Compatiblity
+
+The following table shows the compatibility between the version of this Swift library and the required version of the `ironoxide` Homebrew library.
+
+| ironoxide-swift | Homebrew `ironoxide`                                                                   |
+| --------------- | ------------------- |
+| 0.14.0          | 0.14.2              |
+| 0.13.2          | 0.13.2              |
+
 ## Building and Testing on MacOS/Linux
 
 Building and testing this library to run on MacOS/Linux varies pretty heavily depending on what architecture you are building for.
@@ -34,4 +43,4 @@ Building and testing this library to run on MacOS/Linux varies pretty heavily de
 ## Generating Docs
 
 We use [jazzy](https://github.com/realm/jazzy) to generate an HTML version of our API docs. Jazzy requires Ruby and can be installed with `[sudo] gem install jazzy`.
-On a Mac, the docs can be generated simply by running `jazzy --module IronOxide` from the root of the repository. This will generate a `docs/` folder that contains the html files. To run jazzy on Linux, additional steps for installing and running can be found [here](https://github.com/realm/jazzy#linux).
+On a Mac, the docs can be generated simply by running `jazzy --module IronOxide` from the root of the repository. This will generate a `docs/` folder that contains the html files. To run jazzy on Linux, additional steps for installing and running can be found [here](https://github.com/realm/jazzy#linux). Documenation for this library is automatically updated via a GitHub action that runs when a new tag is pushed. The docs are hosted via GitHub Pages via the `gh-pages` branch of this repo.
