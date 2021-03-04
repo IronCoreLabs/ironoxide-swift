@@ -1,7 +1,7 @@
 # Release process
 
 - Make sure that any changes necessary for this release are included in a released `ironoxide` Homebrew version. An updated HomeBrew tar should be released prior to this library getting released.
-- Make sure all changes to be released are on `master`.
+- Make sure all changes to be released are on `main`.
 - Decide what the new version number should be (we use semver).
 - Make sure `CHANGELOG.md` is up to date with the latest changes.
 - If needed, commit `CHANGELOG.md` to your local git.
