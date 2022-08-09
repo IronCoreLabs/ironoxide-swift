@@ -404,7 +404,7 @@ public class JwtClaims: SdkObject {
     }()
 
     /// Project ID
-    public lazy var pid: UInt = {
+    public lazy var pid: UInt32 = {
         JwtClaims_getPid(inner)
     }()
 
@@ -414,7 +414,7 @@ public class JwtClaims: SdkObject {
     }()
 
     /// Service key ID
-    public lazy var kid: UInt = {
+    public lazy var kid: UInt32 = {
         JwtClaims_getKid(inner)
     }()
 

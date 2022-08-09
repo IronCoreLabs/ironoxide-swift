@@ -41,11 +41,11 @@ extension DocumentName: Equatable {
 public enum DocumentAssociationType {
     init(_ i: UInt32) {
         let associationType = AssociationType(i)
-        if associationType == Owner {
+        if associationType == AssociationType_Owner {
             self = .owner
-        } else if associationType == FromUser {
+        } else if associationType == AssociationType_FromUser {
             self = .fromUser
-        } else if associationType == FromGroup {
+        } else if associationType == AssociationType_FromGroup {
             self = .fromGroup
         } else {
             self = .unknown
