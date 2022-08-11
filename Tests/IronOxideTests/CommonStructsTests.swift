@@ -67,4 +67,19 @@ final class CommonStructsTests: XCTestCase {
         XCTAssertEqual(jwt.claims.kid, 594)
         XCTAssertEqual(jwt.claims.exp, jwt.claims.iat + 120)
     }
+
+    func testKnownJwt() throws {
+        // { "http://ironcore/pid": 1, "http://ironcore/kid": 1859, "http://ironcore/sid": "IronHide",
+        // "http://ironcore/uid": "bob.wall@ironcorelabs.com", "iss": "https://ironcorelabs.auth0.com/",
+        // "sub": "github|11368122", "aud": "hGELxuBKD64ltS4VNaIy2mzVwtqgJa5f", "iat": 1593130255, "exp": 1593133855 }
+        let jwtStr = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlEwWXhNekUwTlVJeE9UVTNRakZFTlRZM01rVkNRakE0UkVNMk1UTkZOVGRETVRBNE9EQTVNUSJ9.eyJodHRwOi8vaXJvbmNvcmUvcGlkIjoxLCJodHRwOi8vaXJvbmNvcmUva2lkIjoxODU5LCJodHRwOi8vaXJvbmNvcmUvc2lkIjoiSXJvbkhpZGUiLCJodHRwOi8vaXJvbmNvcmUvdWlkIjoiYm9iLndhbGxAaXJvbmNvcmVsYWJzLmNvbSIsImlzcyI6Imh0dHBzOi8vaXJvbmNvcmVsYWJzLmF1dGgwLmNvbS8iLCJzdWIiOiJnaXRodWJ8MTEzNjgxMjIiLCJhdWQiOiJoR0VMeHVCS0Q2NGx0UzRWTmFJeTJtelZ3dHFnSmE1ZiIsImlhdCI6MTU5MzEzMDI1NSwiZXhwIjoxNTkzMTMzODU1fQ.Y3DsoS-TctytMNpEFnewJ5TT33yRblRmNkNPIQ2EDmfka070y5egpMsVtjqqck05cpdShxfZG2n2JWr5LQF6--jEa8mHy73V36ZbBHkcvjhEcHdH3OxhQQPUNwrXN-jIFOD58G7K5ZNCZub8IsEpWPD8PwghWlwiLKSFMb_j12SEs1rQwoVs1NaYsVZk04G6fWwooyrpuulXVc6S8g8Cr6_FeHDkb8747UY2GmL3Qp0R3iCPjao0ESSqP9gwPMroQGiNhjfJhYwxM8_sin4skfWoEirj0IRk2M8LAEOszI6gTdMcFX8Bw-0kFw4LWYBOi1eHcmvzNFMgCJUB5I4rcg"
+        let jwt = Jwt(jwtStr)!
+        XCTAssertEqual(jwt.algorithm, "RS256")
+        XCTAssertEqual(jwt.claims.pid, 1)
+        XCTAssertEqual(jwt.claims.kid, 1859)
+        XCTAssertEqual(jwt.claims.sid, "IronHide")
+        XCTAssertEqual(jwt.claims.sub, "github|11368122")
+        XCTAssertEqual(jwt.claims.iat, 1593130255)
+        XCTAssertEqual(jwt.claims.exp, 1593133855)
+    }
 }

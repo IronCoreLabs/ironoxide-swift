@@ -8,6 +8,7 @@
 #include "rust_resultCRustOption4232mut3232c_voidCRustString.h"
 #include "rust_resultCRustForeignVecCRustString.h"
 #include "rust_resultCRustVeci32CRustString.h"
+#include "rust_slice_mut.h"
 
 //Base IronOxide Types
 #include "c_PrivateKey.h"
@@ -67,6 +68,10 @@
 #include "c_EncryptedBlindIndexSalt.h"
 #include "c_JwtClaims.h"
 #include "c_Jwt.h"
+#include "c_VisibleUser.h"
+#include "c_VisibleGroup.h"
+#include "c_GroupAccessErr.h"
+#include "c_UserAccessErr.h"
 
 //IronOxide
 #include "c_IronOxideConfig.h"
