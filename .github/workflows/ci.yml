@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ubuntu-18.04, macos-10.15]
+        target: [ubuntu-22.04, macos-10.15]
     runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-swig-bindings
@@ -19,13 +19,14 @@ jobs:
         with:
           repository: IronCoreLabs/ironoxide-swig-bindings
           path: ironoxide-swig-bindings
-      - name: Cache cargo build
-        uses: actions/cache@v1
+      - uses: actions-rs/toolchain@v1
         with:
-          path: ironoxide-swig-bindings/target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cargo build
-        run: cargo build -p ironoxide-cpp --release
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: -p ironoxide-cpp --release
         working-directory: ironoxide-swig-bindings
       - name: Checkout
         uses: actions/checkout@v2
