@@ -38,10 +38,10 @@ jobs:
         run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp target/release/libironoxide.dylib $_
         if: matrix.target == 'macos-10.15'
       - name: Move libironoxide (Linux)
-        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp ironoxide-swig-bindings/target/release/libironoxide.so $_
+        run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp target/release/libironoxide.so $_
         if: matrix.target == 'ubuntu-18.04'
       - name: Move header files
-        run: cp -R ironoxide-swig-bindings/cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
+        run: cp -R cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
       - name: Run tests
         run: swift test --enable-test-discovery
         working-directory: ironoxide-swift
