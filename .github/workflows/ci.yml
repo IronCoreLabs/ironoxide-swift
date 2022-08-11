@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ubuntu-22.04, macos-10.15]
+        target: [ubuntu-20.04, macos-10.15]
     runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-swig-bindings
@@ -39,12 +39,9 @@ jobs:
         if: matrix.target == 'macos-10.15'
       - name: Move libironoxide (Linux)
         run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp target/release/libironoxide.so $_
-        if: matrix.target == 'ubuntu-22.04'
+        if: matrix.target == 'ubuntu-20.04'
       - name: Move header files
         run: cp -R cpp/generated/sdk/*.h ironoxide-swift/Sources/libironoxide
-      - uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: "5.2"
       - name: Run tests
         run: swift test --enable-test-discovery
         working-directory: ironoxide-swift
