@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
 
 jobs:
   build-docs:
@@ -14,11 +15,10 @@ jobs:
         with:
           repository: IronCoreLabs/ironoxide-swig-bindings
           path: ironoxide-swig-bindings
-      - name: Cache cargo build
-        uses: actions/cache@v1
+      - uses: actions-rs/toolchain@v1
         with:
-          path: ironoxide-swig-bindings/target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+          toolchain: stable
+          override: true
       - name: Cargo build
         run: cargo build -p ironoxide-cpp --release
         working-directory: ironoxide-swig-bindings
