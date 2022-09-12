@@ -404,18 +404,43 @@ public class JwtClaims: SdkObject {
     }()
 
     /// Project ID
-    public lazy var pid: UInt32 = {
-        JwtClaims_getPid(inner)
+    public lazy var pid: Int64? = {
+        Util.toOption(JwtClaims_getPid(inner))
+    }()
+
+    /// Prefixed Project ID (http://ironcore/pid)
+    public lazy var prefixedPid: Int64? = {
+        Util.toOption(JwtClaims_getPrefixedPid(inner))
     }()
 
     /// Segment ID
-    public lazy var sid: String = {
-        Util.rustStringToSwift(JwtClaims_getSid(inner))
+    public lazy var sid: String? = {
+        Util.toOption(JwtClaims_getSid(inner))
+    }()
+
+    /// Prefixed Segment ID (http://ironcore/sid)
+    public lazy var prefixedSid: String? = {
+        Util.toOption(JwtClaims_getPrefixedSid(inner))
     }()
 
     /// Service key ID
-    public lazy var kid: UInt32 = {
-        JwtClaims_getKid(inner)
+    public lazy var kid: Int64? = {
+        Util.toOption(JwtClaims_getKid(inner))
+    }()
+
+    /// Prefixed Service key ID (http://ironcore/kid)
+    public lazy var prefixedKid: Int64? = {
+        Util.toOption(JwtClaims_getPrefixedKid(inner))
+    }()
+
+    /// User ID
+    public lazy var uid: String? = {
+        Util.toOption(JwtClaims_getUid(inner))
+    }()
+
+    /// Prefixed User ID (http://ironcore/uid)
+    public lazy var prefixedUid: String? = {
+        Util.toOption(JwtClaims_getPrefixedUid(inner))
     }()
 
     /// Issued time (seconds)
