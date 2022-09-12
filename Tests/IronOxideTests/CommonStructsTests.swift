@@ -74,17 +74,18 @@ final class CommonStructsTests: XCTestCase {
         let jwtStr = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJhYmNBQkMwMTJfLiQjfEAvOjs9KyctZDEyMjZkMWItNGMzOS00OWRhLTkzM2MtNjQyZTIzYWMxOTQ1IiwicGlkIjo0MzgsInNpZCI6Imlyb25veGlkZS1kZXYxIiwia2lkIjo1OTMsImlhdCI6MTU5MTkwMTc0MCwiZXhwIjoxNTkxOTAxODYwfQ.wgs_tnh89SlKnIkoQHdlC0REjkxTl1P8qtDSQwWTFKwo8KQKXUQdpp4BfwqUqLcxA0BW6_XfVRlqMX5zcvCc6w"
         let jwt = Jwt(jwtStr)!
         XCTAssertEqual(jwt.algorithm, "ES256")
-        XCTAssertEqual(jwt.claims.prefixedPid, nil)
-        XCTAssertEqual(jwt.claims.pid, 438)
-        XCTAssertEqual(jwt.claims.prefixedKid, nil)
-        XCTAssertEqual(jwt.claims.kid, 593)
-        XCTAssertEqual(jwt.claims.prefixedSid, nil)
-        XCTAssertEqual(jwt.claims.sid, "ironoxide-dev1")
-        XCTAssertEqual(jwt.claims.sub, "abcABC012_.$#|@/:;=+'-d1226d1b-4c39-49da-933c-642e23ac1945")
-        XCTAssertEqual(jwt.claims.uid, nil)
-        XCTAssertEqual(jwt.claims.prefixedUid, nil)
-        XCTAssertEqual(jwt.claims.iat, 1591901740)
-        XCTAssertEqual(jwt.claims.exp, 1591901860)
+        let claims = jwt.claims
+        XCTAssertEqual(claims.prefixedPid, nil)
+        XCTAssertEqual(claims.pid, 438)
+        XCTAssertEqual(claims.prefixedKid, nil)
+        XCTAssertEqual(claims.kid, 593)
+        XCTAssertEqual(claims.prefixedSid, nil)
+        XCTAssertEqual(claims.sid, "ironoxide-dev1")
+        XCTAssertEqual(claims.sub, "abcABC012_.$#|@/:;=+'-d1226d1b-4c39-49da-933c-642e23ac1945")
+        XCTAssertEqual(claims.uid, nil)
+        XCTAssertEqual(claims.prefixedUid, nil)
+        XCTAssertEqual(claims.iat, 1591901740)
+        XCTAssertEqual(claims.exp, 1591901860)
     }
 
     func testKnownJwtPrefixed() throws {
@@ -94,16 +95,17 @@ final class CommonStructsTests: XCTestCase {
         let jwtStr = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlEwWXhNekUwTlVJeE9UVTNRakZFTlRZM01rVkNRakE0UkVNMk1UTkZOVGRETVRBNE9EQTVNUSJ9.eyJodHRwOi8vaXJvbmNvcmUvcGlkIjoxLCJodHRwOi8vaXJvbmNvcmUva2lkIjoxODU5LCJodHRwOi8vaXJvbmNvcmUvc2lkIjoiSXJvbkhpZGUiLCJodHRwOi8vaXJvbmNvcmUvdWlkIjoiYm9iLndhbGxAaXJvbmNvcmVsYWJzLmNvbSIsImlzcyI6Imh0dHBzOi8vaXJvbmNvcmVsYWJzLmF1dGgwLmNvbS8iLCJzdWIiOiJnaXRodWJ8MTEzNjgxMjIiLCJhdWQiOiJoR0VMeHVCS0Q2NGx0UzRWTmFJeTJtelZ3dHFnSmE1ZiIsImlhdCI6MTU5MzEzMDI1NSwiZXhwIjoxNTkzMTMzODU1fQ.Y3DsoS-TctytMNpEFnewJ5TT33yRblRmNkNPIQ2EDmfka070y5egpMsVtjqqck05cpdShxfZG2n2JWr5LQF6--jEa8mHy73V36ZbBHkcvjhEcHdH3OxhQQPUNwrXN-jIFOD58G7K5ZNCZub8IsEpWPD8PwghWlwiLKSFMb_j12SEs1rQwoVs1NaYsVZk04G6fWwooyrpuulXVc6S8g8Cr6_FeHDkb8747UY2GmL3Qp0R3iCPjao0ESSqP9gwPMroQGiNhjfJhYwxM8_sin4skfWoEirj0IRk2M8LAEOszI6gTdMcFX8Bw-0kFw4LWYBOi1eHcmvzNFMgCJUB5I4rcg"
         let jwt = Jwt(jwtStr)!
         XCTAssertEqual(jwt.algorithm, "RS256")
-        XCTAssertEqual(jwt.claims.prefixedPid, 1)
-        XCTAssertEqual(jwt.claims.pid, nil)
-        XCTAssertEqual(jwt.claims.prefixedKid, 1859)
-        XCTAssertEqual(jwt.claims.kid, nil)
-        XCTAssertEqual(jwt.claims.prefixedSid, "IronHide")
-        XCTAssertEqual(jwt.claims.sid, nil)
-        XCTAssertEqual(jwt.claims.sub, "github|11368122")
-        XCTAssertEqual(jwt.claims.uid, nil)
-        XCTAssertEqual(jwt.claims.prefixedUid, "bob.wall@ironcorelabs.com")
-        XCTAssertEqual(jwt.claims.iat, 1593130255)
-        XCTAssertEqual(jwt.claims.exp, 1593133855)
+        let claims = jwt.claims
+        XCTAssertEqual(claims.prefixedPid, 1)
+        XCTAssertEqual(claims.pid, nil)
+        XCTAssertEqual(claims.prefixedKid, 1859)
+        XCTAssertEqual(claims.kid, nil)
+        XCTAssertEqual(claims.prefixedSid, "IronHide")
+        XCTAssertEqual(claims.sid, nil)
+        XCTAssertEqual(claims.sub, "github|11368122")
+        XCTAssertEqual(claims.uid, nil)
+        XCTAssertEqual(claims.prefixedUid, "bob.wall@ironcorelabs.com")
+        XCTAssertEqual(claims.iat, 1593130255)
+        XCTAssertEqual(claims.exp, 1593133855)
     }
 }
