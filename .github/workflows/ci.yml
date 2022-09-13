@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ubuntu-20.04, macos-10.15]
+        target: [ubuntu-20.04, macos-12]
     runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-swig-bindings
@@ -36,7 +36,7 @@ jobs:
       # we do this hacks below so the library can find the right files.
       - name: Move libironoxide (OSX)
         run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp target/release/libironoxide.dylib $_
-        if: matrix.target == 'macos-10.15'
+        if: matrix.target == 'macos-12'
       - name: Move libironoxide (Linux)
         run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp target/release/libironoxide.so $_
         if: matrix.target == 'ubuntu-20.04'
