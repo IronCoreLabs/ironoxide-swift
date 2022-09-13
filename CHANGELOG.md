@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.0
+
+- Upgrade to homebrew ironoxide 0.15.0.
+  - Additional fields were added to `JwtClaims`.
+  - Most of the `JwtClaims` fields are now optional.
+  - Some of the `JwtClaims` fields changed from `UInt32` to `Int64`.
+
 ## 0.15.0
 
 - Upgrade to homebrew ironoxide 0.14.7.

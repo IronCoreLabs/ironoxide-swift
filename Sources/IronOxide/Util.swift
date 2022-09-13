@@ -78,6 +78,20 @@ struct Util {
             nil
     }
 
+    /// Convert the provided IronOxide Option of i64 into a Swift Option
+    static func toOption(_ result: CRustOptioni64) -> Int64? {
+        Util.intToBool(result.is_some) ?
+            result.val.data :
+            nil
+    }
+
+    /// Convert the provided IronOxide Option of String into a Swift Option
+    static func toOption(_ result: CRustOptionCRustString) -> String? {
+        Util.intToBool(result.is_some) ?
+            rustStringToSwift(result.val.data) :
+            nil
+    }
+
     /// Convert the provided Swift string into a string we can pass down to native IronOxide
     static func swiftStringToRust(_ str: String) -> CRustStrView {
         let count = str.utf8.count + 1

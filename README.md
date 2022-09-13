@@ -17,6 +17,7 @@ The following table shows the compatibility between the version of this Swift li
 
 | ironoxide-swift | Homebrew `ironoxide` |
 | --------------- | -------------------- |
+| 0.16.0          | 0.15.0               |
 | 0.15.0          | 0.14.7               |
 | 0.14.0          | 0.14.2               |
 | 0.13.2          | 0.13.2               |
