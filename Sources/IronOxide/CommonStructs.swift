@@ -361,7 +361,7 @@ public class DeviceContext: SdkObject {
 
     /// Private signing key of the device
     public lazy var signingPrivateKey: DeviceSigningKeyPair = {
-        DeviceSigningKeyPair(DeviceContext_getDevicePrivateKey(inner))
+        DeviceSigningKeyPair(DeviceContext_getSigningPrivateKey(inner))
     }()
 
     deinit { DeviceSigningKeyPair_delete(inner) }
