@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.1
+
+- Fix bug with `DeviceContext.signingPrivateKey`.
+
 ## 0.16.0
 
 - Upgrade to homebrew ironoxide 0.15.0.
