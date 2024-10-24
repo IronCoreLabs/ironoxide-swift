@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ubuntu-20.04, macos-12]
+        target: [ubuntu-20.04, macos-14]
     runs-on: ${{ matrix.target }}
     steps:
       - name: Checkout ironoxide-swig-bindings
@@ -35,8 +35,8 @@ jobs:
       # but a) that won't work for Linux and b) we only publish the iOS binary to Homebrew, not one for MacOS. Therefore
       # we do this hacks below so the library can find the right files.
       - name: Move libironoxide (OSX)
-        run: mkdir -p ironoxide-swift/.build/x86_64-apple-macosx/debug && cp target/release/libironoxide.dylib $_
-        if: matrix.target == 'macos-12'
+        run: mkdir -p ironoxide-swift/.build/aarch64-apple-darwin/debug && cp target/release/libironoxide.dylib $_
+        if: matrix.target == 'macos-14'
       - name: Move libironoxide (Linux)
         run: mkdir -p ironoxide-swift/.build/x86_64-unknown-linux-gnu/debug && cp target/release/libironoxide.so $_
         if: matrix.target == 'ubuntu-20.04'
